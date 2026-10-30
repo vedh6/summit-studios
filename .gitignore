@@ -1,0 +1,17 @@
+# Private working material: never commit
+*.pdf
+Moodboard*.png
+Screenshot*.png
+Sitemap*.png
+content.md
+reference-sites.md
+sitemap.md
+_archive/
+design-files/
+.claude/
+
+# Build and system clutter
+__pycache__/
+*.pyc
+.DS_Store
+.vercel
