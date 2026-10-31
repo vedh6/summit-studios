@@ -81,8 +81,8 @@ DAVINCI = '''<svg class="dv" viewBox="0 0 340 464" aria-hidden="true">
 
 # ---------- shell ----------
 
-NAV = [('projects.html', 'Projects'), ('studio.html', 'Studio'), ('services.html', 'Services'),
-       ('industries.html', 'Industries'), ('contact.html', 'Contact')]
+NAV = [('industries.html', 'Industries'), ('projects.html', 'Projects'), ('studio.html', 'Studio'),
+       ('services.html', 'Services'), ('contact.html', 'Contact')]
 
 
 def header():
@@ -704,7 +704,7 @@ def footer(above='bg'):
   </div>
   <nav class="ftr__cols" aria-label="Footer">
     <div><p class="ftr__t">Services</p><a href="services.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="services.html#ai-receptionists">AI Concierge</a><a href="services.html#whatsapp">WhatsApp Automation</a><a href="services.html#crm">Custom Software</a></div>
-    <div><p class="ftr__t">Studio</p><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="industries.html">Industries</a><a href="services.html#pricing">Pricing</a></div>
+    <div><p class="ftr__t">Studio</p><a href="industries.html">Industries</a><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="services.html#pricing">Pricing</a></div>
     <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Book a call</a><a href="contact.html">Contact</a><a href="contact.html">Email &amp; WhatsApp</a></div>
     <div><p class="ftr__t">Worldwide</p><p class="ftr__note">Working with clients across time zones. Local time <span data-clock>--:--</span>.</p></div>
   </nav>
