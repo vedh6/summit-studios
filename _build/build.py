@@ -23,6 +23,15 @@ ASSET_RE = re.compile(r'assets/[A-Za-z0-9_./-]+\.(?:css|js|svg|jpg|jpeg|png|webp
 ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
 
+PAGE_HREF = re.compile(r'href="([a-z-]+)\.html(#[^"]*)?"')
+
+
+def clean_urls(html):
+    """Internal links point at the clean addresses Vercel serves (studio.html -> /studio),
+    so a click never goes through a redirect."""
+    return PAGE_HREF.sub(lambda m: f'href="/{"" if m.group(1) == "index" else m.group(1)}{m.group(2) or ""}"', html)
+
+
 def fingerprint(html):
     def sub(m):
         p = OUT / m.group(0)
@@ -85,8 +94,9 @@ NAV = [('industries.html', 'Industries'), ('projects.html', 'Projects'), ('studi
        ('services.html', 'Services'), ('contact.html', 'Contact')]
 
 
-def header():
-    links = ''.join(f'<a class="hdr__link" href="{h}">{t}</a>' for h, t in NAV)
+def header(file=''):
+    cur = ' aria-current="page"'
+    links = ''.join(f'<a class="hdr__link" href="{h}"{cur if h == file else ""}>{t}</a>' for h, t in NAV)
     return f'''<header class="hdr" data-hdr>
   <a class="hdr__brand" href="index.html"><svg class="hdr__mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 38 18 10l6 12 5-8 15 24z" fill="currentColor"/><path d="M4 43h40" stroke="currentColor" stroke-width="2"/></svg>Summit Studios <span class="hdr__sub">Edition '26</span></a>
   <nav class="hdr__nav" id="nav" aria-label="Main">{links}</nav>
@@ -139,7 +149,7 @@ SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsa
 
 
 def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
-    canon = '' if file == 'index.html' else file
+    canon = '' if file == 'index.html' else file[:-5]
     html = f'''<!doctype html>
 <html lang="en" data-ui="dark">
 <head>
@@ -163,18 +173,21 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 {JSONLD if jsonld else ''}
 </head>
 <body>
-{header()}
+{header(file)}
 {sidebar(chapters, mark, sub)}
 <main id="main" class="main">
 {body}
 </main>
-{footer('parchment' if file == 'index.html' else 'bg')}
+{footer('parchment' if file in ('index.html', '404.html') else 'bg')}
 {ROUGH_DEFS}
 {SCRIPTS}
 </body>
 </html>
 '''
-    (OUT / file).write_text(fingerprint(html))
+    html = clean_urls(fingerprint(html))
+    if file == '404.html':   # served at any missing path, so its assets must be root-relative
+        html = re.sub(r'(src|href)="assets/', r'\1="/assets/', html)
+    (OUT / file).write_text(html)
     print('wrote', file)
 
 
@@ -281,7 +294,7 @@ INDUSTRY_MEDIA = {'industrial': ('device/desk-eagle', 'A studio monitor showing 
                   'trades': ('device/phone-pranava', 'A phone showing the Pranava Builders website', 'pranava')}
 INDUSTRY_WORD = {'industrial': 'Industrial', 'clinics': 'Clinics', 'trades': 'Trades'}
 INDUSTRY_PAINT = {'industrial': ('industrial', 'A Renaissance landscape with transmission pylons and an engineer looking out over a valley'),
-                  'clinics': ('clinics', 'A Renaissance painting of a physician with a tablet examining a patient in a marble hall'),
+                  'clinics': ('ind-clinics', 'A Renaissance physician greeting a family at a carved reception desk with a tablet showing appointments'),
                   'trades': ('trades', 'A Renaissance painting of builders raising a modern building beside a Florentine dome')}
 INDUSTRY_SUB = {'industrial': 'Credibility, inspected', 'clinics': 'Bookings, made', 'trades': 'Referrals, backed up'}
 
@@ -639,7 +652,9 @@ def chapter_why(tear=False):
     {sub_head('Four reasons, one studio')}
     {feat_grid([(t, p) for t, s, p in WHY])}
     {scene}'''
-    html = chapter('why', 'Why us', 'handshake-window', 'A Renaissance merchant and a young designer shaking hands by an open window over Venice',
+    paint = ('handshake-window', 'A Renaissance merchant and a young designer shaking hands by an open window over Venice') if tear else \
+            ('studio-review', 'A Renaissance noblewoman and a young designer reviewing printed website layouts together')
+    html = chapter('why', 'Why us', paint[0], paint[1],
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
     if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
         html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".6,.24"', 1)
@@ -745,13 +760,13 @@ def simple_page(hero_paint, hero_alt, kicker, chapters_html):
 FILTERS = [('all', 'All'), ('industrial', 'Industrial'), ('healthcare', 'Healthcare'), ('technology', 'Technology'), ('property', 'Property'), ('architecture', 'Architecture')]
 PROJECTS_CH = [('index', 'Index'), ('start', 'Start')]
 PROJECTS_PAGE = simple_page('workshop', 'A Renaissance workshop where apprentices work on modern laptops', 'Projects &middot; 30+ websites shipped',
-    chapter('index', 'Projects', 'websites', 'A Renaissance painter at an easel painting a modern website layout',
+    chapter('index', 'Projects', 'projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors',
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
     <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>''')
     + chapter_start())
 
-STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('voices', 'Client voices'), ('faq', 'FAQ')]
+STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('start', 'Start')]
 STUDIO = simple_page('workshop', 'A Renaissance workshop where apprentices work on modern laptops', 'Studio &middot; a small team with a high bar',
     chapter('who', 'Studio', 'handshake', 'A Renaissance merchant and a young designer shaking hands in a loggia over a bay',
             'Designers and developers who treat your website as a business asset, not a brochure.',
@@ -759,7 +774,7 @@ STUDIO = simple_page('workshop', 'A Renaissance workshop where apprentices work 
     {sub_head('Who we are')}
     {spot('Thirty-plus sites, one team', "From dental clinics and doctor portfolios to software companies, real estate firms and architectural studios, we specialise in modern, high-performing digital experiences tailored to each client's vision and business goals.")}
     {spot('Why we exist', 'Every brand deserves a digital presence that reflects its ambition. Through thoughtful design, modern technology and an uncompromising commitment to quality, we turn ideas into digital experiences that elevate brands, inspire audiences and drive real growth.')}''')
-    + chapter('how', 'Method', 'websites', 'A Renaissance painter at an easel painting a modern website layout',
+    + chapter('how', 'Method', 'studio-method', 'A Renaissance master showing apprentices the stages of a website, from sketch to finished page',
               'Three principles on every project, and a process with no surprises.',
               f'''{sub_head('Three principles')}
     {feat_grid([('Exceptional design', "Sophisticated, distinctive and specific to your brand. If it could be anyone's website, it is not finished."), ('Seamless functionality', 'Fast on a phone, easy to navigate, and wired into booking, enquiries and the tools you already use.'), ('Measurable business impact', 'More calls, more bookings, more quotes. We design for the result, then measure it.')])}
@@ -787,8 +802,8 @@ def price_cards():
 
 
 SERVICES_CH = [('websites', 'Websites'), ('ai-receptionists', 'AI Concierge'), ('whatsapp', 'WhatsApp Automation'), ('crm', 'Software'), ('pricing', 'Pricing'), ('start', 'Start')]
-SERVICES_PAGE = simple_page('websites', 'A Renaissance painter at an easel painting a modern website layout', 'Services &middot; six things we do well',
-    chapter('websites', 'Websites', 'websites', 'A Renaissance painter at an easel painting a modern website layout',
+SERVICES_PAGE = simple_page('svc-hero', 'A Renaissance workshop where artisans draw a website layout, work on a laptop and grind pigments', 'Services &middot; six things we do well',
+    chapter('websites', 'Websites', 'svc-websites', 'A Renaissance architect drawing a webpage wireframe on vellum with a compass and set square',
             svc('websites')['tag'] + ' ' + svc('websites')['desc'].split('. ')[0] + '.',
             f'''{spot(svc('websites')['name'], svc('websites')['desc'], 'Talk to us about this', 'get-started.html')}
     {sub_head('What we build')}
@@ -796,12 +811,12 @@ SERVICES_PAGE = simple_page('websites', 'A Renaissance painter at an easel paint
     {sub_head('Shown on real screens')}
     {fan_cards('1')}''')
     + concierge_service()
-    + chapter('whatsapp', 'WhatsApp Automation', 'whatsapp', 'A Renaissance winged messenger holding a glowing phone',
+    + chapter('whatsapp', 'WhatsApp Automation', 'svc-whatsapp', 'A Renaissance woman releasing white pigeons from a dovecote, a glowing phone on the windowsill',
               svc('whatsapp')['tag'] + ' ' + svc('whatsapp')['desc'].split('. ')[0] + '.',
               f'''{spot('WhatsApp automation', svc('whatsapp')['desc'], 'Talk to us about this', 'get-started.html')}
     {sub_head('What it covers')}
     {chat_features(SERVICE_FEATURES['whatsapp'])}''')
-    + chapter('crm', 'Software', 'software', 'A Renaissance scholar studying charts on a modern monitor',
+    + chapter('crm', 'Software', 'svc-software', 'A Renaissance merchant in a counting house studying a dashboard of charts on a monitor',
               'Custom CRMs, web apps, dashboards and the backend that keeps them fast, secure and growing.',
               f'''{media('assets/img/device/monitor-pranava.jpg', 'A studio monitor showing the Pranava Builders website', 'media--wide')}
     {spot('Custom CRMs & software', svc('crm')['desc'], 'Talk to us about this', 'get-started.html')}
@@ -875,6 +890,16 @@ GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit p
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. Your review is on its way within two working days.</p></div>
     </form>'''))
 
+NOT_FOUND_CH = [('lost', 'Not found')]
+NOT_FOUND = simple_page('summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page', 'Page not found',
+    chapter('lost', '404', None, '', "This page isn't here. The link may be old, or the address mistyped.",
+            f'''<div class="cta" data-reveal>
+      {pill('Back to the home page', 'index.html', 'pill--dark pill--big')}
+      {chip('Services', 'services.html')}
+      {chip('Projects', 'projects.html')}
+      {chip('Contact', 'contact.html')}
+    </div>'''))
+
 PAGES = {
     'index.html': ('Summit Studios | Premium web design for engineering firms, clinics and trades',
                    'Summit Studios designs and builds premium websites, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide. 30+ sites shipped.',
@@ -885,6 +910,7 @@ PAGES = {
     'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
     'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Book a free 15-minute call, send a message, or reach us by email or WhatsApp.', CONTACT, CONTACT_CH, False),
     'get-started.html': ('Book a free 15-minute call | Summit Studios', 'Book a free 15-minute call with Summit Studios. We look at your current site, you tell us what you need, and we give you a straight answer on fit and cost.', GET_STARTED, GET_STARTED_CH, False),
+    '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
 }
 
 if __name__ == '__main__':

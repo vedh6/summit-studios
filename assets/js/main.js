@@ -1,5 +1,5 @@
 /* Summit Studios v3: behaviour that works without the motion layer.
-   Menu, current page, local clock, demo forms, booking embed, project filters. */
+   Menu, local clock, demo forms, booking embed, project filters. */
 (() => {
   'use strict';
   const d = document;
@@ -30,10 +30,6 @@
     d.addEventListener('keydown', e => { if (e.key === 'Escape' && root.classList.contains('sb-open')) { setOpen(false); sbToggle.focus(); } });
     window.__sbClose = () => setOpen(false);
   }
-
-  /* ---------- Current page ---------- */
-  const here = location.pathname.split('/').pop() || 'index.html';
-  d.querySelectorAll('.hdr__nav a').forEach(a => { if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page'); });
 
   /* ---------- Local clock ---------- */
   const clocks = d.querySelectorAll('[data-clock]');
