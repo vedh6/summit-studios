@@ -114,6 +114,8 @@ html.nav-open .hdr__menu span:last-child { transform: translateY(-4px) rotate(-4
 /* From the second chapter on the index is tucked away, so text starts at the left edge,
    in line with the logo (desktop; phones already use the small gutter). */
 @media (min-width: 900px) { .ch ~ .ch { --col: 20px; } }
+/* Pages without a chapter index start text at the left edge from the first chapter. */
+@media (min-width: 900px) { .no-index { --col: 20px; } }
 /* After the first two pages the index tucks away; the arrow on the left edge brings it back
    out on a dark panel (html.sb-hide / html.sb-open, set by motion.js and main.js). */
 .sb { transition: color .4s var(--ease), transform .7s var(--ease), opacity .45s var(--ease), background-color .45s var(--ease); }

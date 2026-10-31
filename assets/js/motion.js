@@ -102,7 +102,7 @@
     const lines = [...d.querySelectorAll('.dv circle, .dv line, .dv rect, .dv path')];
     if (lines.length && !reduced) {
       gsap.fromTo(lines, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: .08, delay: .2 });
-    } else gsap.set(lines, { strokeDashoffset: 0 });
+    } else if (lines.length) gsap.set(lines, { strokeDashoffset: 0 });
     const hero = d.querySelector('[data-hero]');
     if (!hero) { root.classList.add('docked'); return; }
     ScrollTrigger.create({

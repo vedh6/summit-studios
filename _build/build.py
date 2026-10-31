@@ -172,9 +172,9 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <script>try{{if('scrollRestoration' in history)history.scrollRestoration='manual';}}catch(e){{}}</script>
 {JSONLD if jsonld else ''}
 </head>
-<body>
+<body{'' if chapters else ' class="no-index"'}>
 {header(file)}
-{sidebar(chapters, mark, sub)}
+{sidebar(chapters, mark, sub) if chapters else ''}
 <main id="main" class="main">
 {body}
 </main>
@@ -758,7 +758,7 @@ def simple_page(hero_paint, hero_alt, kicker, chapters_html):
 
 
 FILTERS = [('all', 'All'), ('industrial', 'Industrial'), ('healthcare', 'Healthcare'), ('technology', 'Technology'), ('property', 'Property'), ('architecture', 'Architecture')]
-PROJECTS_CH = [('index', 'Index'), ('start', 'Start')]
+PROJECTS_CH = []   # no chapter index on this page (user: 'i dont want this index in this page')
 PROJECTS_PAGE = simple_page('projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors', 'Projects &middot; 30+ websites shipped',
     chapter('index', 'Projects', None, '',
             'Work that wins work. The live ones below; more as clients agree to be shown.',
