@@ -759,8 +759,8 @@ def simple_page(hero_paint, hero_alt, kicker, chapters_html):
 
 FILTERS = [('all', 'All'), ('industrial', 'Industrial'), ('healthcare', 'Healthcare'), ('technology', 'Technology'), ('property', 'Property'), ('architecture', 'Architecture')]
 PROJECTS_CH = [('index', 'Index'), ('start', 'Start')]
-PROJECTS_PAGE = simple_page('workshop', 'A Renaissance workshop where apprentices work on modern laptops', 'Projects &middot; 30+ websites shipped',
-    chapter('index', 'Projects', 'projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors',
+PROJECTS_PAGE = simple_page('projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors', 'Projects &middot; 30+ websites shipped',
+    chapter('index', 'Projects', None, '',
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
     <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>''')
