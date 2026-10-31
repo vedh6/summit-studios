@@ -150,6 +150,11 @@ SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsa
 
 def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
     canon = '' if file == 'index.html' else file[:-5]
+    # The chapter index (drafting box over the hero, docked sidebar, arrow) is a home-page
+    # feature only (user: 'i only want the index thingy on the homepage').
+    if file != 'index.html':
+        chapters = []
+        body = body.replace('>Back to navigation<', '>Back to top<')
     html = f'''<!doctype html>
 <html lang="en" data-ui="dark">
 <head>
