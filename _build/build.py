@@ -294,10 +294,11 @@ def proj(key):
     return next(p for p in PROJECTS if p.get('key') == key)
 
 
-def fan_cards():
+def fan_cards(shot='hero'):
+    w, h = (1920, 1200) if shot == 'hero' else (960, 600)
     cards = ''.join(
         f'<a class="fan__card" href="{proj(k)["url"]}" target="_blank" rel="noopener" style="--r:{r}deg;--x:{x}%;--y:{y}%" aria-label="Open the {proj(k)["name"]} website">'
-        f'<span class="browser"><span class="browser__bar"><i></i><i></i><i></i></span><img src="assets/img/work/{k}-hero.jpg" alt="{proj(k)["name"]} website" width="1920" height="1200" loading="lazy" decoding="async"></span></a>'
+        f'<span class="browser"><span class="browser__bar"><i></i><i></i><i></i></span><img src="assets/img/work/{k}-{shot}.jpg" alt="{proj(k)["name"]} website" width="{w}" height="{h}" loading="lazy" decoding="async"></span></a>'
         for k, r, x, y in [('eagle', -7, 0, 6), ('doctor', 1, 26, 0), ('pranava', 6, 52, 5)])
     return f'<div class="fan" data-fan>{cards}</div>'
 
@@ -793,7 +794,7 @@ SERVICES_PAGE = simple_page('websites', 'A Renaissance painter at an easel paint
     {sub_head('What we build')}
     {feat_grid(SERVICE_FEATURES['websites'])}
     {sub_head('Shown on real screens')}
-    {fan_cards()}''')
+    {fan_cards('1')}''')
     + concierge_service()
     + chapter('whatsapp', 'WhatsApp Automation', 'whatsapp', 'A Renaissance winged messenger holding a glowing phone',
               svc('whatsapp')['tag'] + ' ' + svc('whatsapp')['desc'].split('. ')[0] + '.',
