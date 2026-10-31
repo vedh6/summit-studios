@@ -200,6 +200,7 @@ html:not(.has-portal) .portal { display: none; }
 }
 .ch__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(41, 41, 25, .25), rgba(41, 41, 25, 0) 30%, rgba(41, 41, 25, .35) 100%); }
 .ch.is-faded .ch__bg { opacity: 0; }
+.ch__bg { overflow: hidden; }   /* a zoomed painting must never widen the page */
 .ch__open { position: relative; z-index: 1; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding: calc(var(--header-h) + 40px) var(--gutter) 40px var(--col); color: var(--paper); }
 .ch__word { color: var(--paper); }
 .ch__lead { max-width: 24ch; margin-top: 40px; }
@@ -331,7 +332,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 /* normal scroll: painting and text move up together as one block */
 .ch--cut .ch__bg { position: relative; top: auto; }
 .ch--cut .ch__open { height: 100svh; min-height: 0; }
-.ch--cut .ch__bg .paint { object-position: 50% 100%; }
+.ch--cut .ch__bg .paint { object-position: 50% 30%; }   /* wide screens trim the desk, never the halo */
 .ch--cut .ch__bg::after { background: linear-gradient(180deg, rgba(41, 41, 25, 0) 45%, rgba(30, 24, 14, .55) 100%); }
 
 /* "Calls, answered": a hand lowers a brass handset, its cord sweeps down through the section */
