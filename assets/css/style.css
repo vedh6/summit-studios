@@ -404,7 +404,13 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 /* Footer */
 .ftr { position: relative; z-index: 2; background: #0F2A1F; background-image: var(--tex-paint), radial-gradient(120% 80% at 80% 0%, #24543F, #0E261C 72%);
   background-size: 320px 320px, 480px 480px, 200px 200px, 100% 100%; background-blend-mode: overlay, multiply, soft-light, normal;
-  color: var(--paper); padding: 110px 20px 24px; display: grid; gap: 90px; overflow: hidden; }
+  color: var(--paper); padding: 210px 20px 24px; display: grid; gap: 90px; overflow: hidden; }
+/* The page above tears away into the footer (flipped torn edge, paper on top) */
+.ftr__tear { position: absolute; left: 0; right: 0; top: -1px; height: 190px; pointer-events: none; }
+.ftr__tear .tear { width: 100%; height: 100%; display: block; transform: scaleY(-1); }
+.ftr .tear__paper { fill: var(--bg); }
+.ftr[data-above="parchment"] .tear__paper { fill: var(--parchment); }
+.ftr .tear__fibre { fill: #FBF8EF; }
 .ftr__cta { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
 .ftr__h { font-family: var(--serif); font-weight: 400; font-size: clamp(48px, 2rem + 4.4vw, 112px); line-height: .92; letter-spacing: -.035em; max-width: 14ch; }
 .ftr__btns { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -724,7 +730,7 @@ html.proc-tail .proc + .ch--plain { margin-top: -100svh; }
   .split { grid-template-columns: 1fr; gap: 24px; }
   .voices { padding: 72px 12px 64px; } .voices__row { grid-template-columns: 1fr; margin-top: 36px; } .voice:nth-child(2) { transform: none; }
   .faq { grid-template-columns: 1fr; padding: 48px 12px 90px; gap: 30px; } .faq__head { position: static; } .faq__a { padding-right: 0; font-size: 18px; }
-  .ftr { padding: 70px 12px 20px; gap: 56px; } .ftr__cta { grid-template-columns: 1fr; } .ftr__cols { grid-template-columns: 1fr 1fr; }
+  .ftr { padding: 130px 12px 20px; gap: 56px; } .ftr__tear { height: 110px; } .ftr__cta { grid-template-columns: 1fr; } .ftr__cols { grid-template-columns: 1fr 1fr; }
   .duo { grid-template-columns: 1fr; padding: 48px 12px 24px; gap: 48px; }
   .duo__win { width: 80%; padding: 12px; }
   .duo__q { font-size: 13px; }

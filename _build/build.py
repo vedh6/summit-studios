@@ -168,7 +168,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <main id="main" class="main">
 {body}
 </main>
-{footer()}
+{footer('parchment' if file == 'index.html' else 'bg')}
 {ROUGH_DEFS}
 {SCRIPTS}
 </body>
@@ -694,8 +694,10 @@ def faq_section():
 </section>'''
 
 
-def footer():
-    return f'''<footer class="ftr" data-ftr>
+def footer(above='bg'):
+    """Site footer. The page above tears away into it; `above` is that page's paper colour."""
+    return f'''<footer class="ftr" data-ftr data-above="{above}">
+  <div class="ftr__tear" aria-hidden="true">{torn_edge('ftr', seed=3)}</div>
   <div class="ftr__cta">
     <h2 class="ftr__h">{swash('Let&rsquo;s build something worth finding.')}</h2>
     <div class="ftr__btns">{pill('Book a free 15-minute call', 'get-started.html', 'pill--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
