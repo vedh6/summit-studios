@@ -606,22 +606,26 @@ def chapter_industry(iid, final_chip=None):
     return chapter('ind-' + iid, INDUSTRY_WORD[iid], paint, palt, d['pitch'] + ' ' + d['p'].split('. ')[0] + '.', body)
 
 
+SHOW_FIRST = 6   # Projects page: rows after this sit behind "Show all"
+
+
 def work_row(i, p):
+    more = ' row--more' if i > SHOW_FIRST else ''
     if not p.get('url'):
-        return f'''<article class="row row--soon" data-sector="{p['slug']}" data-reveal>
+        return f'''<article class="row row--soon{more}" data-sector="{p['slug']}" data-reveal>
       <div class="row__info"><p class="row__n">{i:02d}</p><h4 class="h4 row__name">{p['name']}</h4><p class="label row__meta">{p['sector']} &middot; {p['type']}</p><p class="n3 row__line">{p['line']}</p></div>
       <div class="row__strip row__strip--soon"><span class="label">Coming soon</span></div>
     </article>'''
     host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
     imgs = ''.join(f'<img class="shot" src="assets/img/work/{p["key"]}-{n}.jpg" alt="{p["name"]} website, {lbl}" width="960" height="600" loading="lazy" decoding="async">'
                    for n, lbl in enumerate(p['shots'] + ['on a phone'], start=1))
-    return f'''<article class="row" data-sector="{p['slug']}" data-reveal>
+    return f'''<article class="row{more}" data-sector="{p['slug']}" data-reveal>
       <div class="row__info">
         <p class="row__n">{i:02d}</p>
         <h4 class="h4 row__name">{p['name']}</h4>
         <p class="label row__meta">{p['sector']} &middot; {p['type']}</p>
         <p class="n3 row__line">{p['line']}</p>
-        {chip('Visit ' + host, p['url'], external=True)}
+        {chip(p.get('visit') or 'Visit ' + host, p['url'], external=True)}
       </div>
       <a class="row__strip" href="{p['url']}" target="_blank" rel="noopener" aria-label="Open the {p['name']} website (opens in a new tab)">{imgs}</a>
     </article>'''
@@ -757,13 +761,15 @@ def simple_page(hero_paint, hero_alt, kicker, chapters_html):
 '''
 
 
-FILTERS = [('all', 'All'), ('industrial', 'Industrial'), ('healthcare', 'Healthcare'), ('technology', 'Technology'), ('property', 'Property'), ('architecture', 'Architecture')]
+FILTERS = [('all', 'All'), ('healthcare', 'Healthcare'), ('industrial', 'Industrial'), ('technology', 'Technology'), ('property', 'Property'),
+           ('interiors', 'Interiors'), ('food', 'Food'), ('hospitality', 'Hospitality')]
 PROJECTS_CH = []   # no chapter index on this page (user: 'i dont want this index in this page')
 PROJECTS_PAGE = simple_page('projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors', 'Projects &middot; 30+ websites shipped',
     chapter('index', 'Projects', None, '',
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
-    <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>''')
+    <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>
+    {f'<p class="rows__more"><button class="chip" type="button" data-more>Show all {len(PROJECTS)} projects</button></p>' if len(PROJECTS) > SHOW_FIRST else ''}''')
     + chapter_start())
 
 STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('start', 'Start')]
@@ -904,7 +910,7 @@ PAGES = {
     'index.html': ('Summit Studios | Premium web design for engineering firms, clinics and trades',
                    'Summit Studios designs and builds premium websites, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide. 30+ sites shipped.',
                    HOME, HOME_CHAPTERS, True),
-    'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites built for engineering firms, clinics, property, architecture and technology companies.', PROJECTS_PAGE, PROJECTS_CH, False),
+    'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
     'services.html': ('Services | Summit Studios', 'Websites that bring in customers, AI receptionists, WhatsApp automation, custom CRMs, web apps and dashboards, backend and maintenance.', SERVICES_PAGE, SERVICES_CH, False),
     'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
