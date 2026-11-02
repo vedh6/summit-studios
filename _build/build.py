@@ -642,9 +642,9 @@ def work_row(i, p):
       <div class="row__strip row__strip--soon"><span class="label">Coming soon</span></div>
     </article>'''
     host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
-    imgs = ''.join(f'<img class="shot" src="assets/img/work/{p["key"]}-{n}.jpg" alt="{p["name"]} website, {lbl}" width="960" height="600" loading="lazy" decoding="async">'
-                   for n, lbl in enumerate(p['shots'] + ['on a phone'], start=1))
-    return f'''<article class="row{more}" data-sector="{p['slug']}" data-reveal>
+    side = 'r' if i % 2 else 'l'   # alternate: screenshot right, then left
+    return f'''<article class="row row--{side}{more}" data-sector="{p['slug']}" data-reveal>
+      <a class="row__art" href="{p['url']}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="assets/img/work/{p['key']}-wide.jpg" alt="" width="1440" height="900" loading="lazy" decoding="async"></a>
       <div class="row__info">
         <p class="row__n">{i:02d}</p>
         <h4 class="h4 row__name">{p['name']}</h4>
@@ -652,7 +652,6 @@ def work_row(i, p):
         <p class="n3 row__line">{p['line']}</p>
         {chip(p.get('visit') or 'Visit ' + host, p['url'], external=True)}
       </div>
-      <a class="row__strip" href="{p['url']}" target="_blank" rel="noopener" aria-label="Open the {p['name']} website (opens in a new tab)">{imgs}</a>
     </article>'''
 
 
