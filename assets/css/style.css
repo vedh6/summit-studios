@@ -362,10 +362,9 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .tear__paper { fill: url(#grain-bg) var(--bg); }
 /* A cut-out painting on the cream page (AI Concierge): full screen like the other paintings, ink type */
 .ch--cut { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
-.ch--cut .ch__bg { background: var(--parchment); }
-/* the painting is baked on flat paper: lay the same paper texture over its paper only (masked off the figure) */
-.ch--cut .ch__bg::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos);
-  -webkit-mask: url(../img/paint/reception-cut-mask.png) 50% 30% / cover no-repeat; mask: url(../img/paint/reception-cut-mask.png) 50% 30% / cover no-repeat; }
+.ch--cut .ch__bg { background: transparent; }
+/* the angel was painted on flat cream: show only the figure, so the page's own paper shows round it */
+.ch--cut .ch__bg .paint { -webkit-mask: url(../img/paint/reception-cut-fig.png) 50% 30% / cover no-repeat; mask: url(../img/paint/reception-cut-fig.png) 50% 30% / cover no-repeat; }
 /* the headline and line stay put over the painting until the content scrolls up over them */
 /* normal scroll: painting and text move up together as one block */
 .ch--cut .ch__bg { position: relative; top: auto; }
@@ -383,9 +382,8 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .btn-line:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .calls__card { position: relative; z-index: 2; }
 .calls__hand { position: absolute; z-index: 1; margin: 0; top: -40px; left: auto; right: calc(-1 * var(--gutter)); width: min(26vw, 420px); aspect-ratio: 2 / 3; pointer-events: none; }
-.calls__hand img { width: 100%; height: 100%; display: block; }
-.calls__hand::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos);
-  -webkit-mask: url(../img/paint/hand-phone-mask.png) center / 100% 100% no-repeat; mask: url(../img/paint/hand-phone-mask.png) center / 100% 100% no-repeat; }
+.calls__hand img { width: 100%; height: 100%; display: block;
+  -webkit-mask: url(../img/paint/hand-phone-fig.png) center / 100% 100% no-repeat; mask: url(../img/paint/hand-phone-fig.png) center / 100% 100% no-repeat; }   /* figure only: the page's paper shows round it */
 .calls__cord { position: absolute; z-index: 1; top: 0; left: calc(-1 * var(--col)); width: calc(100% + var(--col) + var(--gutter)); height: 100%; overflow: visible; pointer-events: none; }
 .calls__cord path { fill: none; stroke: #8A6A3E; stroke-width: 3.2; stroke-linecap: round; }
 

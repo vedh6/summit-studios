@@ -802,7 +802,7 @@ void main(){
      Each textured surface gets its page offset (--tx/--ty) so its texture lines up with the
      body's; each torn edge gets its own copy of the paper pattern, transformed so the SVG paints
      the very same texture at the very same place. No seams between sections or at the tears. */
-  const TEXTURED = '.ch--paper .ch__body, .ch--rip, .duo, .voices, .faq, .ch--corner .ch__body, .corner__stage, .ch--plain, .ch--cut, .ch--cut .ch__bg, .calls__hand';
+  const TEXTURED = '.ch--paper .ch__body, .ch--rip, .duo, .voices, .faq, .ch--corner .ch__body, .corner__stage, .ch--plain, .ch--cut';
   function alignPaper() {
     const sx = scrollX, sy = scrollY;
     d.querySelectorAll(TEXTURED).forEach(el => {
