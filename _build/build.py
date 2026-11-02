@@ -137,11 +137,31 @@ FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&f
 JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Summit Studios","url":"https://www.summitxstudio.com/","email":"team@summitxstudio.com","description":"Premium web design, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide.","areaServed":"Worldwide"}</script>'''
 
 # shared SVG filter: ragged painted edges (bar chart, the AI search tile)
+def paper_defs():
+    """SVG patterns for the torn edges, built from the same texture images as --paper-tex in
+    style.css (read from it), laid in the same order and tile sizes, so an edge and the page
+    beside it render identically. One 720px tile: mottle, then 180px and 240px grain repeats."""
+    css = (OUT / 'assets/css/style.css').read_text()
+    grab = lambda name: re.findall(r'url\("(data:image/svg\+xml,[^"]+)"\)', re.search(rf'--{name}:(.*?);\n', css, re.S).group(1))
+    g1, g2 = grab('tex-paper')
+    mottle = grab('tex-mottle')[0]
+    imgs = (f'<image id="pt-m" href="{mottle}" width="720" height="720" preserveAspectRatio="none"/>'
+            f'<image id="pt-g2" href="{g2}" width="180" height="180" preserveAspectRatio="none"/>'
+            f'<image id="pt-g1" href="{g1}" width="240" height="240" preserveAspectRatio="none"/>')
+    tiles = ''.join(f'<use href="#pt-g2" x="{x}" y="{y}"/>' for y in range(0, 720, 180) for x in range(0, 720, 180)) + \
+            ''.join(f'<use href="#pt-g1" x="{x}" y="{y}"/>' for y in range(0, 720, 240) for x in range(0, 720, 240))
+    pats = ''.join(f'<pattern id="grain-{n}" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="{col}"/><use href="#pt-m"/>{tiles}</pattern>'
+                   for n, col in (('bg', '#DCDCD0'), ('parch', '#ECE3CD')))
+    return f'<defs>{imgs}</defs>{pats}'
+
+
+PAPER_DEFS = paper_defs()
+
 ROUGH_DEFS = ('<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="bar-rough" x="-3%" y="-3%" width="106%" height="106%">'
               '<feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="3" seed="7" result="t"/>'
               '<feDisplacementMap in="SourceGraphic" in2="t" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>'
-              # paper grain + mottling for the torn edges, matching --paper-tex on the page (style.css)
-              '<filter id="grain-f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9 .25" numOctaves="2" seed="5" stitchTiles="stitch"/><feColorMatrix values="0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 0.3"/></filter><filter id="grain2-f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.8" numOctaves="1" seed="2" stitchTiles="stitch"/><feColorMatrix values="0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 0.28"/></filter><filter id="mottle-f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".0042" numOctaves="3" seed="11" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .42 0 0 0 0 .29 0 0 0 0 .14 .9 0 0 0 -.38"/></filter><pattern id="grain-bg" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="#DCDCD0"/><rect width="720" height="720" filter="url(#grain-f)"/><rect width="720" height="720" filter="url(#grain2-f)"/><rect width="720" height="720" filter="url(#mottle-f)"/></pattern><pattern id="grain-parch" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="#ECE3CD"/><rect width="720" height="720" filter="url(#grain-f)"/><rect width="720" height="720" filter="url(#grain2-f)"/><rect width="720" height="720" filter="url(#mottle-f)"/></pattern></svg>')
+              # paper for the torn edges: the very same images as --paper-tex on the page (style.css)
+              + PAPER_DEFS + '</svg>')
 
 SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>

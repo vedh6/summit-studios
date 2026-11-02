@@ -29,7 +29,7 @@
   /* soft warm mottling, like old paper that has aged unevenly; paired with --tex-paper's grain */
   --tex-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0042' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .29 0 0 0 0 .14 .9 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
   --paper-tex: var(--tex-paper), var(--tex-mottle);
-  --paper-size: 260px 260px, 200px 200px, 720px 720px;
+  --paper-size: 240px 240px, 180px 180px, 720px 720px;   /* tiles divide 720, so the torn edges can repeat the exact same images (ROUGH_DEFS) */
   /* every textured surface is anchored to the page: motion.js sets --tx/--ty on it, and its rule uses
      background-position: calc(var(--tx) * -1) calc(var(--ty) * -1) (written out per rule: a shared custom
      property would resolve at :root, where the offsets are 0) */
