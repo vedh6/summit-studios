@@ -139,7 +139,9 @@ JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org",
 # shared SVG filter: ragged painted edges (bar chart, the AI search tile)
 ROUGH_DEFS = ('<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="bar-rough" x="-3%" y="-3%" width="106%" height="106%">'
               '<feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="3" seed="7" result="t"/>'
-              '<feDisplacementMap in="SourceGraphic" in2="t" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></svg>')
+              '<feDisplacementMap in="SourceGraphic" in2="t" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>'
+              # paper grain + mottling for the torn edges, matching --paper-tex on the page (style.css)
+              '<filter id="grain-f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9 .25" numOctaves="2" seed="5" stitchTiles="stitch"/><feColorMatrix values="0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 0.3"/></filter><filter id="mottle-f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".0042" numOctaves="3" seed="11" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .42 0 0 0 0 .29 0 0 0 0 .14 .9 0 0 0 -.38"/></filter><pattern id="grain-bg" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="#DCDCD0"/><rect width="720" height="720" filter="url(#grain-f)"/><rect width="720" height="720" filter="url(#mottle-f)"/></pattern><pattern id="grain-parch" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="#ECE3CD"/><rect width="720" height="720" filter="url(#grain-f)"/><rect width="720" height="720" filter="url(#mottle-f)"/></pattern></svg>')
 
 SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
