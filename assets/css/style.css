@@ -576,14 +576,14 @@ html.proc-tail .proc + .ch--plain { margin-top: -100svh; }
 
 /* Inside a chapter body */
 .sub { color: var(--ink); max-width: 20ch; }
-.spot { display: grid; gap: 10px; max-width: 40ch; }
-.spot__t { font-family: var(--grotesk); font-weight: 700; font-size: 16px; line-height: 1.1; color: var(--ink); }
-.spot .n2 { color: var(--ink); max-width: 32ch; }
+.spot { display: grid; gap: 14px; max-width: 780px; }
+.spot__t { font-family: var(--grotesk); font-weight: 700; font-size: clamp(18px, .9rem + .45vw, 23px); line-height: 1.1; letter-spacing: -.015em; color: var(--ink); }
+.spot .n2 { color: var(--ink); max-width: 52ch; }
 .spot .chip { justify-self: start; margin-top: 4px; }
 .fg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 40px; }
 .fg__item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px; align-items: start; }
-.fg__t { font-family: var(--grotesk); font-weight: 700; font-size: 16px; line-height: 1.1; color: var(--ink); }
-.fg__p { font-family: var(--grotesk); font-weight: 700; font-size: 16px; line-height: 1.1; color: var(--muted); }
+.fg__t { font-family: var(--grotesk); font-weight: 700; font-size: clamp(16px, .85rem + .3vw, 19px); line-height: 1.12; letter-spacing: -.01em; color: var(--ink); }
+.fg__p { font-family: var(--grotesk); font-weight: 700; font-size: clamp(16px, .85rem + .25vw, 18px); line-height: 1.15; color: var(--muted); }
 .fg--labels { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .fg--labels .fg__item { grid-template-columns: 1fr; }
 .fg--labels .fg__p:empty { display: none; }
