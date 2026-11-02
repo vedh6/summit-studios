@@ -847,3 +847,35 @@ html.proc-tail .proc + .ch--plain { margin-top: -100svh; }
 /* Email addresses in running text */
 .mail { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .mail:hover { text-decoration-thickness: 2px; }
+
+/* ---------- Floating antique objects with status chips (home) ----------
+   Photoreal cutouts that drift as you scroll, each with a small UI chip, like the props on
+   Shopify Editions. Placed per object; smaller on phones. */
+.obj-host { position: relative; }
+.duo__card { position: relative; }
+.obj { position: absolute; z-index: 4; width: var(--w, 220px); margin: 0; pointer-events: none; }
+.obj img { display: block; width: 100%; height: auto; transform: rotate(var(--r, 0deg));
+  filter: drop-shadow(0 30px 28px rgba(45, 30, 12, .26)) drop-shadow(0 6px 8px rgba(45, 30, 12, .16)); }
+.obj__chip { position: absolute; left: var(--cx, -12%); top: var(--cy, 60%); display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px 9px 12px; border-radius: 10px; font: 600 15px/1 var(--sans); letter-spacing: -.01em; white-space: nowrap;
+  box-shadow: 0 10px 24px -8px rgba(45, 30, 12, .3), 0 1px 0 rgba(255, 255, 255, .5) inset; }
+.obj__chip--mint { background: #CFE5C3; color: #1F3D27; }
+.obj__chip--gold { background: #F2DE95; color: #4A3810; }
+.obj__chip--paper { background: #FBF7EE; color: var(--ink); }
+.obj__dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+.obj__ticks { color: #2E8FD8; font-size: 14px; letter-spacing: -3px; margin-right: 3px; }
+.obj--quill { --w: 230px; --r: -6deg; right: 6%; top: -150px; --cx: -18%; --cy: 62%; }
+.obj--spyglass { --w: 320px; --r: 4deg; right: 10%; top: -250px; --cx: -6%; --cy: 76%; }
+.obj--bell { --w: 150px; --r: 12deg; left: 0; bottom: -2%; --cx: 92%; --cy: 46%; }
+.obj--letter { --w: 210px; --r: 9deg; right: -26px; top: -64px; --cx: -34%; --cy: 70%; }
+.obj--astrolabe { --w: 200px; --r: -10deg; right: 4%; top: -40px; --cx: -40%; --cy: 64%; }
+@media (max-width: 899px) {
+  .obj { width: calc(var(--w, 220px) * .5); }
+  .obj__chip { font-size: 12px; padding: 7px 10px 7px 9px; gap: 6px; }
+  .obj__dot { width: 8px; height: 8px; }
+  .obj--quill { right: 4%; top: -96px; }
+  .obj--spyglass { right: 4%; top: -30px; --cx: -12%; --cy: 96%; }
+  .obj--bell { left: auto; right: 4%; bottom: -36px; --cx: -150%; --cy: 40%; }
+  .obj--letter { right: 4%; top: -40px; }
+  .obj--astrolabe { right: 7%; top: -50px; }
+}
