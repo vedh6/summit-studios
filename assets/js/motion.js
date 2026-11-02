@@ -830,6 +830,106 @@ void main(){
     });
   }
 
+  /* ---------- Footer wordmark in halftone ----------
+     The word is set once on a hidden canvas at the exact place, face and size of the real text,
+     then printed as dots, each sized by how much of the letter covers its cell. The pointer
+     parts them on springs and they warm towards gold as they are pushed off their place;
+     a click sends a ring through the word. Sleeps when everything is at rest or off screen. */
+  function halftone() {
+    const box = d.querySelector('[data-halftone]');
+    if (!box) return;
+    const word = box.querySelector('.ftr__word'), canvas = box.querySelector('canvas'), ftr = box.closest('.ftr') || box;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const hex = h => { const m = /^#?([0-9a-f]{6})$/i.exec(h); return m ? [0, 2, 4].map(i => parseInt(m[1].slice(i, i + 2), 16)) : null; };
+    const rgb = s => (s.match(/\d+(\.\d+)?/g) || [233, 217, 180]).slice(0, 3).map(Number);
+    const WARM = hex('#F2B24E');
+    let w = 0, h = 0, dpr = 1, dots = new Float32Array(0), n = 0, ink = [233, 217, 180], alpha = .92;
+    let px = -1e5, py = -1e5, ring = { x: 0, y: 0, t: -1 }, raf = 0, visible = false, awake = true;
+
+    const layout = () => {
+      const r = canvas.getBoundingClientRect();
+      w = Math.max(1, Math.round(r.width)); h = Math.max(1, Math.round(r.height));
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      const cs = getComputedStyle(word);
+      ink = rgb(cs.color === 'rgba(0, 0, 0, 0)' ? (word.dataset.ink || 'rgb(233,217,180)') : cs.color);
+      word.dataset.ink = `rgb(${ink.join(',')})`;
+      alpha = parseFloat(cs.opacity) || 1;
+      // the word, drawn where the real text sits
+      const mask = d.createElement('canvas'); mask.width = w; mask.height = h;
+      const m = mask.getContext('2d', { willReadFrequently: true });
+      const size = parseFloat(cs.fontSize), ls = parseFloat(cs.letterSpacing) || 0;
+      m.font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+      m.textBaseline = 'alphabetic'; m.fillStyle = '#000';
+      const range = d.createRange(); range.selectNodeContents(word);
+      const tr = range.getBoundingClientRect();
+      const fm = m.measureText('Summit Studios');
+      let x = tr.left - r.left;
+      const base = tr.top - r.top + (fm.fontBoundingBoxAscent || size * .92);
+      for (const ch of word.textContent) { m.fillText(ch, x, base); x += m.measureText(ch).width + ls; }
+      const img = m.getImageData(0, 0, w, h).data;
+      const gap = innerWidth < 700 ? 4 : innerWidth < 1100 ? 5 : 6;
+      const tmp = [];
+      for (let gy = 0; gy < Math.ceil(h / gap); gy++) for (let gx = 0; gx < Math.ceil(w / gap); gx++) {
+        let sum = 0;
+        for (let sy = 0; sy < 3; sy++) for (let sx = 0; sx < 3; sx++) {
+          const X = Math.min(w - 1, Math.floor(gx * gap + (sx + .5) * gap / 3)), Y = Math.min(h - 1, Math.floor(gy * gap + (sy + .5) * gap / 3));
+          sum += img[(Y * w + X) * 4 + 3];
+        }
+        const cov = sum / (9 * 255);
+        if (cov < .06) continue;
+        const hx = gx * gap + gap / 2, hy = gy * gap + gap / 2;
+        tmp.push(hx, hy, 0, 0, hx, hy, Math.sqrt(cov) * gap * .56);
+      }
+      dots = new Float32Array(tmp); n = tmp.length / 7;
+      root.classList.add('has-dots');
+      awake = true;
+    };
+
+    const draw = now => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalAlpha = alpha;
+      const R = reduced ? 0 : (innerWidth < 700 ? 56 : 90);
+      const age = ring.t < 0 ? 1e9 : now - ring.t, rr = age * .9;
+      let moving = false;
+      for (let i = 0; i < n; i++) {
+        const j = i * 7, hx = dots[j + 4], hy = dots[j + 5];
+        let x = dots[j], y = dots[j + 1], vx = dots[j + 2], vy = dots[j + 3];
+        if (!reduced) {
+          if (age < 900) {
+            const dx = hx - ring.x, dy = hy - ring.y, dd = Math.sqrt(dx * dx + dy * dy) + .001;
+            const band = 1 - Math.min(1, Math.abs(dd - rr) / 26);
+            if (band > 0) { const f = band * 3.2 * (1 - age / 900); vx += dx / dd * f; vy += dy / dd * f; }
+          }
+          const dx = x - px, dy = y - py, d2 = dx * dx + dy * dy;
+          if (R > 0 && d2 < R * R) { const dd = Math.sqrt(d2) + .001, f = (1 - dd / R) * 2.6; vx += dx / dd * f; vy += dy / dd * f; }
+          vx = (vx + (hx - x) * .05) * .84; vy = (vy + (hy - y) * .05) * .84;
+          x += vx; y += vy;
+          if (Math.abs(vx) + Math.abs(vy) > .02 || Math.abs(x - hx) + Math.abs(y - hy) > .05) moving = true;
+          else { x = hx; y = hy; vx = 0; vy = 0; }
+          dots[j] = x; dots[j + 1] = y; dots[j + 2] = vx; dots[j + 3] = vy;
+        }
+        const k = Math.min(1, Math.hypot(x - hx, y - hy) / 28);
+        ctx.fillStyle = k > .02 ? `rgb(${ink.map((c, q) => Math.round(c + (WARM[q] - c) * k)).join(',')})` : `rgb(${ink.join(',')})`;
+        ctx.beginPath(); ctx.arc(x, y, dots[j + 6], 0, 6.2832); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      awake = moving || age < 900 || px > -1e4;
+    };
+    const loop = now => { raf = 0; if (!visible) return; draw(now); if (awake) raf = requestAnimationFrame(loop); };
+    const wake = () => { awake = true; if (!raf && visible) raf = requestAnimationFrame(loop); };
+    const local = e => { const b = canvas.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+    ftr.addEventListener('pointermove', e => { [px, py] = local(e); wake(); });
+    ftr.addEventListener('pointerleave', () => { px = py = -1e5; wake(); });
+    ftr.addEventListener('pointerdown', e => { if (reduced || e.target.closest('a,button,input')) return; const [x, y] = local(e); ring = { x, y, t: performance.now() }; wake(); });
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) wake(); }).observe(box);
+    let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { layout(); draw(performance.now()); wake(); }, 120); }).observe(box);
+    layout(); draw(performance.now());
+    if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => { layout(); draw(performance.now()); wake(); });
+  }
+
   /* ---------- Boot ---------- */
   // ScrollTriggers are created in page order, so each one is measured after the pins above it
   portal();
@@ -843,6 +943,7 @@ void main(){
   chapters();
   reveals();
   ScrollTrigger.addEventListener('refresh', alignPaper); alignPaper();
+  halftone();
   if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => ScrollTrigger.refresh());
   if (location.hash) { const t = d.querySelector(location.hash); if (t) gsap.delayedCall(.5, () => { ScrollTrigger.refresh(); scrollToEl(t); }); }
   window.__summit = { lenis, ScrollTrigger };

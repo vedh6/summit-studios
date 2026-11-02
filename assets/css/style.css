@@ -460,7 +460,11 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .ftr__word { color: #E6D3A6; }
 .ftr__note { font-family: var(--serif); font-size: 19px; line-height: 1.15; color: rgba(247, 247, 238, .75); max-width: 24ch; }
 .ftr__base { display: grid; gap: 14px; }
-.ftr__word { font-family: var(--grotesk); font-weight: 700; font-size: clamp(64px, 14.2vw, 260px); line-height: .8; letter-spacing: -.055em; color: #E9D9B4; opacity: .92; white-space: nowrap; }
+.ftr__word { font-family: var(--grotesk); font-weight: 700; font-size: clamp(40px, 14.2vw, 260px); line-height: .8; letter-spacing: -.055em; color: #E9D9B4; opacity: .92; white-space: nowrap; }
+/* The wordmark printed as halftone dots (halftone() in motion.js); the text stays underneath as the fallback */
+.ftr__mark { position: relative; }
+.ftr__dots { position: absolute; left: -20px; right: -20px; top: -60px; bottom: -40px; width: calc(100% + 40px); height: calc(100% + 100px); pointer-events: none; }
+html.has-dots .ftr__word { color: transparent; }
 .ftr__legal { display: flex; justify-content: space-between; font-family: var(--sans); font-size: 13px; color: rgba(247, 247, 238, .55); }
 .ftr__legal a:hover { color: var(--paper); }
 html.at-ftr .sb, html.at-ftr .sb__toggle { opacity: 0 !important; pointer-events: none !important; }

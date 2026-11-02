@@ -754,7 +754,7 @@ def footer(above='bg'):
     <div><p class="ftr__t">Worldwide</p><p class="ftr__note">Working with clients across time zones. Local time <span data-clock>--:--</span>.</p></div>
   </nav>
   <div class="ftr__base">
-    <p class="ftr__word" aria-hidden="true">Summit Studios</p>
+    <div class="ftr__mark" data-halftone><p class="ftr__word" aria-hidden="true">Summit Studios</p><canvas class="ftr__dots" aria-hidden="true"></canvas></div>
     <div class="ftr__legal"><span>&copy; 2026 Summit Studios</span><a href="#top">Back to top &uarr;</a></div>
   </div>
 </footer>'''
