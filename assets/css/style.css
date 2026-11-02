@@ -840,3 +840,7 @@ html.proc-tail .proc + .ch--plain { margin-top: -100svh; }
   html:not(.docked) .sb__sub { display: none; }
   html:not(.docked) .sb__list li a { font-size: 16px; padding: 1px 0; }
 }
+
+/* Email addresses in running text */
+.mail { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.mail:hover { text-decoration-thickness: 2px; }

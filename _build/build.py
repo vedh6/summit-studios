@@ -134,7 +134,7 @@ def sidebar(chapters, mark, sub):
 
 FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&display=swap'
 
-JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Summit Studios","url":"https://www.summitxstudio.com/","description":"Premium web design, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide.","areaServed":"Worldwide"}</script>'''
+JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Summit Studios","url":"https://www.summitxstudio.com/","email":"team@summitxstudio.com","description":"Premium web design, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide.","areaServed":"Worldwide"}</script>'''
 
 # shared SVG filter: ragged painted edges (bar chart, the AI search tile)
 ROUGH_DEFS = ('<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="bar-rough" x="-3%" y="-3%" width="106%" height="106%">'
@@ -748,7 +748,7 @@ def footer(above='bg'):
   <nav class="ftr__cols" aria-label="Footer">
     <div><p class="ftr__t">Services</p><a href="services.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="services.html#ai-receptionists">AI Concierge</a><a href="services.html#whatsapp">WhatsApp Automation</a><a href="services.html#crm">Custom Software</a></div>
     <div><p class="ftr__t">Studio</p><a href="industries.html">Industries</a><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="services.html#pricing">Pricing</a></div>
-    <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Book a call</a><a href="contact.html">Contact</a><a href="contact.html">Email &amp; WhatsApp</a></div>
+    <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Book a call</a><a href="contact.html">Contact</a><a href="mailto:team@summitxstudio.com">team@summitxstudio.com</a></div>
     <div><p class="ftr__t">Worldwide</p><p class="ftr__note">Working with clients across time zones. Local time <span data-clock>--:--</span>.</p></div>
   </nav>
   <div class="ftr__base">
@@ -888,7 +888,7 @@ CONTACT = simple_page('handshake', 'A Renaissance merchant and a young designer 
             'Book a free 15-minute call, send a message, or write to us directly. We reply within one working day.',
             f'''{sub_head('Ways to reach us')}
     <!-- TODO: add email address and WhatsApp number -->
-    {feat_grid([('Call', 'Book a free 15-minute call. Pick a slot that suits you. No pitch.'), ('Email', 'hello@… (to be added)'), ('WhatsApp', '+ … (to be added)'), ('Where', 'Worldwide, remotely. We work with clients in any time zone.')])}
+    {feat_grid([('Call', 'Book a free 15-minute call. Pick a slot that suits you. No pitch.'), ('Email', '<a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a> for anything, or <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> to reach Vedh directly.'), ('WhatsApp', '+ … (to be added)'), ('Where', 'Worldwide, remotely. We work with clients in any time zone.')])}
     <div class="cta" data-reveal>{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}</div>
     <div id="write"></div>
     {sub_head('Send a message')}
