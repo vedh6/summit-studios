@@ -169,6 +169,22 @@ html.docked .sb__sub { display: none; }
 .dv circle, .dv line, .dv rect, .dv path { fill: none; stroke: rgba(255, 255, 255, .25); stroke-width: .5; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; }
 html.docked .dv { opacity: 0; transition: opacity .4s; }
 
+/* Home: the index no longer sits over the hero. It opens chapter I as a drafting box on the
+   parchment (.idx), and the docked sidebar only comes in once that box has scrolled away
+   (html.idx-on, motion.js). Phones keep just the in-page box. */
+html:not(.idx-on) .sb { opacity: 0; transform: translateX(-16px); }
+html:not(.idx-on) .sb, html:not(.idx-on) .sb * { pointer-events: none !important; }
+.idx { position: relative; width: min(360px, 100%); min-height: 420px; padding: 22px; border: 1px solid rgba(60, 45, 25, .28);
+  display: flex; flex-direction: column; gap: 22px; color: var(--ink); }
+.idx .dv circle, .idx .dv line, .idx .dv rect, .idx .dv path { stroke: rgba(60, 45, 25, .2); stroke-dashoffset: 0; }
+.idx__mark, .idx__sub, .idx__list { position: relative; }
+.idx__sub { margin-top: auto; max-width: 280px; color: var(--mid); }
+.idx__list li a { display: flex; align-items: flex-end; gap: 6px; padding: 2px 0; font-family: var(--grotesk); font-weight: 700; font-size: 19px; line-height: 1; letter-spacing: -.02em; color: var(--ink); transition: opacity .3s; }
+.idx__list li a:hover { opacity: .6; }
+.idx__lead { flex: 1; height: 1px; margin: 0 4px 4px; border-bottom: 1px dotted rgba(60, 45, 25, .35); }
+.idx__num { font-family: var(--serif); font-size: 13px; line-height: 1; width: 26px; text-align: right; color: var(--mid); }
+@media (max-width: 899px) { .sb__box { display: none; } .idx { min-height: 360px; } }
+
 /* ---------- Main column: content sits right of the sidebar; paintings run full width ---------- */
 .main { position: relative; }
 .hero { position: relative; height: 100svh; min-height: 640px; }

@@ -321,9 +321,27 @@ def fan_cards(shot='hero'):
     return f'<div class="fan" data-fan>{cards}</div>'
 
 
+MARK = 'The<br>Sum<em>mit</em><br>Edition'
+SUB = 'Websites that win work. 30+ sites shipped, every one custom.'
+
+
+def index_block():
+    """Home: the chapter index as a drafting box at the top of chapter I's parchment
+    (user: the index should start on this page, not over the hero, with the content below it)."""
+    items = ''.join(f'<li><a href="#{cid}"><span class="idx__name">{name}</span><span class="idx__lead"></span><span class="idx__num">{ROMAN[i]}</span></a></li>'
+                    for i, (cid, name) in enumerate(HOME_CHAPTERS))
+    return f'''<nav class="idx" aria-label="Chapters" data-idx data-reveal>
+      {DAVINCI}
+      <p class="idx__mark h4">{MARK}</p>
+      <p class="idx__sub n3">{SUB}</p>
+      <ol class="idx__list">{items}</ol>
+    </nav>'''
+
+
 def chapter_websites():
     s = svc('websites')
     body = f'''
+    {index_block()}
     {sub_head('Designs, refined')}
     {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'Explore websites', 'services.html#websites')}
     {feat_grid(SERVICE_FEATURES['websites'])}
@@ -741,8 +759,6 @@ def footer(above='bg'):
 
 
 HOME_CHAPTERS = [('websites', 'Websites'), ('growth', 'Growth Marketing'), ('receptionists', 'AI Concierge'), ('more', 'WhatsApp &amp; Software'), ('why', 'Why us'), ('voices', 'Client voices'), ('faq', 'FAQ')]
-MARK = 'The<br>Sum<em>mit</em><br>Edition'
-SUB = 'Websites that win work. 30+ sites shipped, every one custom.'
 
 HOME = f'''
 {hero_portal('hero', 'A Renaissance painting of craftspeople on a terrace unrolling a scroll that shows a modern website, a mountain summit beyond', 'The Internet Has Enough Boring Websites.', 'We design and develop digital experiences that break conventions, capture attention, and refuse to blend in.')}

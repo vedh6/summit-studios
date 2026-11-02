@@ -111,8 +111,14 @@
     });
     // Already scrolled (hash link, reload): dock at once
     if (scrollY > innerHeight * .3) root.classList.add('docked');
-    // The index stays on screen for the first two pages (the hero and chapter I), then tucks
-    // away behind the arrow on the left edge.
+    // The docked index only comes in once the in-page index (.idx, top of chapter I) has
+    // scrolled away; before that the hero is left clean.
+    const idx = d.querySelector('[data-idx]');
+    if (idx) {
+      ScrollTrigger.create({ trigger: idx, start: 'bottom 15%', onEnter: () => root.classList.add('idx-on'), onLeaveBack: () => root.classList.remove('idx-on') });
+      if (idx.getBoundingClientRect().bottom < innerHeight * .15) root.classList.add('idx-on');
+    } else root.classList.add('idx-on');
+    // It then stays through chapter I and tucks away behind the arrow on the left edge.
     const first = d.querySelector('[data-ch]');
     if (first && desktop()) {
       const hide = on => { root.classList.toggle('sb-hide', on); if (!on && window.__sbClose) window.__sbClose(); };
