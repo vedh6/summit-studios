@@ -30,8 +30,9 @@
   --tex-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0042' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .29 0 0 0 0 .14 .9 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
   --paper-tex: var(--tex-paper), var(--tex-mottle);
   --paper-size: 260px 260px, 200px 200px, 720px 720px;
-  /* every textured surface is anchored to the page (motion.js sets --tx/--ty), so the texture runs on across sections without seams */
-  --paper-pos: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1);
+  /* every textured surface is anchored to the page: motion.js sets --tx/--ty on it, and its rule uses
+     background-position: calc(var(--tx) * -1) calc(var(--ty) * -1) (written out per rule: a shared custom
+     property would resolve at :root, where the offsets are 0) */
   --tex-paint: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .018' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 0.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.011' numOctaves='4' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 0.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.7' numOctaves='1' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");   /* rustic paint: brush streaks, mottling, grain */
   --gutter: 12px;
   --header-h: 60px;
@@ -247,7 +248,7 @@ html:not(.has-portal) .portal { display: none; }
 /* Torn-paper handoff: the chapter body is a sheet of the page's paper with a ripped top edge
    that rises over the painting (the painting stays put under it instead of fading). */
 .ch--paper.is-faded .ch__bg { opacity: 1; }
-.ch--paper .ch__body { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); margin-top: 22vh; padding-top: 14vh; }
+.ch--paper .ch__body { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); margin-top: 22vh; padding-top: 14vh; }
 .ch--paper .ch__body > .tear { position: absolute; left: 0; bottom: calc(100% - 1px); width: 100%; height: 220px; max-width: none; display: block; pointer-events: none; }
 .tear__fibre { fill: #F4F3EA; }
 /* Torn entrance into a painted chapter: the parchment above tears away to reveal the painting */
@@ -257,7 +258,7 @@ html:not(.has-portal) .portal { display: none; }
 .duo--rip > :not(.tear-down) { position: relative; z-index: 1; }
 .ch--rip { margin-top: -100svh; }
 /* Why us (home) sits on the same parchment as the sections after it, fly-through included */
-.ch--rip { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
+.ch--rip { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 /* The handshake painting stays still as the background while the text and the fly-through scroll over it */
 .ch--rip.is-faded .ch__bg { opacity: 1; }
 .ch--rip .ch__bg::after { transition: background 1.2s var(--ease); }
@@ -361,7 +362,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .wave-tear__foam { fill: #FBF8EF; }
 .tear__paper { fill: url(#grain-bg) var(--bg); }
 /* A cut-out painting on the cream page (AI Concierge): full screen like the other paintings, ink type */
-.ch--cut { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
+.ch--cut { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 .ch--cut .ch__bg { background: transparent; }
 /* the angel was painted on flat cream: show only the figure, so the page's own paper shows round it */
 .ch--cut .ch__bg .paint { -webkit-mask: url(../img/paint/reception-cut-fig.png) 50% 30% / cover no-repeat; mask: url(../img/paint/reception-cut-fig.png) 50% 30% / cover no-repeat; }
@@ -388,7 +389,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .calls__cord path { fill: none; stroke: #8A6A3E; stroke-width: 3.2; stroke-linecap: round; }
 
 /* Two service cards (home): painting behind a frosted example screen, caption below */
-.duo { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 var(--gutter) 40px var(--col, 20px); margin-top: -40px; }
+.duo { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 var(--gutter) 40px var(--col, 20px); margin-top: -40px; }
 @media (min-width: 900px) { .duo { padding-left: 20px; } }
 .duo__card { display: grid; gap: 10px; align-content: start; }
 .duo__art { position: relative; aspect-ratio: 1.21; overflow: hidden; display: grid; place-items: center; margin-bottom: 14px; }
@@ -412,7 +413,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .duo__card .chip { justify-self: start; margin-top: 8px; }
 
 /* Client voices */
-.voices { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); padding: 120px 20px 100px; }
+.voices { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); padding: 120px 20px 100px; }
 .voices__eyebrow { color: var(--mid); margin-bottom: 14px; }
 .voices__h { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 2rem + 5vw, 128px); line-height: .9; letter-spacing: -.035em; color: var(--ink); }
 .voices__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 64px; }
@@ -426,7 +427,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voice__org { color: var(--muted); }
 .voice:nth-child(2) .voice__org { color: rgba(247, 247, 238, .65); }
 /* FAQ */
-.faq { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); padding: 80px 20px 140px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 60px; align-items: start; }
+.faq { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); padding: 80px 20px 140px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 60px; align-items: start; }
 .faq__head { position: sticky; top: calc(var(--header-h) + 30px); }
 .faq__more { margin-top: 26px; font-family: var(--serif); font-size: 22px; color: var(--mid); }
 .faq__more a { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
@@ -472,9 +473,9 @@ html.at-ftr .sb, html.at-ftr .sb__toggle { opacity: 0 !important; pointer-events
 /* Corner reveal (AI Concierge): the next page grows out of the bottom-right corner over the
    painting while it is pinned, then the rest of the chapter carries on below on the same paper. */
 .ch--corner.is-faded .ch__bg { opacity: 1; }
-.ch--corner .ch__body { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
+.ch--corner .ch__body { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 .corner { position: relative; z-index: 2; }
-.corner__stage { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
+.corner__stage { background-color: var(--bg); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 html.has-corner .corner { height: 270svh; margin-top: -100svh; }
 html.has-corner .corner__stage { position: sticky; top: 0; height: 100svh; overflow: hidden; clip-path: inset(100% 0 0 100%); will-change: clip-path; }
 .corner__page { min-height: 100svh; padding: calc(var(--header-h) + 40px) var(--gutter) 48px var(--col); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 40px 64px; align-items: center; transform-origin: 100% 100%; }
@@ -518,7 +519,7 @@ html.has-process .proc__stage { position: sticky; top: 0; }
 .proc__count { position: absolute; right: 20px; top: -40px; color: rgba(247, 247, 238, .7); font-variant-numeric: tabular-nums; }
 html:not(.has-process) .proc__rail { overflow-x: auto; }
 /* A plain chapter (no painting): paper with ink type, torn over whatever came before */
-.ch--plain { z-index: 2; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: var(--paper-pos); }
+.ch--plain { z-index: 2; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 .ch--plain .tear__paper { fill: url(#grain-parch) var(--parchment); }
 .ch--plain .tear__fibre { fill: #F4ECD9; }
 .ch--plain .fg--bento .fg__item:not(:nth-child(3)), .ch--plain .call { background: rgba(250, 245, 232, .82); box-shadow: 0 1px 0 rgba(90, 60, 30, .08); }

@@ -858,11 +858,13 @@ void main(){
     d.querySelectorAll('svg.tear, svg.wave-tear').forEach((svg, n) => {
       const paper = svg.querySelector('.tear__paper, .wave-tear__paper');
       if (!paper) return;
-      const m = (getComputedStyle(paper).fill || '').match(/#(grain-(?:bg|parch))/);
-      const src = m && d.getElementById(m[1]);
-      if (!src) return;
       let pat = d.getElementById('paper-' + n);
-      if (!pat) { pat = src.cloneNode(true); pat.id = 'paper-' + n; src.parentNode.append(pat); paper.style.fill = `url(#${pat.id})`; }
+      if (!pat) {   // first time: clone the paper pattern this edge uses
+        const m = (getComputedStyle(paper).fill || '').match(/#(grain-(?:bg|parch))/);
+        const src = m && d.getElementById(m[1]);
+        if (!src) return;
+        pat = src.cloneNode(true); pat.id = 'paper-' + n; src.parentNode.append(pat); paper.style.fill = `url(#${pat.id})`;
+      }
       const r = svg.getBoundingClientRect(), w = r.width, h = r.height;
       const vb = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width ? svg.viewBox.baseVal : null;
       let s = 1, x0 = 0, y0 = 0;
@@ -989,6 +991,7 @@ void main(){
   chapters();
   reveals();
   ScrollTrigger.addEventListener('refresh', alignPaper); alignPaper();
+  addEventListener('load', () => { alignPaper(); ScrollTrigger.refresh(); });
   halftone();
   if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => ScrollTrigger.refresh());
   if (location.hash) { const t = d.querySelector(location.hash); if (t) gsap.delayedCall(.5, () => { ScrollTrigger.refresh(); scrollToEl(t); }); }
