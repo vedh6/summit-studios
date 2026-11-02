@@ -798,6 +798,51 @@ void main(){
   let rt;
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { splitStore.forEach((_, el) => { const lines = split(el); gsap.set(lines, { yPercent: 0 }); }); ScrollTrigger.refresh(); }, 150); });
 
+  /* ---------- Projects opener: fly through the gallery ----------
+     Cards sit on a golden-angle spiral round the centre; each one travels from far behind the
+     screen to just past it over its own slice of the scroll, fading in and out at the ends.
+     The pointer sways the whole corridor a little (desktop). */
+  function tunnel() {
+    const sec = d.querySelector('[data-tunnel]');
+    if (!sec || reduced) return;
+    root.classList.add('has-tunnel');
+    const cards = [...sec.querySelectorAll('[data-tun-card]')], N = cards.length;
+    const title = sec.querySelector('[data-tun-title]'), prompt = sec.querySelector('[data-tun-prompt]');
+    const rings = [...sec.querySelectorAll('.tun__ring')];
+    const geo = cards.map((el, i) => {
+      const a = i * 137.5 * Math.PI / 180;
+      return { c: Math.cos(a), s: Math.sin(a), fx: .3 + (i % 3) * .08, fy: .27 + (i % 2) * .09, rz: (i % 2 ? -1 : 1) * (2 + (i % 5) * 1.6) };
+    });
+    const st = { p: 0 }, ptr = { x: 0, y: 0 }, SPAN = .5, LEAD = .1;   // LEAD: a few cards already in the distance on arrival
+    const clamp = gsap.utils.clamp(0, 1);
+    const render = () => {
+      const W = innerWidth, H = innerHeight, mob = W < 768;
+      const far = mob ? -1300 : -1800, near = mob ? 380 : 560, pan = mob ? 0 : 42;
+      const P = LEAD + st.p * (1 - LEAD);
+      cards.forEach((el, i) => {
+        const g = geo[i], s0 = i / N * (1 - SPAN), lp = clamp((P - s0) / SPAN);
+        const z = far + (near - far) * lp;
+        const op = lp <= 0 || lp >= .98 ? 0 : lp < .16 ? lp / .16 : lp > .82 ? 1 - (lp - .82) / .16 : 1;
+        const x = g.c * W * g.fx - ptr.x * pan, y = g.s * H * g.fy - ptr.y * pan;
+        el.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), ${z.toFixed(1)}px) rotateZ(${g.rz}deg)`;
+        el.style.opacity = op.toFixed(3);
+      });
+      const p = st.p;
+      title.style.transform = `translateZ(0) scale(${(.94 + p * .4).toFixed(3)})`;
+      const fade = (p < .78 ? 1 : clamp(1 - (p - .78) / .2)).toFixed(3);
+      title.style.opacity = fade; rings.forEach(r => { r.style.opacity = fade; });
+      if (prompt) prompt.style.opacity = clamp(1 - p / .08).toFixed(3);
+    };
+    gsap.to(st, { p: 1, ease: 'none', onUpdate: render, scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 1 } });
+    if (matchMedia('(hover: hover)').matches) {
+      const qx = gsap.quickTo(ptr, 'x', { duration: 1.4, ease: 'power3.out', onUpdate: render });
+      const qy = gsap.quickTo(ptr, 'y', { duration: 1.4, ease: 'power3.out', onUpdate: render });
+      addEventListener('pointermove', e => { if (sec.getBoundingClientRect().bottom > 0) { qx((e.clientX / innerWidth - .5) * 2); qy((e.clientY / innerHeight - .5) * 2); } }, { passive: true });
+    }
+    addEventListener('resize', render);
+    render();
+  }
+
   /* ---------- Paper texture anchored to the page ----------
      Each textured surface gets its page offset (--tx/--ty) so its texture lines up with the
      body's; each torn edge gets its own copy of the paper pattern, transformed so the SVG paints
@@ -933,6 +978,7 @@ void main(){
   /* ---------- Boot ---------- */
   // ScrollTriggers are created in page order, so each one is measured after the pins above it
   portal();
+  tunnel();
   process();
   birds();
   chartSteps();

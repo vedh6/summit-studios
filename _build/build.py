@@ -787,7 +787,30 @@ def simple_page(hero_paint, hero_alt, kicker, chapters_html):
 FILTERS = [('all', 'All'), ('healthcare', 'Healthcare'), ('industrial', 'Industrial'), ('technology', 'Technology'), ('property', 'Property'),
            ('interiors', 'Interiors'), ('food', 'Food'), ('hospitality', 'Hospitality')]
 PROJECTS_CH = []   # no chapter index on this page (user: 'i dont want this index in this page')
-PROJECTS_PAGE = simple_page('projects-gallery', 'A Renaissance gallery where gilded frames hold website designs, admired by visitors', 'Projects &middot; 30+ websites shipped',
+def tunnel():
+    """Projects opener: the work flies out of the distance past you as you scroll (tunnel() in
+    motion.js), around a title that grows and fades. Screenshots are decorative here; the list
+    below carries their names and links."""
+    shots = [(p['key'], 1, p['name']) for p in PROJECTS if p.get('url')] + [('semnox', 2, 'Semnox'), ('cc', 2, 'Creative Concepts'), ('niks', 2, 'Niks Masala')]
+    cards = ''.join(f'''<figure class="tun__card" data-tun-card><span class="browser"><span class="browser__bar"><i></i><i></i><i></i></span><img src="assets/img/work/{k}-{n}.jpg" alt="" width="960" height="600" loading="{'eager' if i < 6 else 'lazy'}" decoding="async"></span><figcaption class="tun__cap">{name}</figcaption></figure>'''
+                    for i, (k, n, name) in enumerate(shots))
+    return f'''<section class="tun" id="top" aria-labelledby="tun-t" data-tunnel data-ink>
+  <div class="tun__stage">
+    <span class="tun__ring tun__ring--a" aria-hidden="true"></span><span class="tun__ring tun__ring--b" aria-hidden="true"></span>
+    <div class="tun__scene">
+    <div class="tun__title" data-tun-title>
+      <p class="label tun__kicker">Projects &middot; 30+ websites shipped</p>
+      <h1 class="h1 tun__h" id="tun-t">Built to win work.</h1>
+      <p class="n2 tun__lead">{swash('Eleven live sites, every one custom.')}</p>
+    </div>
+    <div class="tun__space" aria-hidden="true">{cards}</div>
+    </div>
+    <p class="label tun__prompt" data-tun-prompt aria-hidden="true">Scroll to walk the gallery</p>
+  </div>
+</section>'''
+
+
+PROJECTS_PAGE = tunnel() + (
     chapter('index', 'Projects', None, '',
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
