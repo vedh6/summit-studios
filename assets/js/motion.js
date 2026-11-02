@@ -798,6 +798,38 @@ void main(){
   let rt;
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { splitStore.forEach((_, el) => { const lines = split(el); gsap.set(lines, { yPercent: 0 }); }); ScrollTrigger.refresh(); }, 150); });
 
+  /* ---------- Paper texture anchored to the page ----------
+     Each textured surface gets its page offset (--tx/--ty) so its texture lines up with the
+     body's; each torn edge gets its own copy of the paper pattern, transformed so the SVG paints
+     the very same texture at the very same place. No seams between sections or at the tears. */
+  const TEXTURED = '.ch--paper .ch__body, .ch--rip, .duo, .voices, .faq, .ch--corner .ch__body, .corner__stage, .ch--plain, .ch--cut, .ch--cut .ch__bg, .calls__hand';
+  function alignPaper() {
+    const sx = scrollX, sy = scrollY;
+    d.querySelectorAll(TEXTURED).forEach(el => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--tx', (r.left + sx).toFixed(1) + 'px');
+      el.style.setProperty('--ty', (r.top + sy).toFixed(1) + 'px');
+    });
+    d.querySelectorAll('svg.tear, svg.wave-tear').forEach((svg, n) => {
+      const paper = svg.querySelector('.tear__paper, .wave-tear__paper');
+      if (!paper) return;
+      const m = (getComputedStyle(paper).fill || '').match(/#(grain-(?:bg|parch))/);
+      const src = m && d.getElementById(m[1]);
+      if (!src) return;
+      let pat = d.getElementById('paper-' + n);
+      if (!pat) { pat = src.cloneNode(true); pat.id = 'paper-' + n; src.parentNode.append(pat); paper.style.fill = `url(#${pat.id})`; }
+      const r = svg.getBoundingClientRect(), w = r.width, h = r.height;
+      const vb = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width ? svg.viewBox.baseVal : null;
+      let s = 1, x0 = 0, y0 = 0;
+      if (vb) { s = Math.max(w / vb.width, h / vb.height); x0 = (w - vb.width * s) / 2; y0 = h - vb.height * s; }   // xMidYMax slice
+      const flipped = /matrix\(1, 0, 0, -1|scaleY\(-1\)/.test(getComputedStyle(svg).transform) || getComputedStyle(svg).transform.startsWith('matrix(1, 0, 0, -1');
+      const ox = r.left + sx + x0;
+      pat.setAttribute('patternTransform', flipped
+        ? `scale(${1 / s} ${-1 / s}) translate(${-ox} ${-(r.top + sy + h - y0)})`
+        : `scale(${1 / s}) translate(${-ox} ${-(r.top + sy + y0)})`);
+    });
+  }
+
   /* ---------- Boot ---------- */
   // ScrollTriggers are created in page order, so each one is measured after the pins above it
   portal();
@@ -810,6 +842,7 @@ void main(){
   footerSide();
   chapters();
   reveals();
+  ScrollTrigger.addEventListener('refresh', alignPaper); alignPaper();
   if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => ScrollTrigger.refresh());
   if (location.hash) { const t = d.querySelector(location.hash); if (t) gsap.delayedCall(.5, () => { ScrollTrigger.refresh(); scrollToEl(t); }); }
   window.__summit = { lenis, ScrollTrigger };
