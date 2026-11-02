@@ -99,42 +99,64 @@
   }
 
   /* ---------- Home index: the wide box's title and chapter names fly to the sidebar ----------
-     Each item is cloned onto a fixed layer at its place in the box and flown to its twin in the
-     docked sidebar (and back when scrolling up). Desktop only; elsewhere the sidebar just swaps. */
-  function idxFly(idx) {
+     Scrubbed by scroll, so it moves with the page and reverses cleanly. While it runs, each item
+     is drawn by a clone on a fixed layer, placed between where its original sits in the box right
+     now and where its twin sits in the docked sidebar. Desktop only; elsewhere the box just stays. */
+  function idxScrub(idx) {
     const sb = d.querySelector('[data-sb]');
     const src = [idx.querySelector('.idx__mark'), ...idx.querySelectorAll('.idx__list li a')];
     const dst = sb ? [sb.querySelector('.sb__mark'), ...sb.querySelectorAll('.sb__list li a')] : [];
-    const KEYS = ['fontFamily', 'fontWeight', 'fontSize', 'lineHeight', 'letterSpacing', 'color', 'display', 'alignItems', 'gap'];
-    let layer = null, tl = null;
-    const settle = on => {
-      if (tl) tl.kill(); if (layer) layer.remove(); tl = layer = null;
-      [...src, ...dst].forEach(el => { if (el) el.style.opacity = ''; });
-      root.classList.toggle('idx-on', on);
-    };
-    return toSide => {
-      if (!sb || reduced || !desktop() || src.length !== dst.length) { settle(toSide); return; }
-      settle(true);                                  // measure the sidebar in its docked, shown state
-      const from = toSide ? src : dst, to = toSide ? dst : src;
-      const rf = from.map(el => el.getBoundingClientRect()), rt = to.map(el => el.getBoundingClientRect());
-      const cf = from.map(el => getComputedStyle(el)), ct = to.map(el => getComputedStyle(el));
-      root.classList.toggle('idx-on', toSide);
-      layer = d.createElement('div'); layer.className = 'idx-fly'; layer.setAttribute('aria-hidden', 'true');
-      layer.style.cssText = 'position:fixed;inset:0;z-index:120;pointer-events:none';
-      d.body.append(layer);
-      const ghosts = from.map((el, i) => {
+    if (!sb || reduced || !desktop() || src.length !== dst.length) {
+      ScrollTrigger.create({ trigger: idx, start: 'top 20%', onToggle: self => root.classList.toggle('idx-on', self.progress > 0 || self.isActive) });
+      return;
+    }
+    const KEYS = ['fontFamily', 'fontWeight', 'fontSize', 'lineHeight', 'letterSpacing', 'color', 'display', 'alignItems', 'gap', 'whiteSpace'];
+    const ease = gsap.parseEase('power2.inOut');
+    let layer = null, ghosts = [], to = [], cTo = [], cFrom = [], fsFrom = [], fsTo = [], state = -1;
+    const build = () => {
+      layer = d.createElement('div'); layer.setAttribute('aria-hidden', 'true');
+      layer.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;z-index:120;pointer-events:none';
+      root.classList.add('idx-on');
+      to = dst.map(el => el.getBoundingClientRect());
+      const ct = dst.map(el => getComputedStyle(el)), cf = src.map(el => getComputedStyle(el));
+      cFrom = cf.map(c => c.color); cTo = ct.map(c => c.color);
+      fsFrom = cf.map(c => parseFloat(c.fontSize)); fsTo = ct.map(c => parseFloat(c.fontSize));
+      ghosts = src.map((el, i) => {
         const g = el.cloneNode(true);
         KEYS.forEach(k => { g.style[k] = cf[i][k]; });
-        Object.assign(g.style, { position: 'absolute', margin: '0', left: rf[i].left + 'px', top: rf[i].top + 'px', width: rf[i].width + 'px' });
+        Object.assign(g.style, { position: 'absolute', left: '0', top: '0', margin: '0', opacity: '1', transformOrigin: '0 0', willChange: 'transform' });
         layer.append(g); return g;
       });
-      [...src, ...dst].forEach(el => { el.style.opacity = '0'; });
-      tl = gsap.timeline({ onComplete: () => settle(toSide) });
-      ghosts.forEach((g, i) => tl.to(g, {
-        left: rt[i].left, top: rt[i].top, width: rt[i].width, fontSize: ct[i].fontSize, lineHeight: ct[i].lineHeight, color: ct[i].color,
-        duration: .9, ease: 'expo.inOut',
-      }, i * .035));
+      d.body.append(layer);
     };
+    const show = (which) => {            // which: 0 box, 1 flying, 2 sidebar
+      if (which === state) return; state = which;
+      src.forEach(el => { el.style.opacity = which === 0 ? '' : '0'; });
+      dst.forEach(el => { el.style.opacity = which === 2 ? '' : '0'; });
+      if (which === 1) { if (!layer) build(); }
+      else { if (layer) layer.remove(); layer = null; ghosts = []; }
+      root.classList.toggle('idx-on', which !== 0);
+    };
+    const update = p => {
+      if (p <= 0) { show(0); return; }
+      if (p >= 1) { show(2); return; }
+      show(1);
+      ghosts.forEach((g, i) => {
+        const k = ease(gsap.utils.clamp(0, 1, (p - i * .015) / (1 - (ghosts.length - 1) * .015)));
+        const r = src[i].getBoundingClientRect();
+        const x = r.left + (to[i].left - r.left) * k, y = r.top + (to[i].top - r.top) * k;
+        const w = r.width + (to[i].width - r.width) * k;
+        const s = (fsFrom[i] + (fsTo[i] - fsFrom[i]) * k) / fsFrom[i];
+        g.style.width = (w / s) + 'px';
+        g.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s})`;
+        g.style.color = gsap.utils.interpolate(cFrom[i], getComputedStyle(dst[i]).color, k);   // live: the sidebar's colour follows the page theme
+      });
+    };
+    ScrollTrigger.create({
+      trigger: idx, start: 'top 45%', end: 'top 2%',
+      onUpdate: self => update(self.progress),
+      onRefresh: self => { if (layer) { layer.remove(); layer = null; state = -1; } update(self.progress); },
+    });
   }
 
   function draftingBox() {
@@ -153,11 +175,8 @@
     // The docked index comes in (flown from the box) once the in-page index (.idx, top of
     // chapter I) has risen into the top third of the screen; before that the hero is left clean.
     const idx = d.querySelector('[data-idx]');
-    if (idx) {
-      const fly = idxFly(idx);
-      ScrollTrigger.create({ trigger: idx, start: 'top 35%', onEnter: () => fly(true), onLeaveBack: () => fly(false) });
-      if (idx.getBoundingClientRect().top < innerHeight * .35) root.classList.add('idx-on');
-    } else root.classList.add('idx-on');
+    if (idx) idxScrub(idx);
+    else root.classList.add('idx-on');
     // It then stays through chapter I and tucks away behind the arrow on the left edge.
     const first = d.querySelector('[data-ch]');
     if (first && desktop()) {
