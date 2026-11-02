@@ -172,7 +172,7 @@ html.docked .dv { opacity: 0; transition: opacity .4s; }
 /* Home: the index no longer sits over the hero. It opens chapter I as a drafting box on the
    parchment (.idx), and the docked sidebar only comes in once that box has scrolled away
    (html.idx-on, motion.js). Phones keep just the in-page box. */
-html:not(.idx-on) .sb { opacity: 0; transform: translateX(-16px); }
+html:not(.idx-on) .sb { opacity: 0; }
 html:not(.idx-on) .sb, html:not(.idx-on) .sb * { pointer-events: none !important; }
 .idx { position: relative; width: 100%; padding: 28px 32px; border: 1px solid rgba(60, 45, 25, .28);
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); grid-template-rows: auto 1fr; gap: 18px 64px; color: var(--ink); }

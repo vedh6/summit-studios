@@ -98,6 +98,45 @@
     if (f) ScrollTrigger.create({ trigger: f, start: 'top 80%', end: 'bottom top', onToggle: self => root.classList.toggle('at-ftr', self.isActive) });
   }
 
+  /* ---------- Home index: the wide box's title and chapter names fly to the sidebar ----------
+     Each item is cloned onto a fixed layer at its place in the box and flown to its twin in the
+     docked sidebar (and back when scrolling up). Desktop only; elsewhere the sidebar just swaps. */
+  function idxFly(idx) {
+    const sb = d.querySelector('[data-sb]');
+    const src = [idx.querySelector('.idx__mark'), ...idx.querySelectorAll('.idx__list li a')];
+    const dst = sb ? [sb.querySelector('.sb__mark'), ...sb.querySelectorAll('.sb__list li a')] : [];
+    const KEYS = ['fontFamily', 'fontWeight', 'fontSize', 'lineHeight', 'letterSpacing', 'color', 'display', 'alignItems', 'gap'];
+    let layer = null, tl = null;
+    const settle = on => {
+      if (tl) tl.kill(); if (layer) layer.remove(); tl = layer = null;
+      [...src, ...dst].forEach(el => { if (el) el.style.opacity = ''; });
+      root.classList.toggle('idx-on', on);
+    };
+    return toSide => {
+      if (!sb || reduced || !desktop() || src.length !== dst.length) { settle(toSide); return; }
+      settle(true);                                  // measure the sidebar in its docked, shown state
+      const from = toSide ? src : dst, to = toSide ? dst : src;
+      const rf = from.map(el => el.getBoundingClientRect()), rt = to.map(el => el.getBoundingClientRect());
+      const cf = from.map(el => getComputedStyle(el)), ct = to.map(el => getComputedStyle(el));
+      root.classList.toggle('idx-on', toSide);
+      layer = d.createElement('div'); layer.className = 'idx-fly'; layer.setAttribute('aria-hidden', 'true');
+      layer.style.cssText = 'position:fixed;inset:0;z-index:120;pointer-events:none';
+      d.body.append(layer);
+      const ghosts = from.map((el, i) => {
+        const g = el.cloneNode(true);
+        KEYS.forEach(k => { g.style[k] = cf[i][k]; });
+        Object.assign(g.style, { position: 'absolute', margin: '0', left: rf[i].left + 'px', top: rf[i].top + 'px', width: rf[i].width + 'px' });
+        layer.append(g); return g;
+      });
+      [...src, ...dst].forEach(el => { el.style.opacity = '0'; });
+      tl = gsap.timeline({ onComplete: () => settle(toSide) });
+      ghosts.forEach((g, i) => tl.to(g, {
+        left: rt[i].left, top: rt[i].top, width: rt[i].width, fontSize: ct[i].fontSize, lineHeight: ct[i].lineHeight, color: ct[i].color,
+        duration: .9, ease: 'expo.inOut',
+      }, i * .035));
+    };
+  }
+
   function draftingBox() {
     const lines = [...d.querySelectorAll('.dv circle, .dv line, .dv rect, .dv path')];
     if (lines.length && !reduced) {
@@ -115,7 +154,8 @@
     // scrolled away; before that the hero is left clean.
     const idx = d.querySelector('[data-idx]');
     if (idx) {
-      ScrollTrigger.create({ trigger: idx, start: 'bottom 15%', onEnter: () => root.classList.add('idx-on'), onLeaveBack: () => root.classList.remove('idx-on') });
+      const fly = idxFly(idx);
+      ScrollTrigger.create({ trigger: idx, start: 'bottom 15%', onEnter: () => fly(true), onLeaveBack: () => fly(false) });
       if (idx.getBoundingClientRect().bottom < innerHeight * .15) root.classList.add('idx-on');
     } else root.classList.add('idx-on');
     // It then stays through chapter I and tucks away behind the arrow on the left edge.
