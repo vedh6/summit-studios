@@ -150,13 +150,13 @@
     });
     // Already scrolled (hash link, reload): dock at once
     if (scrollY > innerHeight * .3) root.classList.add('docked');
-    // The docked index only comes in once the in-page index (.idx, top of chapter I) has
-    // scrolled away; before that the hero is left clean.
+    // The docked index comes in (flown from the box) once the in-page index (.idx, top of
+    // chapter I) has risen into the top third of the screen; before that the hero is left clean.
     const idx = d.querySelector('[data-idx]');
     if (idx) {
       const fly = idxFly(idx);
-      ScrollTrigger.create({ trigger: idx, start: 'bottom 15%', onEnter: () => fly(true), onLeaveBack: () => fly(false) });
-      if (idx.getBoundingClientRect().bottom < innerHeight * .15) root.classList.add('idx-on');
+      ScrollTrigger.create({ trigger: idx, start: 'top 35%', onEnter: () => fly(true), onLeaveBack: () => fly(false) });
+      if (idx.getBoundingClientRect().top < innerHeight * .35) root.classList.add('idx-on');
     } else root.classList.add('idx-on');
     // It then stays through chapter I and tucks away behind the arrow on the left edge.
     const first = d.querySelector('[data-ch]');
