@@ -359,8 +359,11 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .wave-tear__foam { fill: #FBF8EF; }
 .tear__paper { fill: url(#grain-bg) var(--bg); }
 /* A cut-out painting on the cream page (AI Concierge): full screen like the other paintings, ink type */
-.ch--cut { background: var(--parchment); }
+.ch--cut { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); }
 .ch--cut .ch__bg { background: var(--parchment); }
+/* the painting is baked on flat paper: lay the same paper texture over its paper only (masked off the figure) */
+.ch--cut .ch__bg::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: var(--paper-tex); background-size: var(--paper-size);
+  -webkit-mask: url(../img/paint/reception-cut-mask.png) 50% 30% / cover no-repeat; mask: url(../img/paint/reception-cut-mask.png) 50% 30% / cover no-repeat; }
 /* the headline and line stay put over the painting until the content scrolls up over them */
 /* normal scroll: painting and text move up together as one block */
 .ch--cut .ch__bg { position: relative; top: auto; }
@@ -509,15 +512,7 @@ html.has-process .proc__stage { position: sticky; top: 0; }
 .proc__count { position: absolute; right: 20px; top: -40px; color: rgba(247, 247, 238, .7); font-variant-numeric: tabular-nums; }
 html:not(.has-process) .proc__rail { overflow-x: auto; }
 /* A plain chapter (no painting): paper with ink type, torn over whatever came before */
-.ch--plain { z-index: 2; background-color: var(--parchment);
-  background-image: var(--tex-paper),
-    radial-gradient(38% 28% at 82% 12%, rgba(160, 118, 62, .16), transparent 70%),
-    radial-gradient(30% 24% at 10% 46%, rgba(150, 108, 56, .12), transparent 70%),
-    radial-gradient(40% 30% at 70% 78%, rgba(160, 118, 62, .14), transparent 70%),
-    radial-gradient(26% 18% at 30% 92%, rgba(140, 100, 50, .10), transparent 70%),
-    radial-gradient(140% 100% at 50% 40%, transparent 55%, rgba(120, 84, 40, .16) 100%);
-  background-size: 260px 260px, 200px 200px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-  background-blend-mode: soft-light, soft-light, normal, normal, normal, normal, normal; }
+.ch--plain { z-index: 2; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); }
 .ch--plain .tear__paper { fill: url(#grain-parch) var(--parchment); }
 .ch--plain .tear__fibre { fill: #F4ECD9; }
 .ch--plain .fg--bento .fg__item:not(:nth-child(3)), .ch--plain .call { background: rgba(250, 245, 232, .82); box-shadow: 0 1px 0 rgba(90, 60, 30, .08); }

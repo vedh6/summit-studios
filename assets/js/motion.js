@@ -734,8 +734,16 @@ void main(){
     // a paper chapter straight after tears up over the pinned clip, so leave one extra screen for it
     const tail = sec.nextElementSibling && sec.nextElementSibling.classList.contains('ch--plain') ? 1 : 0;
     if (tail) root.classList.add('proc-tail');
-    const fit = () => { sec.style.height = `calc(${100 + tail * 100}svh + ${Math.round(travel() * 1.6)}px)`; };
+    const glide = () => innerHeight * .36;
+    const fit = () => { sec.style.height = `calc(${100 + tail * 100}svh + ${Math.round(travel() * 1.6 + glide())}px)`; };
     fit();
+    // A soft landing: when the stage locks, its heading and steps don't stop dead. They arrive
+    // half a glide low and ease up into place over the next third of a screen (their speed at
+    // the lock matches the scroll), while the clip settles from a slight zoom.
+    const settle = { trigger: sec, start: 'top top', end: () => '+=' + Math.round(glide()), scrub: .5, invalidateOnRefresh: true };
+    gsap.fromTo([sec.querySelector('.proc__head'), sec.querySelector('.proc__rail')].filter(Boolean),
+      { y: () => glide() / 2 }, { y: 0, ease: 'power2.out', scrollTrigger: settle });
+    if (video) gsap.fromTo(video, { scale: 1.08 }, { scale: 1, ease: 'power2.out', scrollTrigger: { ...settle } });
     let shown = 1;
     gsap.to(track, {
       x: () => -travel(), ease: 'none',
@@ -745,7 +753,8 @@ void main(){
         let k = 0; steps.forEach((el, i) => { if (el.offsetLeft - col + x < el.offsetWidth * .5) k = i; });
         if (k + 1 !== shown) { shown = k + 1; now.textContent = shown; }
       },
-      scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + Math.round(travel() * 1.6), scrub: 1.2, invalidateOnRefresh: true, onRefreshInit: fit },
+      // the steps start sliding once the soft landing has settled
+      scrollTrigger: { trigger: sec, start: () => 'top top-=' + Math.round(glide()), end: () => '+=' + Math.round(travel() * 1.6), scrub: 1.2, invalidateOnRefresh: true, onRefreshInit: fit },
     });
   }
 
