@@ -247,6 +247,48 @@
       const cards = [...fan.querySelectorAll('.fan__card')];
       if (!desktop()) return;
       gsap.fromTo(cards, { y: 80, rotate: 0 }, { y: 0, rotate: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--r')), duration: 1.2, ease: EXPO, stagger: .1, scrollTrigger: { trigger: fan, start: 'top 85%', once: true } });
+      fanHover(fan, cards);
+    });
+  }
+
+  /* ---------- Fanned cards: a heavy, physical hover ----------
+     The card under the cursor lifts, straightens a little, grows and casts a deeper shadow,
+     and tilts towards the pointer; its neighbours ease apart and settle back. Long, soft eases
+     so it feels weighted rather than snappy. */
+  function fanHover(fan, cards) {
+    if (reduced || !matchMedia('(hover: hover)').matches) return;
+    const base = cards.map(el => parseFloat(getComputedStyle(el).getPropertyValue('--r')) || 0);
+    const browsers = cards.map(el => el.querySelector('.browser'));
+    gsap.set(cards, { transformPerspective: 1400, transformOrigin: '50% 70%' });
+    const rest = () => cards.forEach((c, k) => { c.style.zIndex = String(k + 1); });   // later cards on top, as laid out
+    rest();
+    const tilt = cards.map(el => ({ x: gsap.quickTo(el, 'rotationX', { duration: 1.1, ease: 'power3.out' }),
+                                    y: gsap.quickTo(el, 'rotationY', { duration: 1.1, ease: 'power3.out' }) }));
+    let active = -1, zTimer = 0;
+    const layout = h => cards.forEach((el, i) => {
+      const isH = i === h, dir = h < 0 ? 0 : Math.sign(i - h);
+      gsap.to(el, { y: isH ? -30 : (h < 0 ? 0 : 8), x: dir * 38, rotation: isH ? base[i] * .35 : base[i] + dir * 1.6,
+        scale: isH ? 1.05 : (h < 0 ? 1 : .975), duration: 1.15, ease: 'power3.out', overwrite: 'auto' });
+      gsap.to(browsers[i], { '--lift': isH ? 1 : 0, duration: 1.15, ease: 'power3.out', overwrite: 'auto' });
+      if (!isH) { tilt[i].x(0); tilt[i].y(0); }
+    });
+    cards.forEach((el, i) => {
+      el.addEventListener('mouseenter', () => {
+        clearTimeout(zTimer); active = i;
+        rest(); el.style.zIndex = String(cards.length + 2);
+        layout(i);
+      });
+      el.addEventListener('mousemove', e => {
+        if (active !== i) return;
+        const r = el.getBoundingClientRect();
+        tilt[i].y(((e.clientX - r.left) / r.width - .5) * 7);
+        tilt[i].x(-((e.clientY - r.top) / r.height - .5) * 5);
+      });
+    });
+    fan.addEventListener('mouseleave', () => {
+      const was = active; active = -1; layout(-1);
+      // keep the lifted card on top until it has settled back into the fan
+      zTimer = setTimeout(() => { if (active < 0) rest(); }, 900);
     });
   }
 
