@@ -74,21 +74,6 @@ def spot(label, narrative, link_label=None, href=None, external=False):
     return f'<div class="spot" data-reveal><p class="spot__t">{label}</p><p class="n2">{narrative}</p>{c}</div>'
 
 
-OBJ_SIZE = {'quill': (520, 484), 'spyglass': (520, 419), 'bell': (313, 520), 'letter': (520, 433), 'astrolabe': (389, 520)}
-OBJ_MARK = {'dot': '<i class="obj__dot"></i>',
-            'up': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M4 12 12 4M6 4h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-            'ticks': '<span class="obj__ticks">&#10003;&#10003;</span>', '': ''}
-
-
-def obj(name, chip_text, tone='mint', mark='dot'):
-    """A floating antique object (photoreal cutout) with a small status chip, Shopify-Editions style.
-    Decorative: hidden from screen readers. Positioned per object in style.css; drifts on scroll (motion.js)."""
-    w, h = OBJ_SIZE[name]
-    return (f'<figure class="obj obj--{name}" data-obj aria-hidden="true">'
-            f'<img src="assets/img/obj/{name}.png" alt="" width="{w}" height="{h}" loading="lazy" decoding="async">'
-            f'<span class="obj__chip obj__chip--{tone}">{OBJ_MARK[mark]}{chip_text}</span></figure>')
-
-
 def media(src, alt, cls='', w=1344, h=752):
     return f'<figure class="media {cls}" data-reveal><img src="{src}" alt="{alt}" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>'
 
@@ -358,10 +343,7 @@ def chapter_websites():
     body = f'''
     {index_block()}
     {sub_head('Designs, refined')}
-    <div class="obj-host">
-      {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'Explore websites', 'services.html#websites')}
-      {obj('quill', 'Live', 'mint', 'dot')}
-    </div>
+    {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'Explore websites', 'services.html#websites')}
     {feat_grid(SERVICE_FEATURES['websites'])}
     {sub_head('Shown on real screens')}
     {fan_cards()}'''
@@ -528,7 +510,7 @@ def flock():
 
 def chapter_growth():
     body = f'''
-    <div class="obj-host">{sub_head('Found, first')}{obj('spyglass', '+38% visits', 'mint', 'up')}</div>
+    {sub_head('Found, first')}
     <div class="split" data-reveal>
       {spot('Seen where people look', 'The right customers find you at the top of Google, in Maps, and in the answers AI assistants give when someone asks who to call.', 'Talk to us about growth', 'get-started.html')}
       {ai_answer()}
@@ -571,7 +553,6 @@ def chapter_receptionists():
       </div>
       <div class="calls__card" data-reveal>{call_card()}</div>
       <svg class="calls__cord" aria-hidden="true" focusable="false"><path data-cord d=""/></svg>
-      {obj('bell', 'Call answered', 'gold', 'dot')}
     </div>
     '''
     return chapter('receptionists', 'AI Concierge', 'reception-cut', 'A Renaissance angel at a marble desk answering a modern telephone',
@@ -598,10 +579,9 @@ def chapter_software():
                    'Custom CRMs, web apps, dashboards and the backend that keeps them fast, secure and growing.', body)
 
 
-def duo_card(painting, crumb, chips, prompt, title, text, link, href, extra=''):
+def duo_card(painting, crumb, chips, prompt, title, text, link, href):
     chip_html = ''.join(f'<span class="duo__chip">{c}</span>' for c in chips)
     return f'''<article class="duo__card" data-reveal>
-      {extra}
       <div class="duo__art">
         <img class="duo__bg" src="assets/img/paint/{painting}.jpg" alt="" width="1344" height="752" loading="lazy" decoding="async">
         <div class="duo__win" aria-hidden="true">
@@ -623,7 +603,7 @@ def duo_section():
   {WAVE_TEAR}
   {duo_card('whatsapp', 'Automations', ['Reminders', 'Replies', 'Broadcasts'], 'Remind tomorrow&rsquo;s patients and ask them to confirm',
             'WhatsApp automation', 'Reminders that cut no-shows, instant replies and chatbots that qualify leads, on the app your customers already use.',
-            'Explore WhatsApp automation', 'services.html#whatsapp', obj('letter', 'Reminder sent', 'paper', 'ticks'))}
+            'Explore WhatsApp automation', 'services.html#whatsapp')}
   {duo_card('software', 'New report', ['Last 30 days', 'All sources', 'Leads'], 'Show me last month&rsquo;s leads by source, and which ones booked',
             'Custom software', 'CRMs, dashboards and web apps shaped around how you work, connected to the tools you already use.',
             'Explore custom software', 'services.html#crm')}
@@ -696,7 +676,6 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
 def chapter_why(tear=False):
     scene = why_scene()
     body = f'''
-    {obj('astrolabe', 'Built in-house', 'paper', '') if tear else ''}
     {sub_head('Four reasons, one studio')}
     {feat_grid([(t, p) for t, s, p in WHY])}
     {scene}'''

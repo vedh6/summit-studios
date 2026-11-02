@@ -159,21 +159,6 @@
     });
   }
 
-  /* ---------- Floating objects: drift against the scroll, chip pops in when it arrives ---------- */
-  function floaters() {
-    d.querySelectorAll('[data-obj]').forEach((el, i) => {
-      const img = el.querySelector('img'), chipEl = el.querySelector('.obj__chip');
-      if (reduced) return;
-      const dir = i % 2 ? 1 : -1;
-      gsap.fromTo(img, { y: 70, rotate: `+=${dir * 6}` }, { y: -70, rotate: `-=${dir * 6}`, ease: 'none',
-        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
-      gsap.fromTo(el, { opacity: 0, scale: .86 }, { opacity: 1, scale: 1, duration: 1.1, ease: EXPO,
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      if (chipEl) gsap.fromTo(chipEl, { opacity: 0, scale: .6, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: .7, delay: .35, ease: 'back.out(2)',
-        scrollTrigger: { trigger: el, start: 'top 80%', once: true } });
-    });
-  }
-
   function draftingBox() {
     const lines = [...d.querySelectorAll('.dv circle, .dv line, .dv rect, .dv path')];
     if (lines.length && !reduced) {
@@ -770,7 +755,6 @@ void main(){
   footerSide();
   chapters();
   reveals();
-  floaters();
   if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => ScrollTrigger.refresh());
   if (location.hash) { const t = d.querySelector(location.hash); if (t) gsap.delayedCall(.5, () => { ScrollTrigger.refresh(); scrollToEl(t); }); }
   window.__summit = { lenis, ScrollTrigger };
