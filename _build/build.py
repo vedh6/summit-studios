@@ -330,7 +330,7 @@ def index_block():
     (user: the index should start on this page, not over the hero, with the content below it)."""
     items = ''.join(f'<li><a href="#{cid}"><span class="idx__name">{name}</span><span class="idx__lead"></span><span class="idx__num">{ROMAN[i]}</span></a></li>'
                     for i, (cid, name) in enumerate(HOME_CHAPTERS))
-    return f'''<nav class="idx" aria-label="Chapters" data-idx data-reveal>
+    return f'''<nav class="idx" aria-label="Chapters" data-idx>
       {DAVINCI}
       <p class="idx__mark h4">{MARK}</p>
       <p class="idx__sub n3">{SUB}</p>

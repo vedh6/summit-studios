@@ -137,7 +137,11 @@
       else { if (layer) layer.remove(); layer = null; ghosts = []; }
       root.classList.toggle('idx-on', which !== 0);
     };
+    // The box itself (frame and the subtitle left inside it) fades out as its contents leave,
+    // and is gone by the time they land.
+    const fade = p => { idx.style.opacity = p <= 0 ? '' : String(1 - gsap.utils.clamp(0, 1, p / .85)); };
     const update = p => {
+      fade(p);
       if (p <= 0) { show(0); return; }
       if (p >= 1) { show(2); return; }
       show(1);
