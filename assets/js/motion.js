@@ -843,6 +843,53 @@ void main(){
     render();
   }
 
+  /* ---------- Why us: the loggia walk ----------
+     The chapter's sticky background holds a still (first frame) and the clip. Over the spacer
+     the clip is scrubbed with the scroll, four statements land one by one as the camera
+     turns, and in the last stretch the picture pushes in so the laptop's screen fills the
+     page for the fly-through that follows. Before the walk the still shows (the rip zooms
+     it); after, the clip holds its last frame. Desktop only. */
+  function orbit() {
+    const sp = d.querySelector('[data-orbit]');
+    if (!sp) return;
+    const sec = sp.closest('.ch'), video = sec && sec.querySelector('[data-orbit-video]'), still = sec && sec.querySelector('.ch__bg .paint:not(video)');
+    const panels = [...sp.querySelectorAll('[data-panel]')];
+    if (!video || !desktop() || reduced) return;
+    root.classList.add('has-orbit');
+    sp.style.setProperty('--orbit-len', sp.dataset.length || 420);
+    const n = panels.length, centres = panels.map((_, i) => .1 + i * (.62 / (n - 1)));   // the last lands before the push-in
+    let ready = false, target = 0, shown = 0, active = -1;
+    gsap.ticker.add(() => {
+      if (!ready || video.seeking || !video.duration) return;
+      const diff = target - shown;
+      if (Math.abs(diff) < .01) return;
+      shown += Math.abs(diff) < .04 ? diff : diff * .35;
+      video.currentTime = shown;
+    });
+    loadClip(video, () => { ready = true; });
+    const setActive = i => {
+      if (i === active) return;
+      const out = panels[active], inn = panels[i]; active = i;
+      const from = p => p.dataset.side === 'right' ? 1 : -1;
+      if (out) gsap.to(out, { opacity: 0, x: 36 * from(out), duration: .3, ease: 'power2.in', overwrite: true });
+      if (inn) { gsap.set(inn, { opacity: 1, x: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, x: 72 * from(inn) }, { opacity: 1, x: 0, duration: .9, ease: EXPO, stagger: .07, delay: .1, overwrite: true }); }
+    };
+    ScrollTrigger.create({
+      trigger: sp, start: 'top top', end: 'bottom bottom', scrub: 1,
+      onUpdate: self => {
+        const p = self.progress;
+        if (ready && video.duration) target = p * (video.duration - .06);
+        // the nearest stop owns the panel, and only while the camera is near it
+        let k = -1, best = .12; centres.forEach((c, i) => { const dd = Math.abs(p - c); if (dd < best) { best = dd; k = i; } }); setActive(k);
+        // the push into the screen: the last frame grows until the laptop's screen fills the page
+        const z = p > .86 ? 1 + (p - .86) / .14 * .42 : 1;
+        video.style.transform = `scale(${z.toFixed(4)})`;
+      },
+      onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
+    });
+    if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+  }
+
   /* ---------- Paper texture anchored to the page ----------
      Each textured surface gets its page offset (--tx/--ty) so its texture lines up with the
      body's; each torn edge gets its own copy of the paper pattern, transformed so the SVG paints
@@ -985,6 +1032,7 @@ void main(){
   birds();
   chartSteps();
   corners();
+  orbit();
   d.querySelectorAll('[data-scene]').forEach(pinnedScene);
   draftingBox();
   footerSide();

@@ -694,19 +694,40 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
              '<path class="wave-tear__foam" filter="url(#wave-fray)" data-wave="fibre"/><path class="wave-tear__specks" data-wave="specks"/><path class="wave-tear__paper" data-wave="paper"/></svg></div>')
 
 
+def orbit_walk():
+    """Home, Why us: the camera walks the painted loggia and ends inside the laptop on the table
+    (the why-orbit clip, scrubbed by scroll in orbit() in motion.js). Four short statements land
+    as the camera turns; the fly-through then plays inside the laptop's screen. Desktop only;
+    phones keep the still and the stacked reasons."""
+    panels = ''.join(f'''<article class="orbit__panel" data-panel data-side="{'left' if i % 2 == 0 else 'right'}">
+          <p class="orbit__num label">{i + 1:02d} &nbsp;/&nbsp; 0{len(WHY)}</p>
+          <p class="orbit__t">{swash(s)}</p>
+        </article>''' for i, (t, s, p) in enumerate(WHY))
+    return f'''<div class="orbit" data-orbit data-length="420" aria-hidden="true">
+      <div class="orbit__pin"><div class="orbit__panels">{panels}</div></div>
+    </div>'''
+
+
 def chapter_why(tear=False):
     scene = why_scene()
-    body = f'''
+    if tear:
+        body = f'''
+    {orbit_walk()}
+    {scene}'''
+    else:
+        body = f'''
     {sub_head('Four reasons, one studio')}
     {feat_grid([(t, p) for t, s, p in WHY])}
     {scene}'''
-    paint = ('handshake-window', 'A Renaissance merchant and a young designer shaking hands by an open window over Venice') if tear else \
+    paint = ('why-orbit-poster', 'A sunlit Renaissance loggia seen from the end of a long marble table, with a modern laptop at its far end and Tuscan hills beyond the arches') if tear else \
             ('studio-review', 'A Renaissance noblewoman and a young designer reviewing printed website layouts together')
     html = chapter('why', 'Why us', paint[0], paint[1],
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
     if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
-        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".6,.24"', 1)
+        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".71,.55"', 1)
         html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
+        # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
+        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video></div>\n  <div class="rip-space"', 1)
     return html
 
 

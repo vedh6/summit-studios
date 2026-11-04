@@ -903,3 +903,21 @@ html.has-tunnel .tun__prompt { display: block; }
   .row__info { max-width: none; margin-top: -24px; }
 }
 .ch__body > .rows { max-width: none; }   /* project rows run the full width of the page */
+
+/* ---------- Why us (home): the loggia walk ----------
+   The chapter's painting is the first frame of a clip; as you scroll, orbit() in motion.js
+   scrubs the clip so the camera walks the loggia and ends inside the laptop, then the
+   fly-through plays over its screen. The spacer gives the walk its scroll length. */
+.paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform-origin: 50% 44%; }
+html.orbit-live .paint--orbit { opacity: 1; }
+.orbit { display: none; }
+html.has-orbit .orbit { display: block; position: relative; height: calc(var(--orbit-len, 420) * 1svh); margin: -40px calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; pointer-events: none; }
+html.has-orbit .orbit__pin { position: sticky; top: 0; height: 100svh; }
+.orbit__panels { position: absolute; inset: 0; }
+.orbit__panel { position: absolute; left: 20px; bottom: 11svh; width: min(560px, 46vw); opacity: 0; padding: 24px 30px 30px; border-radius: 6px;
+  background: rgba(246, 240, 226, .8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 3px solid var(--acc, var(--ink));
+  box-shadow: 0 30px 60px -36px rgba(30, 18, 8, .5); }
+.orbit__panel[data-side="right"] { left: auto; right: 20px; }
+.orbit__panel:nth-of-type(1) { --acc: #2F5A3F; } .orbit__panel:nth-of-type(2) { --acc: #C9782B; } .orbit__panel:nth-of-type(3) { --acc: #2E6F7A; } .orbit__panel:nth-of-type(4) { --acc: #9B4A2A; }
+.orbit__num { color: var(--mid); }
+.orbit__t { font-family: var(--serif); font-size: clamp(30px, 3.1vw, 50px); line-height: .98; letter-spacing: -.03em; color: var(--ink); margin-top: 12px; text-wrap: balance; }
