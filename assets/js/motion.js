@@ -890,6 +890,29 @@ void main(){
     if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   }
 
+  /* ---------- Inside the laptop: the reasons, written on its screen ----------
+     After the walk, the clip holds on the laptop's screen. Over this spacer the four reasons
+     and the call to action take turns on the page, each rising in as the previous one fades. */
+  function screen() {
+    const sp = d.querySelector('[data-screen]');
+    if (!sp || !root.classList.contains('has-orbit')) return;
+    const panels = [...sp.querySelectorAll('[data-panel]')], n = panels.length;
+    sp.style.setProperty('--screen-len', sp.dataset.length || 460);
+    let active = -1;
+    const setActive = i => {
+      if (i === active) return;
+      const out = panels[active], inn = panels[i]; active = i;
+      panels.forEach((p, k) => p.classList.toggle('is-active', k === i));
+      if (out) gsap.to(out, { opacity: 0, y: -18, duration: .3, ease: 'power2.in', overwrite: true });
+      if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true }); }
+    };
+    ScrollTrigger.create({
+      trigger: sp, start: 'top top', end: 'bottom bottom', scrub: true,
+      onUpdate: self => setActive(Math.min(n - 1, Math.floor(self.progress * n))),
+      onToggle: self => { if (!self.isActive && self.progress <= 0) setActive(-1); },
+    });
+  }
+
   /* ---------- Paper texture anchored to the page ----------
      Each textured surface gets its page offset (--tx/--ty) so its texture lines up with the
      body's; each torn edge gets its own copy of the paper pattern, transformed so the SVG paints
@@ -1033,6 +1056,7 @@ void main(){
   chartSteps();
   corners();
   orbit();
+  screen();
   d.querySelectorAll('[data-scene]').forEach(pinnedScene);
   draftingBox();
   footerSide();

@@ -708,12 +708,35 @@ def orbit_walk():
     </div>'''
 
 
+def screen_reasons():
+    """Home, Why us: what the laptop shows once the camera is inside its screen. The four
+    reasons appear one after another on the parchment page as you scroll (screen() in
+    motion.js), then the call to action. Phones get the plain grid below instead."""
+    panels = ''.join(f'''<article class="screen__panel" data-panel>
+          <p class="screen__num label">{i + 1:02d} &nbsp;/&nbsp; 0{len(WHY)}</p>
+          <h3 class="screen__t">{t}</h3>
+          <p class="screen__p">{p}</p>
+        </article>''' for i, (t, s, p) in enumerate(WHY))
+    end = f'''<article class="screen__panel screen__panel--end" data-panel>
+          <p class="screen__num label">Why us</p>
+          <h3 class="screen__t">{swash('Premium work from the people who build it.')}</h3>
+          <div class="screen__cta">{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark')}</div>
+        </article>'''
+    return f'''<div class="screen" data-screen data-length="460">
+      <div class="screen__pin"><div class="screen__page">{panels}{end}</div></div>
+    </div>'''
+
+
 def chapter_why(tear=False):
     scene = why_scene()
     if tear:
         body = f'''
     {orbit_walk()}
-    {scene}'''
+    {screen_reasons()}
+    <div class="why-fallback">
+    {sub_head('Four reasons, one studio')}
+    {feat_grid([(t, p) for t, s, p in WHY])}
+    </div>'''
     else:
         body = f'''
     {sub_head('Four reasons, one studio')}
