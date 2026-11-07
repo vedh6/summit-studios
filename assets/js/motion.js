@@ -851,6 +851,10 @@ void main(){
      a text layer is mapped onto the screen's four corners (a homography), so the type sits
      in the screen's plane. Nothing shows during the walk. Desktop only. */
   const CLIP = { w: 2560, h: 1440, quad: [[.1414, .1596], [.6991, .1998], [.7353, .7958], [.1606, .8665]] };   // the screen's corners in the last frame (TL, TR, BR, BL)
+  // shared between orbit() and screen(): the push-in fraction, whether the screen phase is on,
+  // and the hooks each gives the other
+  let whyK = 0, whyPhase = false, whyAtEnd = false, orbitFinal = null, screenShow = null;
+  const whyLive = () => root.classList.toggle('screen-live', (whyK > 0 && whyAtEnd) || whyPhase);   // the type shows only once the clip is on its last frame
   function orbit() {
     const sp = d.querySelector('[data-orbit]');
     if (!sp) return;
@@ -860,7 +864,10 @@ void main(){
     sp.style.setProperty('--orbit-len', sp.dataset.length || 420);
     let ready = false, target = 0, shown = 0;
     gsap.ticker.add(() => {
-      if (!ready || video.seeking || !video.duration) return;
+      if (!ready || !video.duration) return;
+      const atEnd = !video.seeking && Math.abs(shown - (video.duration - .06)) < .05;
+      if (atEnd !== whyAtEnd) { whyAtEnd = atEnd; whyLive(); }
+      if (video.seeking) return;
       const diff = target - shown;
       if (Math.abs(diff) < .01) return;
       shown += Math.abs(diff) < .04 ? diff : diff * .35;
@@ -885,27 +892,31 @@ void main(){
       video.style.transform = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
     };
     const quadAt = kk => { const s = 1 + (g.S - 1) * kk; return g.q.map(([x, y]) => [g.cx + (x - g.cx) * s + g.tx * kk, g.cy + (y - g.cy) * s + g.ty * kk]); };
-    ScrollTrigger.create({
-      trigger: sp, start: 'top top', end: 'bottom bottom', scrub: 1,
-      onUpdate: self => {
-        const p = self.progress;
-        if (ready && video.duration) target = p * (video.duration - .06);
-        k = gsap.utils.clamp(0, 1, (p - .86) / .14);
-        place();
-      },
-      onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
-    });
-
-    // the text layer, mapped onto the screen at full push-in
+    // the text layer, mapped onto the screen wherever the push-in has it
     const quad = d.querySelector('[data-screen-quad]');
     const mapScreen = () => {
       if (!quad) return;
-      const q = quadAt(1), len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+      const q = quadAt(k), len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
       const w0 = (len(q[0], q[1]) + len(q[3], q[2])) / 2, h0 = (len(q[0], q[3]) + len(q[1], q[2])) / 2;
       quad.style.width = w0.toFixed(1) + 'px'; quad.style.height = h0.toFixed(1) + 'px';
       quad.style.fontSize = (w0 / 30).toFixed(2) + 'px';
       quad.style.transform = homography(w0, h0, q);
     };
+    // the clip travels over the first 80% of the walk; the push-in takes the last 20%, on the
+    // held last frame, with the first reason already on the screen
+    const TRAVEL = .8;
+    ScrollTrigger.create({
+      trigger: sp, start: 'top top', end: 'bottom bottom', scrub: 1,
+      onUpdate: self => {
+        const p = self.progress;
+        if (ready && video.duration) target = gsap.utils.clamp(0, 1, p / TRAVEL) * (video.duration - .06);
+        k = gsap.utils.clamp(0, 1, (p - TRAVEL) / (1 - TRAVEL));
+        place(); mapScreen();
+        whyK = k; whyLive();
+        if (!whyPhase && screenShow) screenShow(k > 0 ? 0 : -1);
+      },
+      onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
+    });
     const refresh = () => { g = geo(); place(); mapScreen(); };
     refresh();
     ScrollTrigger.addEventListener('refresh', refresh);
@@ -913,9 +924,8 @@ void main(){
     if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
     // the screen phase can insist on the walk's final state (full push-in, last frame), so the
     // type never lands on a mid-walk frame if the scrub is still catching up
-    orbitFinal = () => { k = 1; place(); if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
+    orbitFinal = () => { k = 1; whyK = 1; place(); mapScreen(); if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
   }
-  let orbitFinal = null;
 
   // The CSS matrix3d that maps a w x h box (origin top-left) onto the quad q (TL, TR, BR, BL)
   function homography(w, h, q) {
@@ -939,7 +949,7 @@ void main(){
   function screen() {
     const sp = d.querySelector('[data-screen]');
     if (!sp || !root.classList.contains('has-orbit')) return;
-    const panels = [...sp.querySelectorAll('[data-panel]')], n = panels.length;
+    const panels = [...d.querySelectorAll('[data-screen-quad] [data-panel]')], n = panels.length;
     sp.style.setProperty('--screen-len', sp.dataset.length || 480);
     let active = -1;
     const setActive = i => {
@@ -949,10 +959,11 @@ void main(){
       if (out) gsap.to(out, { opacity: 0, y: -18, duration: .3, ease: 'power2.in', overwrite: true });
       if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true }); }
     };
+    screenShow = setActive;
     ScrollTrigger.create({
       trigger: sp, start: 'top top', end: 'bottom bottom', scrub: true,
       onUpdate: self => { setActive(Math.min(n - 1, Math.floor(self.progress * n))); if (self.isActive && orbitFinal) orbitFinal(); },
-      onToggle: self => { root.classList.toggle('screen-live', self.isActive || self.progress >= 1); if (self.isActive && orbitFinal) orbitFinal(); if (!self.isActive && self.progress <= 0) setActive(-1); },
+      onToggle: self => { whyPhase = self.isActive || self.progress >= 1; whyLive(); if (self.isActive && orbitFinal) orbitFinal(); },
     });
   }
 

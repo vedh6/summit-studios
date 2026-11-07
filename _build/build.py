@@ -704,9 +704,14 @@ def orbit_walk():
 
 
 def screen_reasons():
-    """Home, Why us: what the laptop shows once the camera is inside its screen. A text layer is
-    mapped onto the screen's four corners (orbit() in motion.js), and on it the four reasons
-    and the call to action take turns as you scroll (screen()). Phones get the grid instead."""
+    """Home, Why us: the scroll length over which the reasons take turns on the laptop's screen
+    (screen() in motion.js). The text itself is screen_quad(), in the chapter's sticky background."""
+    return '''<div class="screen" data-screen data-length="480" aria-hidden="true"><div class="screen__pin"></div></div>'''
+
+
+def screen_quad():
+    """The text layer mapped onto the laptop's screen (orbit() in motion.js): the four reasons and
+    the call to action, one at a time. Phones get the grid instead."""
     panels = ''.join(f'''<article class="screen__panel" data-panel>
           <p class="screen__num label">{i + 1:02d} &nbsp;/&nbsp; 0{len(WHY)}</p>
           <h3 class="screen__t">{t}</h3>
@@ -717,9 +722,7 @@ def screen_reasons():
           <h3 class="screen__t">{swash('Premium work from the people who build it.')}</h3>
           <div class="screen__cta">{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark')}</div>
         </article>'''
-    return f'''<div class="screen" data-screen data-length="480">
-      <div class="screen__pin"><div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div></div>
-    </div>'''
+    return f'<div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div>'
 
 
 def chapter_why(tear=False):
@@ -748,7 +751,7 @@ def chapter_why(tear=False):
         assert html.count('  </div>\n  \n  \n  <div class="ch__body"') == 1
         html = html.replace('  </div>\n  \n  \n  <div class="ch__body"', '  </div></div>\n  \n  \n  <div class="ch__body"', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
-        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video></div>\n  <div class="rip-space"', 1)
+        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
     return html
 
 
