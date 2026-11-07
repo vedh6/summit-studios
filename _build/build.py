@@ -746,10 +746,7 @@ def chapter_why(tear=False):
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
     if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
         html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".71,.55"', 1)
-        html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="hold"><div class="ch__open">', 1)
-        # the heading and its line hold on the still for a while before the walk (.hold, style.css)
-        assert html.count('  </div>\n  \n  \n  <div class="ch__body"') == 1
-        html = html.replace('  </div>\n  \n  \n  <div class="ch__body"', '  </div></div>\n  \n  \n  <div class="ch__body"', 1)
+        html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
         html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
     return html

@@ -201,7 +201,8 @@
       const corner = root.classList.contains('has-corner') && sec.querySelector('[data-corner]');
       // Fade the painting once the first serif sub-heading nears the top of the screen
       const plain = sec.classList.contains('ch--plain');   // paper chapter: ink UI as soon as it reaches the header
-      ScrollTrigger.create({
+      // Why us with the walk: picture all the way, no paper body, so the UI stays light over it
+      if (!(sec.querySelector('[data-orbit]') && root.classList.contains('has-orbit'))) ScrollTrigger.create({
         trigger: plain ? sec : sec.classList.contains('ch--cut') ? body : (corner || firstSub || body),
         start: plain ? 'top top+=60' : sec.classList.contains('ch--cut') ? 'top top+=60' : corner ? () => 'top+=' + Math.round((corner.offsetHeight - innerHeight) * .8) + ' top' : 'top 72%',
         endTrigger: body || sec, end: 'bottom top+=60',   // ends as the body's last line passes the header
@@ -905,10 +906,20 @@ void main(){
     // the clip travels over the first 80% of the walk; the push-in takes the last 20%, on the
     // held last frame, with the first reason already on the screen
     const TRAVEL = .8;
+    // "Why us" and its line stay through the travel and leave as the camera nears the laptop
+    const open = sec.querySelector('.ch__open');
+    const fadeOpen = p => {
+      if (!open) return;
+      const f = 1 - gsap.utils.clamp(0, 1, (p - .56) / .12);
+      open.style.opacity = f.toFixed(3);
+      open.style.transform = f < 1 ? `translateY(${(-(1 - f) * 28).toFixed(1)}px)` : '';
+    };
     ScrollTrigger.create({
       trigger: sp, start: 'top top', end: 'bottom bottom', scrub: 1,
+      onRefresh: self => fadeOpen(self.progress),
       onUpdate: self => {
         const p = self.progress;
+        fadeOpen(p);
         if (ready && video.duration) target = gsap.utils.clamp(0, 1, p / TRAVEL) * (video.duration - .06);
         k = gsap.utils.clamp(0, 1, (p - TRAVEL) / (1 - TRAVEL));
         place(); mapScreen();
