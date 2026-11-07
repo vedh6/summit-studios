@@ -908,30 +908,24 @@ html.has-tunnel .tun__prompt { display: block; }
    The chapter's painting is the first frame of a clip; as you scroll, orbit() in motion.js
    scrubs the clip so the camera walks the loggia and ends inside the laptop, then the
    fly-through plays over its screen. The spacer gives the walk its scroll length. */
-.paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform-origin: 50% 32%; }   /* the push-in grows into the screen's upper half, so the bezel leaves the top edge and the header sits on the page */
+.paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }   /* transform and origin set by orbit() */
 html.orbit-live .paint--orbit { opacity: 1; }
 .orbit { display: none; }
 html.has-orbit .orbit { display: block; position: relative; height: calc(var(--orbit-len, 420) * 1svh); margin: -40px calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; pointer-events: none; }
-html.has-orbit .orbit__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }   /* panels slide in from the edge; never widen the page */
-.orbit__panels { position: absolute; inset: 0; }
-.orbit__panel { position: absolute; left: 20px; bottom: 11svh; width: min(560px, 46vw); opacity: 0; padding: 24px 30px 30px; border-radius: 6px;
-  background: rgba(246, 240, 226, .8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 3px solid var(--acc, var(--ink));
-  box-shadow: 0 30px 60px -36px rgba(30, 18, 8, .5); }
-.orbit__panel[data-side="right"] { left: auto; right: 20px; }
-.orbit__panel:nth-of-type(1) { --acc: #2F5A3F; } .orbit__panel:nth-of-type(2) { --acc: #C9782B; } .orbit__panel:nth-of-type(3) { --acc: #2E6F7A; } .orbit__panel:nth-of-type(4) { --acc: #9B4A2A; }
-.orbit__num { color: var(--mid); }
-.orbit__t { font-family: var(--serif); font-size: clamp(30px, 3.1vw, 50px); line-height: .98; letter-spacing: -.03em; color: var(--ink); margin-top: 12px; text-wrap: balance; }
-
-/* Inside the laptop: the four reasons appear on its parchment screen (screen() in motion.js) */
+html.has-orbit .orbit__pin { position: sticky; top: 0; height: 100svh; }
+/* Inside the laptop: a text layer mapped onto the screen's plane (a homography, orbit() in motion.js);
+   the reasons take turns on it (screen()). Sizes are in em, from a font-size set to the screen's width. */
 .screen { display: none; }
-html.has-orbit .screen { display: block; position: relative; height: calc(var(--screen-len, 460) * 1svh); margin: 0 calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; }
+html.has-orbit .screen { display: block; position: relative; height: calc(var(--screen-len, 480) * 1svh); margin: 0 calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; }
 html.has-orbit .screen__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
-.screen__page { position: absolute; left: 47%; top: 47%; transform: translate(-50%, -50%); width: min(780px, 60vw); height: 64svh; }
-.screen__panel { position: absolute; inset: 0; display: grid; align-content: center; gap: 16px; opacity: 0; pointer-events: none; color: #2E1F12; }
+.screen__quad { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; opacity: 0; transition: opacity .5s var(--ease); }
+html.screen-live .screen__quad { opacity: 1; }
+.screen__face { position: absolute; inset: .6%; background: rgba(226, 203, 150, .5); }   /* the page the screen shows: calms the drafting lines under the type */
+.screen__panel { position: absolute; inset: 0; padding: 7% 9%; display: grid; align-content: center; gap: .55em; opacity: 0; pointer-events: none; color: #2E1F12; }
 .screen__panel.is-active { pointer-events: auto; }
-.screen__num { color: #6B4A2E; }
-.screen__t { font-family: var(--grotesk); font-weight: 700; font-size: clamp(34px, 3.9vw, 64px); line-height: .96; letter-spacing: -.035em; text-wrap: balance; }
-.screen__p { font-family: var(--serif); font-size: clamp(21px, 1.85vw, 30px); line-height: 1.08; letter-spacing: -.015em; max-width: 30ch; color: #3B2A18; }
-.screen__cta { margin-top: 8px; }
+.screen__num.label { font-size: .52em; color: #6B4A2E; }
+.screen__t { font-family: var(--grotesk); font-weight: 700; font-size: 2.15em; line-height: .96; letter-spacing: -.035em; text-wrap: balance; max-width: 13ch; }
+.screen__p { font-family: var(--serif); font-size: 1.08em; line-height: 1.1; letter-spacing: -.015em; max-width: 31ch; color: #3B2A18; }
+.screen__cta { margin-top: .35em; }
 .why-fallback { display: contents; }
 html.has-orbit .why-fallback { display: none; }

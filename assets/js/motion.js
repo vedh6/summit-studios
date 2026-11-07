@@ -843,22 +843,22 @@ void main(){
     render();
   }
 
-  /* ---------- Why us: the loggia walk ----------
-     The chapter's sticky background holds a still (first frame) and the clip. Over the spacer
-     the clip is scrubbed with the scroll, four statements land one by one as the camera
-     turns, and in the last stretch the picture pushes in so the laptop's screen fills the
-     page for the fly-through that follows. Before the walk the still shows (the rip zooms
-     it); after, the clip holds its last frame. Desktop only. */
+  /* ---------- Why us: the loggia walk, then the reasons on the laptop's screen ----------
+     The chapter's sticky background holds a still (first frame) and the clip. Over the walk
+     spacer the clip is scrubbed with the scroll: the camera travels the loggia and lands on
+     the laptop; in the last stretch the picture pushes in and centres the laptop's screen.
+     Over the screen spacer the four reasons and the call to action take turns ON the screen:
+     a text layer is mapped onto the screen's four corners (a homography), so the type sits
+     in the screen's plane. Nothing shows during the walk. Desktop only. */
+  const CLIP = { w: 2560, h: 1440, quad: [[.1414, .1596], [.6991, .1998], [.7353, .7958], [.1606, .8665]] };   // the screen's corners in the last frame (TL, TR, BR, BL)
   function orbit() {
     const sp = d.querySelector('[data-orbit]');
     if (!sp) return;
     const sec = sp.closest('.ch'), video = sec && sec.querySelector('[data-orbit-video]'), still = sec && sec.querySelector('.ch__bg .paint:not(video)');
-    const panels = [...sp.querySelectorAll('[data-panel]')];
     if (!video || !desktop() || reduced) return;
     root.classList.add('has-orbit');
     sp.style.setProperty('--orbit-len', sp.dataset.length || 420);
-    const n = panels.length, centres = panels.map((_, i) => .1 + i * (.62 / (n - 1)));   // the last lands before the push-in
-    let ready = false, target = 0, shown = 0, active = -1;
+    let ready = false, target = 0, shown = 0;
     gsap.ticker.add(() => {
       if (!ready || video.seeking || !video.duration) return;
       const diff = target - shown;
@@ -867,37 +867,80 @@ void main(){
       video.currentTime = shown;
     });
     loadClip(video, () => { ready = true; });
-    const setActive = i => {
-      if (i === active) return;
-      const out = panels[active], inn = panels[i]; active = i;
-      const from = p => p.dataset.side === 'right' ? 1 : -1;
-      if (out) gsap.to(out, { opacity: 0, x: 36 * from(out), duration: .3, ease: 'power2.in', overwrite: true });
-      if (inn) { gsap.set(inn, { opacity: 1, x: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, x: 72 * from(inn) }, { opacity: 1, x: 0, duration: .9, ease: EXPO, stagger: .07, delay: .1, overwrite: true }); }
+
+    // where the screen's corners sit on the page (object-fit: cover), and the push-in that
+    // centres the screen and grows it as far as it still fits
+    const geo = () => {
+      const W = innerWidth, H = innerHeight, c = Math.max(W / CLIP.w, H / CLIP.h), dw = CLIP.w * c, dh = CLIP.h * c, ox = (W - dw) / 2, oy = (H - dh) / 2;
+      const q = CLIP.quad.map(([fx, fy]) => [ox + fx * dw, oy + fy * dh]);
+      const cx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, cy = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4;
+      const qw = Math.max(q[1][0], q[2][0]) - Math.min(q[0][0], q[3][0]), qh = Math.max(q[2][1], q[3][1]) - Math.min(q[0][1], q[1][1]);
+      const S = Math.max(1, Math.min(1.25, .9 * W / qw, .9 * H / qh));
+      return { q, cx, cy, S, tx: W / 2 - cx, ty: H / 2 - cy };
     };
+    let g = geo(), k = 0;
+    const place = () => {
+      const s = 1 + (g.S - 1) * k;
+      video.style.transformOrigin = `${g.cx.toFixed(1)}px ${g.cy.toFixed(1)}px`;
+      video.style.transform = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
+    };
+    const quadAt = kk => { const s = 1 + (g.S - 1) * kk; return g.q.map(([x, y]) => [g.cx + (x - g.cx) * s + g.tx * kk, g.cy + (y - g.cy) * s + g.ty * kk]); };
     ScrollTrigger.create({
       trigger: sp, start: 'top top', end: 'bottom bottom', scrub: 1,
       onUpdate: self => {
         const p = self.progress;
         if (ready && video.duration) target = p * (video.duration - .06);
-        // the nearest stop owns the panel, and only while the camera is near it
-        let k = -1, best = .12; centres.forEach((c, i) => { const dd = Math.abs(p - c); if (dd < best) { best = dd; k = i; } }); setActive(k);
-        // the push into the screen: the last frame grows until the laptop's screen fills the page
-        const z = p > .86 ? 1 + (p - .86) / .14 * .42 : 1;
-        video.style.transform = `scale(${z.toFixed(4)})`;
+        k = gsap.utils.clamp(0, 1, (p - .86) / .14);
+        place();
       },
       onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
     });
+
+    // the text layer, mapped onto the screen at full push-in
+    const quad = d.querySelector('[data-screen-quad]');
+    const mapScreen = () => {
+      if (!quad) return;
+      const q = quadAt(1), len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+      const w0 = (len(q[0], q[1]) + len(q[3], q[2])) / 2, h0 = (len(q[0], q[3]) + len(q[1], q[2])) / 2;
+      quad.style.width = w0.toFixed(1) + 'px'; quad.style.height = h0.toFixed(1) + 'px';
+      quad.style.fontSize = (w0 / 30).toFixed(2) + 'px';
+      quad.style.transform = homography(w0, h0, q);
+    };
+    const refresh = () => { g = geo(); place(); mapScreen(); };
+    refresh();
+    ScrollTrigger.addEventListener('refresh', refresh);
+    addEventListener('resize', refresh);
     if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    // the screen phase can insist on the walk's final state (full push-in, last frame), so the
+    // type never lands on a mid-walk frame if the scrub is still catching up
+    orbitFinal = () => { k = 1; place(); if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
+  }
+  let orbitFinal = null;
+
+  // The CSS matrix3d that maps a w x h box (origin top-left) onto the quad q (TL, TR, BR, BL)
+  function homography(w, h, q) {
+    const src = [[0, 0], [w, 0], [w, h], [0, h]], M = [];
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = src[i], [u, v] = q[i];
+      M.push([x, y, 1, 0, 0, 0, -u * x, -u * y, u]);
+      M.push([0, 0, 0, x, y, 1, -v * x, -v * y, v]);
+    }
+    const n = 8;   // Gauss-Jordan with partial pivoting
+    for (let c = 0; c < n; c++) {
+      let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      [M[c], M[p]] = [M[p], M[c]];
+      for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c] / M[c][c]; for (let kk = c; kk <= n; kk++) M[r][kk] -= f * M[c][kk]; }
+    }
+    const H = M.map((r, i) => r[n] / r[i]);
+    return `matrix3d(${H[0]},${H[3]},0,${H[6]},${H[1]},${H[4]},0,${H[7]},0,0,1,0,${H[2]},${H[5]},0,1)`;
   }
 
-  /* ---------- Inside the laptop: the reasons, written on its screen ----------
-     After the walk, the clip holds on the laptop's screen. Over this spacer the four reasons
-     and the call to action take turns on the page, each rising in as the previous one fades. */
+  /* ---------- On the screen: the reasons take turns ---------- */
   function screen() {
     const sp = d.querySelector('[data-screen]');
     if (!sp || !root.classList.contains('has-orbit')) return;
     const panels = [...sp.querySelectorAll('[data-panel]')], n = panels.length;
-    sp.style.setProperty('--screen-len', sp.dataset.length || 460);
+    sp.style.setProperty('--screen-len', sp.dataset.length || 480);
     let active = -1;
     const setActive = i => {
       if (i === active) return;
@@ -908,8 +951,8 @@ void main(){
     };
     ScrollTrigger.create({
       trigger: sp, start: 'top top', end: 'bottom bottom', scrub: true,
-      onUpdate: self => setActive(Math.min(n - 1, Math.floor(self.progress * n))),
-      onToggle: self => { if (!self.isActive && self.progress <= 0) setActive(-1); },
+      onUpdate: self => { setActive(Math.min(n - 1, Math.floor(self.progress * n))); if (self.isActive && orbitFinal) orbitFinal(); },
+      onToggle: self => { root.classList.toggle('screen-live', self.isActive || self.progress >= 1); if (self.isActive && orbitFinal) orbitFinal(); if (!self.isActive && self.progress <= 0) setActive(-1); },
     });
   }
 

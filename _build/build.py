@@ -696,22 +696,17 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
 
 def orbit_walk():
     """Home, Why us: the camera walks the painted loggia and ends inside the laptop on the table
-    (the why-orbit clip, scrubbed by scroll in orbit() in motion.js). Four short statements land
-    as the camera turns; the fly-through then plays inside the laptop's screen. Desktop only;
-    phones keep the still and the stacked reasons."""
-    panels = ''.join(f'''<article class="orbit__panel" data-panel data-side="{'left' if i % 2 == 0 else 'right'}">
-          <p class="orbit__num label">{i + 1:02d} &nbsp;/&nbsp; 0{len(WHY)}</p>
-          <p class="orbit__t">{swash(s)}</p>
-        </article>''' for i, (t, s, p) in enumerate(WHY))
-    return f'''<div class="orbit" data-orbit data-length="420" aria-hidden="true">
-      <div class="orbit__pin"><div class="orbit__panels">{panels}</div></div>
+    (the why-orbit clip, scrubbed by scroll in orbit() in motion.js). Nothing else shows during
+    the walk. Desktop only; phones keep the still and the stacked reasons."""
+    return '''<div class="orbit" data-orbit data-length="420" aria-hidden="true">
+      <div class="orbit__pin"></div>
     </div>'''
 
 
 def screen_reasons():
-    """Home, Why us: what the laptop shows once the camera is inside its screen. The four
-    reasons appear one after another on the parchment page as you scroll (screen() in
-    motion.js), then the call to action. Phones get the plain grid below instead."""
+    """Home, Why us: what the laptop shows once the camera is inside its screen. A text layer is
+    mapped onto the screen's four corners (orbit() in motion.js), and on it the four reasons
+    and the call to action take turns as you scroll (screen()). Phones get the grid instead."""
     panels = ''.join(f'''<article class="screen__panel" data-panel>
           <p class="screen__num label">{i + 1:02d} &nbsp;/&nbsp; 0{len(WHY)}</p>
           <h3 class="screen__t">{t}</h3>
@@ -722,8 +717,8 @@ def screen_reasons():
           <h3 class="screen__t">{swash('Premium work from the people who build it.')}</h3>
           <div class="screen__cta">{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark')}</div>
         </article>'''
-    return f'''<div class="screen" data-screen data-length="460">
-      <div class="screen__pin"><div class="screen__page">{panels}{end}</div></div>
+    return f'''<div class="screen" data-screen data-length="480">
+      <div class="screen__pin"><div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div></div>
     </div>'''
 
 
