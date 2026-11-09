@@ -965,7 +965,7 @@ def talk_form(p='c'):
         f'<div class="tf__row"><input id="{p}-{fid}" name="{name}" type="{kind}" placeholder=" "{extra}><label for="{p}-{fid}">{label}</label></div>')
     kinds = ''.join(f'<option>{k}</option>' for k in TALK_KINDS)
     chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
-    return f'''<form class="form tf" data-lenis-prevent data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
       <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="tf__a">
@@ -988,20 +988,18 @@ def talk_form(p='c'):
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
 CONTACT = f'''
 <section class="talk" id="top" data-ink aria-labelledby="talk-t">
-  <div class="talk__scene">
-    <div class="talk__frame" aria-hidden="true">
-      <img class="talk__art" src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high">
-      <img class="talk__crest" src="assets/img/frame-crest.png" alt="" width="359" height="198">
-    </div>
-    <div class="talk__inner">
-      <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
-      {talk_form('c')}
-    </div>
+  <div class="talk__frame" aria-hidden="true">
+    <img class="talk__art" src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high">
+    <img class="talk__crest" src="assets/img/frame-crest.png" alt="" width="359" height="198">
   </div>
-  <div class="talk__alt">
-    <p class="talk__or">Prefer to talk it through?</p>
-    {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
-    <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+  <div class="talk__inner">
+    <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
+    {talk_form('c')}
+    <div class="talk__alt">
+      <p class="talk__or">Prefer to talk it through?</p>
+      {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+      <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+    </div>
   </div>
 </section>
 '''

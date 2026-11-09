@@ -774,58 +774,30 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .tf .form__ok, .tf .form__err { margin: 0; border-radius: 0; padding: 28px; }
 .tf .form__ok { background: transparent; }
 
-/* ---------- Contact: one still scene. A real gilt frame (assets/img/frame-gilt.png, cut from a generated
-   photograph by tools/frameproc.swift in the project's Claude folder: corners as photographed, each
-   edge a stretch that repeats seamlessly) holds the painting, the headline and the form; nothing in
-   it moves. On big screens the form is a two-column card that fits; where it can't, the card
-   scrolls inside itself. The crest is its own piece (frame-crest.png) on the top edge's centre.
-   The frame's numbers come from frameproc's measurements, in units of --gilt (the mean moulding). ---------- */
+/* ---------- Contact: a palace painting on a white wall. A real gilt frame (assets/img/frame-gilt.png, cut
+   from a generated photograph by tools/frameproc.swift in the project's Claude folder: corners as
+   photographed, each edge a stretch that repeats seamlessly) fills the first screen; the headline sits
+   on the painting and the form card overlaps its last line and runs on past the frame onto the wall.
+   It is one page: everything scrolls together, nothing slides against anything else. The crest is its
+   own piece (frame-crest.png) on the top edge's centre. The frame's numbers come from frameproc's
+   measurements, in units of --gilt (the mean moulding width). ---------- */
 .talk { --gilt: clamp(24px, 3.6vw, 50px); --fm: clamp(10px, 2.6vw, 48px); --fb: clamp(12px, 1.6vw, 24px);
   --ft: calc(var(--header-h) + var(--gilt) * 1.1 + 14px);   /* the frame's outer top: room for the crest under the header */
   position: relative; z-index: 1; background: var(--wall) radial-gradient(ellipse 70% 520px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }
-.talk__scene { position: relative; height: 100svh; min-height: 560px; }
-.talk__frame { position: absolute; top: var(--ft); left: var(--fm); right: var(--fm); bottom: var(--fb);
+.talk__frame { position: absolute; top: var(--ft); left: var(--fm); right: var(--fm); height: calc(100svh - var(--ft) - var(--fb)); min-height: 480px;
   border-style: solid; border-color: transparent;
   border-width: calc(var(--gilt) * .9713) calc(var(--gilt) * 1.0235) calc(var(--gilt) * .9817) calc(var(--gilt) * 1.0235);
   border-image: url("../img/frame-gilt.png") 103 114 106 114 / 1.1075 1.1633 1.1277 1.1633 / .1075 .1633 .1277 .1633 round;
   filter: drop-shadow(0 3px 3px rgba(40, 26, 10, .28)) drop-shadow(0 26px 30px rgba(40, 28, 16, .3)); }
 .talk__art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
 .talk__crest { position: absolute; left: 50%; top: calc(var(--gilt) * -2.0679); width: calc(var(--gilt) * 3.7493); height: auto; transform: translateX(-50%); }
-/* the opening: the headline, then the card overlapping its last line; the headline takes what the card leaves */
-.talk__inner { position: absolute; z-index: 1; container-type: size;
-  top: calc(var(--ft) + var(--gilt) * .9713); bottom: calc(var(--fb) + var(--gilt) * .9817); left: calc(var(--fm) + var(--gilt) * 1.0235); right: calc(var(--fm) + var(--gilt) * 1.0235);
-  --hs: clamp(30px, min(13.4cqi, (100cqb - 400px) / 2.15), 170px);
-  display: flex; flex-direction: column; align-items: center; padding: clamp(14px, 3cqb, 36px) clamp(12px, 3cqi, 44px) clamp(14px, 3cqb, 32px); }
-.talk__h { flex: none; font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
+.talk__inner { --hs: min(calc((100vw - 2 * (var(--fm) + var(--gilt)) - 48px) / 7.3), 170px);
+  position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--ft) + var(--gilt) + clamp(28px, 4vw, 64px)) 16px 0; }
+.talk__h { font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
   text-shadow: 0 2px 30px rgba(28, 16, 4, .6), 0 1px 3px rgba(28, 16, 4, .45); }
-.talk .tf { position: relative; z-index: 1; flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; margin-top: calc(var(--hs) * -.3); max-width: 980px; }
-/* compact rows inside the scene */
-.talk .tf__row input, .talk .tf__row select { padding: 24px 22px 9px; font-size: 15px; }
-.talk .tf__row label:not(.sr) { left: 22px; font-size: 13px; }
-.talk .tf__row :focus + label, .talk .tf__row :not(:placeholder-shown) + label { top: 9px; font-size: 10px; }
-.talk .tf__row--select select { padding: 17px 50px 16px 22px; }
-.talk .tf__row--select select:has(option[value=""]:checked) { font-size: 13px; padding-top: 19px; padding-bottom: 18px; }
-.talk .tf__chev { right: 20px; }
-.talk .tf__chips { padding: 16px 22px 18px; }
-.talk .tf__chips legend { font-size: 13px; margin-bottom: 11px; }
-.talk .tf__chipset { gap: 7px; }
-.talk .tf__chip span { padding: 6px 11px 7px; font-size: 14px; }
-.talk .tf__row--area textarea { min-height: 96px; padding: 30px 22px 10px; font-size: 15px; }
-.talk .tf__row--area label:not(.sr) { top: 20px; }
-.talk .tf__send { padding: 19px 22px; }
-@media (min-width: 900px) {
-  .talk .tf { display: grid; grid-template-columns: 1fr 1fr; }
-  .talk .tf__a { border-right: 1px solid var(--tf-line); }
-  .talk .tf__a { display: flex; flex-direction: column; }   /* the fields share the column's height, so both columns end level */
-  .talk .tf__a .tf__row { flex: 1 1 auto; display: flex; }
-  .talk .tf__a .tf__row input, .talk .tf__a .tf__row select { height: auto; flex: 1; }
-  .talk .tf__b { display: flex; flex-direction: column; }
-  .talk .tf__b .tf__row--area { flex: 1; display: flex; }
-  .talk .tf__b textarea { min-height: 84px; }
-  .talk .tf > .form__ok, .talk .tf > .form__err, .talk .tf > .tf__send { grid-column: 1 / -1; }
-}
-/* under the frame, on the wall */
-.talk__alt { display: grid; justify-items: center; gap: 14px; padding: 8px 20px clamp(64px, 8vw, 110px); text-align: center; }
+.talk .tf { position: relative; z-index: 1; margin-top: calc(var(--hs) * -.3); }
+/* after the form, on the wall */
+.talk__alt { display: grid; justify-items: center; gap: 14px; padding: clamp(48px, 6vw, 80px) 4px clamp(64px, 8vw, 110px); text-align: center; }
 .talk__or { font-family: var(--serif); font-size: clamp(26px, 1.2rem + 1vw, 34px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
 .talk__mail { color: var(--mid); font-size: 14px; max-width: 520px; }
 @media (max-width: 899px) {
