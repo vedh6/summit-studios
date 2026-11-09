@@ -851,9 +851,8 @@ void main(){
      Over the screen spacer the four reasons and the call to action take turns ON the screen:
      a text layer is mapped onto the screen's four corners (a homography), so the type sits
      in the screen's plane. Nothing shows during the walk. Desktop only. */
-  // the walk as an oil painting (repainted and upscaled to 4K), from the mid-room view to the laptop;
-  // quad: the screen's corners in the last frame (TL, TR, BR, BL), fitted with tools/quadfit
-  const CLIP = { w: 3840, h: 2160, t0: 0, quad: [[.1562, .1636], [.6907, .2090], [.7293, .7909], [.1715, .8533]] };
+  // t0: where the walk starts in the clip (the mid-room view); the file keeps the full walk, encoded at full quality
+  const CLIP = { w: 2560, h: 1440, t0: 5.4, quad: [[.1414, .1596], [.6991, .1998], [.7353, .7958], [.1606, .8665]] };   // the screen's corners in the last frame (TL, TR, BR, BL)
   // shared between orbit() and screen(): the push-in fraction, whether the screen phase is on,
   // and the hooks each gives the other
   let whyK = 0, whyPhase = false, whyAtEnd = false, orbitFinal = null, screenShow = null;
