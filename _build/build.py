@@ -983,16 +983,19 @@ def talk_form(p='c'):
 
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
 CONTACT = f'''
-<section class="talk" id="top" data-ink aria-labelledby="talk-t">
-  <figure class="talk__frame" data-reveal>
-    <div class="talk__mat"><img class="talk__art" src="assets/img/paint/handshake.jpg" alt="A Renaissance merchant and a young designer shaking hands in a loggia above the Venetian lagoon" width="1344" height="752" fetchpriority="high"></div>
-  </figure>
-  <h1 class="talk__h" id="talk-t" data-reveal>Let&rsquo;s start a<br>conversation<br>about it.</h1>
-  {talk_form('c')}
-  <div class="talk__alt" data-reveal>
-    <p class="talk__or">Prefer to talk it through?</p>
-    {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
-    <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+<section class="talk" id="top" aria-labelledby="talk-t">
+  <div class="talk__top" data-ink aria-hidden="true"></div>
+  <div class="talk__frame">
+    <div class="talk__paint" aria-hidden="true"><div class="talk__stick"><img src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high"></div></div>
+    <div class="talk__inner">
+      <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
+      {talk_form('c')}
+      <div class="talk__alt" data-reveal>
+        <p class="talk__or">Prefer to talk it through?</p>
+        {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+        <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+      </div>
+    </div>
   </div>
 </section>
 '''
