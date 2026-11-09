@@ -983,20 +983,22 @@ def talk_form(p='c'):
 
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
 CONTACT = f'''
-<section class="talk" id="top" aria-labelledby="talk-t">
-  <div class="talk__top" data-ink aria-hidden="true"></div>
-  <div class="talk__frame">
-    <img class="talk__crest" src="assets/img/frame-crest.svg" alt="" width="320" height="128" aria-hidden="true">
-    {''.join(f'<img class="talk__boss talk__boss--{c}" src="assets/img/frame-boss.svg" alt="" width="100" height="100" aria-hidden="true">' for c in ('tl', 'tr', 'bl', 'br'))}
-    <div class="talk__paint" aria-hidden="true"><div class="talk__stick"><img src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high"></div></div>
-    <div class="talk__inner">
-      <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
-      {talk_form('c')}
-      <div class="talk__alt" data-reveal>
-        <p class="talk__or">Prefer to talk it through?</p>
-        {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
-        <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
-      </div>
+<section class="talk" id="top" data-ink aria-labelledby="talk-t">
+  <div class="talk__back" aria-hidden="true"><div class="talk__window"><img src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high"></div></div>
+  <div class="talk__stage" aria-hidden="true">
+    <div class="talk__wall talk__wall--t"></div><div class="talk__wall talk__wall--b"></div><div class="talk__wall talk__wall--l"></div><div class="talk__wall talk__wall--r"></div>
+    <div class="talk__frame">
+      <img class="talk__crest" src="assets/img/frame-crest.svg" alt="" width="320" height="128">
+      {''.join(f'<img class="talk__boss talk__boss--{c}" src="assets/img/frame-boss.svg" alt="" width="100" height="100">' for c in ('tl', 'tr', 'bl', 'br'))}
+    </div>
+  </div>
+  <div class="talk__inner">
+    <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
+    {talk_form('c')}
+    <div class="talk__alt" data-reveal>
+      <p class="talk__or">Prefer to talk it through?</p>
+      {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+      <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
     </div>
   </div>
 </section>

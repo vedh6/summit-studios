@@ -774,29 +774,38 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .tf .form__ok, .tf .form__err { margin: 0; border-radius: 0; padding: 28px; }
 .tf .form__ok { background: transparent; }
 
-/* ---------- Contact: a palace painting on a white wall. A carved gilt frame (frame-gilt.svg, made by
-   _build/frame_gilt.py) stands in from the page's edges; the painting fills it and holds still behind
-   the headline and the form as they scroll over it. ---------- */
-.talk { --gilt: clamp(24px, 4vw, 64px); --crest: clamp(150px, 22vw, 330px); --lift: calc(var(--crest) * .4 - var(--gilt) * .5 + 14px);   /* how far the crest stands above the frame */
-  position: relative; z-index: 1; padding: calc(var(--header-h) + var(--lift)) clamp(10px, 1.6vw, 24px) clamp(48px, 6vw, 96px);
-  background: var(--wall) radial-gradient(ellipse 70% 600px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }
-.talk__top { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--header-h) + var(--lift) + var(--gilt)); pointer-events: none; }   /* ink header over the wall and the frame's top */
-.talk__frame { position: relative; width: min(100%, 84vw, 1200px); margin: 0 auto; border: var(--gilt) solid transparent; border-image: url("../img/frame-gilt.svg") 90 round;
+/* ---------- Contact: a palace painting on a white wall. The frame (frame-*.svg from _build/frame_gilt.py)
+   and the painting stay still on screen; the headline and the form scroll through the frame's opening.
+   Three layers: the painting (back), the content, then the wall and frame on top (stage), which cover
+   everything outside the opening. Both still layers are sticky to the section, so the frame leaves
+   with it when the footer arrives. ---------- */
+.talk { --gilt: clamp(22px, 3.4vw, 56px); --crest: clamp(110px, 15vw, 230px); --fm: clamp(12px, 6vw, 110px); --fb: clamp(14px, 2.2vw, 30px);
+  --ft: calc(var(--header-h) + var(--crest) * .4 - var(--gilt) * .5 + 8px);   /* the frame's outer edges */
+  --wt: calc(var(--ft) + var(--gilt)); --wl: calc(var(--fm) + var(--gilt)); --wb: calc(var(--fb) + var(--gilt));   /* the opening */
+  position: relative; z-index: 1; background: var(--wall); }
+.talk__back, .talk__stage { position: sticky; top: 0; height: 100svh; margin-bottom: -100svh; }
+.talk__back { z-index: 0; }
+.talk__stage { z-index: 2; pointer-events: none; }
+.talk__window { position: absolute; top: var(--wt); left: var(--wl); right: var(--wl); bottom: var(--wb); overflow: hidden; background: #2A1E12; }
+.talk__window img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+.talk__wall { position: absolute; background: var(--wall); pointer-events: auto; }
+.talk__wall--t { top: 0; left: 0; right: 0; height: var(--wt); background: var(--wall) radial-gradient(ellipse 70% 400px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }
+.talk__wall--b { bottom: 0; left: 0; right: 0; height: var(--wb); }
+.talk__wall--l { top: var(--wt); bottom: var(--wb); left: 0; width: var(--wl); }
+.talk__wall--r { top: var(--wt); bottom: var(--wb); right: 0; width: var(--wl); }
+.talk__frame { position: absolute; top: var(--ft); left: var(--fm); right: var(--fm); bottom: var(--fb); border: var(--gilt) solid transparent; border-image: url("../img/frame-gilt.svg") 90 round;
   box-shadow: 0 2px 4px rgba(30, 20, 10, .3), 0 30px 56px -22px rgba(40, 28, 16, .55), 0 80px 140px -50px rgba(40, 28, 16, .45); }
 /* the carved crest on top and a gilt boss on each corner, standing proud of the moulding */
-.talk__crest { position: absolute; z-index: 3; left: 50%; bottom: calc(100% + var(--gilt) * .5); width: var(--crest); height: auto; transform: translateX(-50%); filter: drop-shadow(0 8px 9px rgba(40, 25, 8, .32)); pointer-events: none; }
-.talk__boss { position: absolute; z-index: 3; width: calc(var(--gilt) * 1.5); height: auto; filter: drop-shadow(0 5px 6px rgba(40, 25, 8, .35)); pointer-events: none; }
+.talk__crest { position: absolute; z-index: 3; left: 50%; bottom: calc(100% + var(--gilt) * .5); width: var(--crest); height: auto; transform: translateX(-50%); filter: drop-shadow(0 8px 9px rgba(40, 25, 8, .32)); }
+.talk__boss { position: absolute; z-index: 3; width: calc(var(--gilt) * 1.5); height: auto; filter: drop-shadow(0 5px 6px rgba(40, 25, 8, .35)); }
 .talk__boss--tl { left: calc(var(--gilt) * -1.25); top: calc(var(--gilt) * -1.25); }
 .talk__boss--tr { right: calc(var(--gilt) * -1.25); top: calc(var(--gilt) * -1.25); }
 .talk__boss--bl { left: calc(var(--gilt) * -1.25); bottom: calc(var(--gilt) * -1.25); }
 .talk__boss--br { right: calc(var(--gilt) * -1.25); bottom: calc(var(--gilt) * -1.25); }
-.talk__paint { position: absolute; inset: 0; overflow: clip; background: #2A1E12; }
-.talk__stick { position: sticky; top: 0; height: 100svh; max-height: 100%; }
-.talk__stick img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-.talk__inner { position: relative; z-index: 1; container-type: inline-size; display: grid; justify-items: center; padding: clamp(36px, 5vw, 80px) clamp(14px, 3vw, 48px) clamp(56px, 7vw, 110px); }
-.talk__h { font-family: var(--serif); font-weight: 400; font-size: min(13.4cqi, 170px); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
+.talk__inner { position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--wt) + clamp(28px, 4vw, 64px)) calc(var(--wl) + 14px) calc(var(--wb) + clamp(40px, 6vw, 80px)); }
+.talk__h { --hs: min(calc((100vw - 2 * var(--wl) - 48px) / 7.3), 170px); font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
   text-shadow: 0 2px 30px rgba(28, 16, 4, .6), 0 1px 3px rgba(28, 16, 4, .45); }
-.talk .tf { position: relative; z-index: 1; margin-top: calc(min(13.4cqi, 170px) * -.3); }
+.talk .tf { position: relative; z-index: 1; margin-top: calc(min(calc((100vw - 2 * var(--wl) - 48px) / 7.3), 170px) * -.3); }
 .talk__alt { width: 100%; max-width: 640px; display: grid; justify-items: center; gap: 14px; padding: 30px 28px 32px; text-align: center; background: #F7F1E2; box-shadow: 0 34px 60px -34px rgba(60, 40, 20, .4); }
 .talk__or { font-family: var(--serif); font-size: clamp(26px, 1.2rem + 1vw, 34px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
 .talk__mail { color: var(--mid); font-size: 14px; }
@@ -808,7 +817,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .tf__chev { right: 18px; }
   .tf__chip span { font-size: 14px; }
   .talk__alt { padding: 26px 20px 28px; }
-  .talk__frame { width: 100%; }
+  .talk__inner { padding-left: calc(var(--wl) + 6px); padding-right: calc(var(--wl) + 6px); }
 }
 .cal { border: 1px dashed var(--line); min-height: 360px; display: grid; place-items: center; text-align: center; padding: 32px; border-radius: 6px; max-width: 760px; }
 .cal.has-cal { border: 0; padding: 0; display: block; }
