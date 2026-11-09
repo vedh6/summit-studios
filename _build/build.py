@@ -965,16 +965,20 @@ def talk_form(p='c'):
         f'<div class="tf__row"><input id="{p}-{fid}" name="{name}" type="{kind}" placeholder=" "{extra}><label for="{p}-{fid}">{label}</label></div>')
     kinds = ''.join(f'<option>{k}</option>' for k in TALK_KINDS)
     chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
-    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+    return f'''<form class="form tf" data-lenis-prevent data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
       <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+      <div class="tf__a">
       {row('name', 'name', 'Full name', extra=' autocomplete="name" required')}
       {row('business', 'business', 'Business / brand', extra=' autocomplete="organization"')}
       {row('email', 'email', 'Email', 'email', ' autocomplete="email" required')}
       {row('site', 'website', 'Current website, if you have one', 'url', ' inputmode="url"')}
       <div class="tf__row tf__row--select"><label class="sr" for="{p}-kind">What kind of business?</label><select id="{p}-kind" name="business_type"><option value="" selected>What kind of business?</option>{kinds}</select><svg class="tf__chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="tf__b">
       <fieldset class="tf__chips"><legend>How can we help?</legend><div class="tf__chipset">{chips}</div></fieldset>
       <div class="tf__row tf__row--area"><textarea id="{p}-msg" name="message" rows="4" placeholder=" "></textarea><label for="{p}-msg">Your message</label></div>
+      </div>
       <button class="tf__send" type="submit"><span data-label>Send message</span>{ARROW}</button>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, book a call and pick the next free slot.</p></div>
       <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
@@ -984,20 +988,20 @@ def talk_form(p='c'):
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
 CONTACT = f'''
 <section class="talk" id="top" data-ink aria-labelledby="talk-t">
-  <div class="talk__stage" aria-hidden="true">
-    <div class="talk__frame">
+  <div class="talk__scene">
+    <div class="talk__frame" aria-hidden="true">
       <img class="talk__art" src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high">
       <img class="talk__crest" src="assets/img/frame-crest.png" alt="" width="359" height="198">
     </div>
-  </div>
-  <div class="talk__inner">
-    <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
-    {talk_form('c')}
-    <div class="talk__alt" data-reveal>
-      <p class="talk__or">Prefer to talk it through?</p>
-      {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
-      <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+    <div class="talk__inner">
+      <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
+      {talk_form('c')}
     </div>
+  </div>
+  <div class="talk__alt">
+    <p class="talk__or">Prefer to talk it through?</p>
+    {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+    <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
   </div>
 </section>
 '''
