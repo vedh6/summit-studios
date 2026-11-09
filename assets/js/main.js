@@ -72,15 +72,6 @@
     });
   });
 
-  /* ---------- Booking embed ---------- */
-  d.querySelectorAll('.cal[data-cal]').forEach(c => {
-    const url = c.dataset.cal.trim();
-    if (!url) return;
-    c.classList.add('has-cal');
-    const fr = d.createElement('iframe'); fr.src = url; fr.title = 'Booking calendar'; fr.loading = 'lazy';
-    c.replaceChildren(fr);
-  });
-
   /* ---------- Things that grow into place when they come into view ---------- */
   const growers = d.querySelectorAll('[data-grow]');
   if (growers.length) {

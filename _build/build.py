@@ -101,7 +101,6 @@ def header(file=''):
   <a class="hdr__brand" href="index.html"><svg class="hdr__mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 38 18 10l6 12 5-8 15 24z" fill="currentColor"/><path d="M4 43h40" stroke="currentColor" stroke-width="2"/></svg>Summit Studios <span class="hdr__sub">Edition '26</span></a>
   <nav class="hdr__nav" id="nav" aria-label="Main">{links}</nav>
   <div class="hdr__right">
-    <a class="hdr__link hdr__site" href="index.html">summitxstudio.com</a>
     <a class="pill pill--hdr" href="contact.html"{cur if file == 'contact.html' else ''}>Contact</a>
     <button class="hdr__menu" type="button" data-menu aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
   </div>
@@ -720,7 +719,7 @@ def screen_quad():
           <p class="screen__p">{p}</p>
         </article>''' for i, (t, s, p) in enumerate(WHY))
     end = f'''<article class="screen__panel screen__panel--end" data-panel>
-          <div class="screen__cta">{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark')}</div>
+          <div class="screen__cta">{pill('Start a conversation', 'contact.html', 'pill--dark')}</div>
         </article>'''
     return f'<div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div>'
 
@@ -752,24 +751,24 @@ def chapter_why(tear=False):
     return html
 
 
-STEPS = [('Minute 0–5', 'We look at your current site: where it loses people and what the premium end of your market is doing.'),
-         ('Minute 5–10', 'You tell us what it needs to do: more quotes, more bookings, fewer missed calls.'),
-         ('Minute 10–15', 'We give you a straight answer on fit and rough cost. A written proposal follows if you want one.')]
+STEPS = [('You write', 'Tell us what your site needs to do: more quotes, more bookings, fewer missed calls. A few lines is plenty.'),
+         ('We look', 'We study your current site: where it loses people and what the premium end of your market is doing.'),
+         ('We answer', 'Within one working day, a straight answer on fit and rough cost, in writing. A full proposal follows if you want one.')]
 
 
 def chapter_start():
     body = f'''
-    {sub_head('Fifteen minutes, no pitch')}
+    {sub_head('No pitch, no pressure')}
     {feat_grid(STEPS)}
     <div class="cta" data-reveal>
-      {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+      {pill('Start a conversation', 'contact.html', 'pill--dark pill--big')}
       {chip('Get a free website review', 'get-started.html#review')}
-      {chip('Email & WhatsApp', 'contact.html')}
+      {chip('Email us', 'mailto:team@summitxstudio.com')}
     </div>
     {sub_head('Questions, answered')}
     {feat_grid([(q, a) for q, a in FAQ_ALL[:4]])}'''
     return chapter('start', 'Start', 'summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page',
-                   "Book a free 15-minute call. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body)
+                   "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body)
 
 
 def voices_section():
@@ -806,12 +805,12 @@ def footer(above='bg'):
   <div class="ftr__tear" aria-hidden="true">{torn_edge('ftr', seed=3)}</div>
   <div class="ftr__cta">
     <h2 class="ftr__h">{swash('Let&rsquo;s build something worth finding.')}</h2>
-    <div class="ftr__btns">{pill('Book a free 15-minute call', 'get-started.html', 'pill--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
+    <div class="ftr__btns">{pill('Start a conversation', 'contact.html', 'pill--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
   </div>
   <nav class="ftr__cols" aria-label="Footer">
     <div><p class="ftr__t">Services</p><a href="services.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="services.html#ai-receptionists">AI Concierge</a><a href="services.html#whatsapp">WhatsApp Automation</a><a href="services.html#crm">Custom Software</a></div>
     <div><p class="ftr__t">Studio</p><a href="industries.html">Industries</a><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="services.html#pricing">Pricing</a></div>
-    <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Book a call</a><a href="contact.html">Contact</a><a href="mailto:team@summitxstudio.com">team@summitxstudio.com</a></div>
+    <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Get started</a><a href="contact.html">Contact</a><a href="mailto:team@summitxstudio.com">team@summitxstudio.com</a></div>
     <div><p class="ftr__t">Worldwide</p><p class="ftr__note">Working with clients across time zones. Local time <span data-clock>--:--</span>.</p></div>
   </nav>
   <div class="ftr__base">
@@ -892,7 +891,7 @@ STUDIO = simple_page('workshop', 'A Renaissance workshop where apprentices work 
               f'''{sub_head('Three principles')}
     {feat_grid([('Exceptional design', "Sophisticated, distinctive and specific to your brand. If it could be anyone's website, it is not finished."), ('Seamless functionality', 'Fast on a phone, easy to navigate, and wired into booking, enquiries and the tools you already use.'), ('Measurable business impact', 'More calls, more bookings, more quotes. We design for the result, then measure it.')])}
     {sub_head('How a project runs')}
-    {feat_grid([('Brief', 'A 15-minute call. We look at your site and say what we would change.'), ('Design', 'A clear proposal, then design in the open. You see every stage.'), ('Build', 'Fast, clean and mobile-first, by the same people who designed it.'), ('Launch', 'Measured, tuned and handed over with everything you need.'), ('Care', 'Updates, monitoring and new features. We do not vanish.')])}''')
+    {feat_grid([('Brief', 'You tell us what you need. We look at your site and say what we would change.'), ('Design', 'A clear proposal, then design in the open. You see every stage.'), ('Build', 'Fast, clean and mobile-first, by the same people who designed it.'), ('Launch', 'Measured, tuned and handed over with everything you need.'), ('Care', 'Updates, monitoring and new features. We do not vanish.')])}''')
     + chapter_why() + chapter_start())
 
 
@@ -909,7 +908,7 @@ PRICE_CARDS = [('Website', 'For clinics, trades and professional firms that need
 
 
 def price_cards():
-    cards = ''.join(f'<div class="price__card{cls}"><h4 class="h4">{n}</h4><p class="fg__p">{f}</p><p class="n2">Quote on call</p><ul>{"".join(f"<li>{x}</li>" for x in items)}</ul>{chip("Book a call", "get-started.html")}</div>'
+    cards = ''.join(f'<div class="price__card{cls}"><h4 class="h4">{n}</h4><p class="fg__p">{f}</p><p class="n2">Quote on request</p><ul>{"".join(f"<li>{x}</li>" for x in items)}</ul>{chip("Get a quote", "contact.html")}</div>'
                     for n, f, items, cls in PRICE_CARDS)
     return f'<div class="price" data-reveal>{cards}</div>'
 
@@ -941,14 +940,14 @@ SERVICES_PAGE = simple_page('svc-hero', 'A Renaissance workshop where artisans d
       {media('assets/img/photo/dashboard.jpg', 'An ultrawide monitor showing a dashboard')}
       {media('assets/img/photo/code.jpg', 'Hands typing code on a laptop')}
     </div>''')
-    + chapter('pricing', 'Pricing', 'summit', 'A Renaissance figure on a mountain summit planting a banner', 'Know roughly what it will cost before you call. Every quote is specific to your project, and you get it in writing after the first call.',
+    + chapter('pricing', 'Pricing', 'summit', 'A Renaissance figure on a mountain summit planting a banner', 'Know roughly what it will cost before you get in touch. Every quote is specific to your project, and you get it in writing.',
               f'''{sub_head('Three starting points')}
     {price_cards()}''')
     + chapter_start())
 
 INDUSTRIES_CH = [('ind-industrial', 'Industrial'), ('ind-clinics', 'Clinics'), ('ind-trades', 'Trades'), ('start', 'Start')]
 INDUSTRIES_PAGE = simple_page('industrial', 'A Renaissance landscape with transmission pylons', 'Industries &middot; every industry buys differently',
-    ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Book a free 15-minute call', 'get-started.html')) for i in ['industrial', 'clinics', 'trades'])
+    ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Start a conversation', 'contact.html')) for i in ['industrial', 'clinics', 'trades'])
     + chapter_start())
 
 TALK_KINDS = ['Clinic or healthcare', 'Engineering or industrial', 'Trades or construction', 'Property or interiors',
@@ -980,7 +979,7 @@ def talk_form(p='c'):
       <div class="tf__row tf__row--area"><textarea id="{p}-msg" name="message" rows="4" placeholder=" "></textarea><label for="{p}-msg">Your message</label></div>
       </div>
       <button class="tf__send" type="submit"><span data-label>Send message</span>{ARROW}</button>
-      <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, book a call and pick the next free slot.</p></div>
+      <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, email <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>.</p></div>
       <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>'''
 
@@ -996,28 +995,24 @@ CONTACT = f'''
     <h1 class="talk__h" id="talk-t">Let&rsquo;s start a<br>conversation<br>about it.</h1>
     {talk_form('c')}
     <div class="talk__alt">
-      <p class="talk__or">Prefer to talk it through?</p>
-      {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
-      <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+      <p class="talk__or">Prefer email?</p>
+      <p class="talk__mail">Write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
     </div>
   </div>
 </section>
 '''
 
-GET_STARTED_CH = [('call', 'The call'), ('book', 'Pick a time'), ('review', 'Free review')]
-GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit planting a banner', 'Get started &middot; book a free 15-minute call',
-    chapter('call', 'Start', 'summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page',
-            'No pitch, no pressure. We look at your current site, you tell us what you need, and we tell you honestly whether we are the right fit and roughly what it would cost.',
-            f'''{sub_head('What happens on the call')}
+GET_STARTED_CH = [('start', 'Start'), ('review', 'Free review')]
+GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit planting a banner', 'Get started &middot; tell us what you need',
+    chapter('start', 'Start', 'summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page',
+            'No pitch, no pressure. Tell us what you need, and within one working day we tell you honestly whether we are the right fit and roughly what it would cost.',
+            f'''{sub_head('How it starts')}
     {feat_grid(STEPS)}
-    <div id="book"></div>
-    {sub_head('Pick a time')}
-    <!-- TODO: put your Calendly or Cal.com link in data-cal, e.g. data-cal="https://calendly.com/your-name/15min" -->
-    <div class="cal" data-cal="" data-reveal><p class="cal__msg"><span class="label">Booking calendar</span>Add your Calendly or Cal.com link to this page and the calendar will appear here. Until then, use the form below.</p></div>
-    {sub_head('Prefer to write?')}
+    <div id="write"></div>
+    {sub_head('Tell us about it')}
     {talk_form('g')}
     <div id="review"></div>
-    {sub_head('Not ready for a call?')}
+    {sub_head('Not ready yet?')}
     {spot('Get a free review of your current website', 'Send us the link. We will reply with a short video or written note on what we would change and why. No pitch, no obligation.')}
     <form class="form form--inline" data-send data-subject="Free website review request" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
@@ -1047,8 +1042,8 @@ PAGES = {
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
     'services.html': ('Services | Summit Studios', 'Websites that bring in customers, AI receptionists, WhatsApp automation, custom CRMs, web apps and dashboards, backend and maintenance.', SERVICES_PAGE, SERVICES_CH, False),
     'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
-    'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Book a free 15-minute call, send a message, or reach us by email.', CONTACT, CONTACT_CH, False),
-    'get-started.html': ('Book a free 15-minute call | Summit Studios', 'Book a free 15-minute call with Summit Studios. We look at your current site, you tell us what you need, and we give you a straight answer on fit and cost.', GET_STARTED, GET_STARTED_CH, False),
+    'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
+    'get-started.html': ('Get started | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
 }
 

@@ -9,7 +9,7 @@ DIVE_CODE = [
     '&lt;<b>header</b> <i>class</i>=<u>"nav"</u>&gt;',
     '  &lt;<b>a</b> <i>class</i>=<u>"mark"</u> <i>href</i>=<u>"/"</u>&gt;Yourbrand&lt;/<b>a</b>&gt;',
     '  &lt;<b>nav</b>&gt;Work &middot; Services &middot; Contact&lt;/<b>nav</b>&gt;',
-    '  &lt;<b>a</b> <i>class</i>=<u>"btn"</u> <i>href</i>=<u>"<span class="hl">/book</span>"</u>&gt;Book a call&lt;/<b>a</b>&gt;',
+    '  &lt;<b>a</b> <i>class</i>=<u>"btn"</u> <i>href</i>=<u>"<span class="hl">/quote</span>"</u>&gt;Get a quote&lt;/<b>a</b>&gt;',
     '&lt;/<b>header</b>&gt;',
     '&lt;<b>main</b>&gt;',
     '  &lt;<b>section</b> <i>class</i>=<u>"hero"</u>&gt;',
@@ -53,11 +53,11 @@ def dive_sheets():
         'M0 158 C50 130 90 180 150 150 S240 110 300 140', 'M40 200 C70 170 120 184 150 164 S230 152 300 172'])
     design = f'''<div class="dive__layer dv-design" data-layer="04 &mdash; Design">{lab(3)}
         <div class="dv-page">
-          <div class="dv-page__nav" data-ui><span class="dv-page__mark">Yourbrand</span><span class="dv-page__links"><i></i><i></i><i></i></span><span class="dv-page__btn">Book a call</span></div>
+          <div class="dv-page__nav" data-ui><span class="dv-page__mark">Yourbrand</span><span class="dv-page__links"><i></i><i></i><i></i></span><span class="dv-page__btn">Get a quote</span></div>
           <div class="dv-page__hero">
             <div class="dv-page__copy" data-ui>
               <p class="dv-page__h">Work that speaks for itself. Now your site does too.</p>
-              <p class="dv-page__cta"><span class="dv-page__btn dv-page__btn--mint" data-cta>Book a call &rarr;</span></p>
+              <p class="dv-page__cta"><span class="dv-page__btn dv-page__btn--mint" data-cta>Get a quote &rarr;</span></p>
             </div>
             <div class="dv-page__img" data-ui><svg viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">{contours}</svg></div>
           </div>

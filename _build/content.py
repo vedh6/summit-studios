@@ -115,7 +115,7 @@ FAQ_ALL = [
     ('Who do you work with?',
      'Established businesses worldwide: industrial and engineering firms, healthcare clinics, and trades, property and professional services.'),
     ('How much does a website cost?',
-     "It depends on what the site has to do. Pricing guidance is on the way for each type of project. In the meantime, book a free 15-minute call and we'll give you a straight answer and a clear quote."),
+     "It depends on what the site has to do. Pricing guidance is on the way for each type of project. In the meantime, send us a message and we'll give you a straight answer and a clear quote."),
     ('How long does it take?',
      "Faster than most agencies, because we design and build in-house with no hand-offs. You'll get a delivery date in the proposal, and we keep to it."),
     ('Can I update the site myself after launch?',
