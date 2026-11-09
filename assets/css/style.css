@@ -96,7 +96,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 html[data-ui="dark"] { --ui: var(--paper); --ui-dim: rgba(247, 247, 238, .6); --ui-line: var(--line-light); }
 html[data-ui="light"] { --ui: var(--ink); --ui-dim: rgba(41, 41, 25, .6); --ui-line: var(--line); }
 html.ui-ink[data-ui] { --ui: var(--ink); --ui-dim: rgba(41, 41, 25, .6); --ui-line: var(--line); }
-html.ui-ink[data-ui] .pill--hdr { background: var(--black); color: var(--white); }
+html.ui-ink[data-ui] .pill--hdr { background: var(--black); color: var(--white); --ic: var(--black); }
 
 /* ---------- Header ---------- */
 .hdr {
@@ -111,7 +111,7 @@ html.ui-ink[data-ui] .pill--hdr { background: var(--black); color: var(--white);
 .hdr__link { padding: 5px 8px; border-radius: 4px; font-weight: 500; font-size: 14px; line-height: 1; transition: background .2s; }
 .hdr__link:hover, .hdr__link[aria-current="page"] { background: rgba(127, 127, 110, .18); }
 .hdr__right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
-html[data-ui="light"] .pill--hdr { background: var(--black); color: var(--white); }
+html[data-ui="light"] .pill--hdr { background: var(--black); color: var(--white); --ic: var(--black); }
 .hdr__menu { display: none; width: 34px; height: 34px; flex-direction: column; justify-content: center; gap: 6px; }
 .hdr__menu span { display: block; height: 2px; background: currentColor; border-radius: 1px; transition: transform .3s, opacity .3s; }
 html.nav-open .hdr__menu span:first-child { transform: translateY(4px) rotate(45deg); }
@@ -355,7 +355,16 @@ html:not(.has-portal) .portal { display: none; }
 .ch--rip .dive { --paper: var(--parchment); --paper-2: #E0D5BB; --mint: #D8CCAF; --mint-lite: #F3ECDC; --cream: #F8F3E6; --line: rgba(70, 50, 25, .18); }
 .rip-space { height: 100svh; }
 html.ui-over-paint[data-ui] { --ui: var(--paper); --ui-dim: rgba(247, 247, 238, .6); --ui-line: var(--line-light); }
-html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--black); }
+html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--black); --ic: var(--white); }
+/* the header's Contact button: a round arrow badge that glides from the right end to the left and turns as
+   the label slides over (after the user's 'button with icon' reference) */
+.pill--go { --ic: var(--white); position: relative; overflow: hidden; height: 40px; padding: 0 50px 0 20px; font-size: 15px; transition: padding .5s var(--ease), background .3s, color .3s; }
+.pill--go .pill__t { position: relative; z-index: 1; }
+.pill--go .pill__ic { position: absolute; top: 4px; right: 4px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: currentColor; transition: right .5s var(--ease), transform .5s var(--ease); }
+.pill--go .pill__ic svg { color: var(--ic); }
+.pill--go:hover { padding: 0 20px 0 50px; transform: none; }
+.pill--go:hover .pill__ic { right: calc(100% - 36px); transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .pill--go, .pill--go .pill__ic { transition: none; } }
 .wave-tear__specks { fill: #FBF8EF; }
 .paint--etch { position: absolute; inset: 0; filter: grayscale(1) sepia(.25) contrast(2.4) brightness(.38); mix-blend-mode: normal; pointer-events: none; }
 .wave-tear { width: 100%; height: 100%; display: block; overflow: hidden; }

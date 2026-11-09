@@ -98,10 +98,10 @@ def header(file=''):
     cur = ' aria-current="page"'
     links = ''.join(f'<a class="hdr__link" href="{h}"{cur if h == file else ""}>{t}</a>' for h, t in NAV)
     return f'''<header class="hdr" data-hdr>
-  <a class="hdr__brand" href="index.html"><svg class="hdr__mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 38 18 10l6 12 5-8 15 24z" fill="currentColor"/><path d="M4 43h40" stroke="currentColor" stroke-width="2"/></svg>Summit Studios <span class="hdr__sub">Edition '26</span></a>
+  <a class="hdr__brand" href="index.html"><svg class="hdr__mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 38 18 10l6 12 5-8 15 24z" fill="currentColor"/><path d="M4 43h40" stroke="currentColor" stroke-width="2"/></svg>Summit Studios</a>
   <nav class="hdr__nav" id="nav" aria-label="Main">{links}</nav>
   <div class="hdr__right">
-    <a class="pill pill--hdr" href="contact.html"{cur if file == 'contact.html' else ''}>Contact</a>
+    <a class="pill pill--hdr pill--go" href="contact.html"{cur if file == 'contact.html' else ''}><span class="pill__t">Contact</span><span class="pill__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     <button class="hdr__menu" type="button" data-menu aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
   </div>
 </header>'''
@@ -696,7 +696,7 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
 
 def orbit_walk():
     """Home, Why us: the camera walks down the painted loggia, from midway along the table, and
-    ends inside the laptop (the why-orbit clip from 5.4 s, CLIP.t0 in motion.js, scrubbed by scroll
+    ends inside the laptop (the why-orbit clip, repainted as an oil painting and upscaled to 4K, scrubbed by scroll
     in orbit() in motion.js). Nothing else shows during the walk. Desktop only; phones keep the
     still and the stacked reasons."""
     return '''<div class="orbit" data-orbit data-length="315" aria-hidden="true">
@@ -744,7 +744,7 @@ def chapter_why(tear=False):
     html = chapter('why', 'Why us', paint[0], paint[1],
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
     if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
-        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".67,.56"', 1)
+        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".654,.556"', 1)
         html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
         html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video><img class="paint paint--orbit-end" data-orbit-end src="assets/img/paint/why-orbit-end.jpg" alt="" width="3840" height="2160" loading="lazy" decoding="async">' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
