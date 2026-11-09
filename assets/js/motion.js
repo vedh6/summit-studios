@@ -893,15 +893,21 @@ void main(){
       video.style.transform = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
     };
     const quadAt = kk => { const s = 1 + (g.S - 1) * kk; return g.q.map(([x, y]) => [g.cx + (x - g.cx) * s + g.tx * kk, g.cy + (y - g.cy) * s + g.ty * kk]); };
-    // the text layer, mapped onto the screen wherever the push-in has it
+    // the text layer, mapped onto the screen wherever the push-in has it. Its own size is the
+    // screen's size at full push-in, set once per resize: the type is laid out and painted once,
+    // and scrolling only moves the transform (no relayout or repaint per frame)
     const quad = d.querySelector('[data-screen-quad]');
+    let box = null;
+    const sizeBox = () => {
+      const q = quadAt(1), len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+      box = [(len(q[0], q[1]) + len(q[3], q[2])) / 2, (len(q[0], q[3]) + len(q[1], q[2])) / 2];
+      quad.style.width = box[0].toFixed(1) + 'px'; quad.style.height = box[1].toFixed(1) + 'px';
+      quad.style.fontSize = (box[0] / 30).toFixed(2) + 'px';
+    };
     const mapScreen = () => {
       if (!quad) return;
-      const q = quadAt(k), len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
-      const w0 = (len(q[0], q[1]) + len(q[3], q[2])) / 2, h0 = (len(q[0], q[3]) + len(q[1], q[2])) / 2;
-      quad.style.width = w0.toFixed(1) + 'px'; quad.style.height = h0.toFixed(1) + 'px';
-      quad.style.fontSize = (w0 / 30).toFixed(2) + 'px';
-      quad.style.transform = homography(w0, h0, q);
+      if (!box) sizeBox();
+      quad.style.transform = homography(box[0], box[1], quadAt(k));
     };
     // the clip travels over the first 70% of the walk; the push-in takes the last 30%, on the
     // held last frame, with the first reason already on the screen
@@ -928,14 +934,14 @@ void main(){
       },
       onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
     });
-    const refresh = () => { g = geo(); place(); mapScreen(); };
+    const refresh = () => { g = geo(); box = null; place(); mapScreen(); };
     refresh();
     ScrollTrigger.addEventListener('refresh', refresh);
     addEventListener('resize', refresh);
     if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
     // the screen phase can insist on the walk's final state (full push-in, last frame), so the
     // type never lands on a mid-walk frame if the scrub is still catching up
-    orbitFinal = () => { k = 1; whyK = 1; place(); mapScreen(); if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
+    orbitFinal = () => { if (k !== 1) { k = 1; whyK = 1; place(); mapScreen(); } if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
   }
 
   // The CSS matrix3d that maps a w x h box (origin top-left) onto the quad q (TL, TR, BR, BL)
@@ -968,7 +974,8 @@ void main(){
       const out = panels[active], inn = panels[i]; active = i;
       panels.forEach((p, k) => p.classList.toggle('is-active', k === i));
       if (out) gsap.to(out, { opacity: 0, y: -18, duration: .3, ease: 'power2.in', overwrite: true });
-      if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true }); }
+      // the lines get their own layers only while they move, so the screen's text isn't repainted every frame
+      if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28, willChange: 'transform, opacity' }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true, onComplete: () => gsap.set(inn.children, { clearProps: 'willChange' }) }); }
     };
     screenShow = setActive;
     ScrollTrigger.create({
