@@ -851,7 +851,8 @@ void main(){
      Over the screen spacer the four reasons and the call to action take turns ON the screen:
      a text layer is mapped onto the screen's four corners (a homography), so the type sits
      in the screen's plane. Nothing shows during the walk. Desktop only. */
-  const CLIP = { w: 2560, h: 1440, quad: [[.1414, .1596], [.6991, .1998], [.7353, .7958], [.1606, .8665]] };   // the screen's corners in the last frame (TL, TR, BR, BL)
+  // t0: where the walk starts in the clip (the mid-room view); the file keeps the full walk, encoded at full quality
+  const CLIP = { w: 2560, h: 1440, t0: 5.4, quad: [[.1414, .1596], [.6991, .1998], [.7353, .7958], [.1606, .8665]] };   // the screen's corners in the last frame (TL, TR, BR, BL)
   // shared between orbit() and screen(): the push-in fraction, whether the screen phase is on,
   // and the hooks each gives the other
   let whyK = 0, whyPhase = false, whyAtEnd = false, orbitFinal = null, screenShow = null;
@@ -863,7 +864,7 @@ void main(){
     if (!video || !desktop() || reduced) return;
     root.classList.add('has-orbit');
     sp.style.setProperty('--orbit-len', sp.dataset.length || 420);
-    let ready = false, target = 0, shown = 0;
+    let ready = false, target = CLIP.t0, shown = CLIP.t0;
     gsap.ticker.add(() => {
       if (!ready || !video.duration) return;
       const atEnd = !video.seeking && Math.abs(shown - (video.duration - .06)) < .05;
@@ -874,7 +875,7 @@ void main(){
       shown += Math.abs(diff) < .04 ? diff : diff * .35;
       video.currentTime = shown;
     });
-    loadClip(video, () => { ready = true; });
+    loadClip(video, () => { video.currentTime = CLIP.t0; ready = true; });
 
     // where the screen's corners sit on the page (object-fit: cover), and the push-in that
     // centres the screen and grows it as far as it still fits
@@ -904,10 +905,20 @@ void main(){
       quad.style.width = box[0].toFixed(1) + 'px'; quad.style.height = box[1].toFixed(1) + 'px';
       quad.style.fontSize = (box[0] / 30).toFixed(2) + 'px';
     };
+    // While the push-in moves, the layer keeps one drawing that the GPU just rescales (smooth);
+    // as soon as it rests, will-change comes off and the browser redraws it at its exact size (sharp).
+    let lastTf = '', restT = 0, moving = false;
+    const rest = () => { moving = false; quad.style.willChange = 'auto'; };
     const mapScreen = () => {
       if (!quad) return;
       if (!box) sizeBox();
-      quad.style.transform = homography(box[0], box[1], quadAt(k));
+      const tf = homography(box[0], box[1], quadAt(k));
+      if (tf === lastTf) return;
+      lastTf = tf;
+      if (!moving) { moving = true; quad.style.willChange = 'transform'; }
+      quad.style.transform = tf;
+      clearTimeout(restT);
+      restT = setTimeout(rest, 120);
     };
     // the clip travels over the first 70% of the walk; the push-in takes the last 30%, on the
     // held last frame, with the first reason already on the screen
@@ -926,7 +937,7 @@ void main(){
       onUpdate: self => {
         const p = self.progress;
         fadeOpen(p);
-        if (ready && video.duration) target = gsap.utils.clamp(0, 1, p / TRAVEL) * (video.duration - .06);
+        if (ready && video.duration) target = CLIP.t0 + gsap.utils.clamp(0, 1, p / TRAVEL) * (video.duration - .06 - CLIP.t0);
         k = gsap.utils.clamp(0, 1, (p - TRAVEL) / (1 - TRAVEL));
         place(); mapScreen();
         whyK = k; whyLive();
@@ -934,7 +945,7 @@ void main(){
       },
       onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
     });
-    const refresh = () => { g = geo(); box = null; place(); mapScreen(); };
+    const refresh = () => { g = geo(); box = null; lastTf = ''; place(); mapScreen(); };
     refresh();
     ScrollTrigger.addEventListener('refresh', refresh);
     addEventListener('resize', refresh);

@@ -932,7 +932,7 @@ html.has-orbit .orbit__pin { position: sticky; top: 0; height: 100svh; }
 .screen { display: none; }
 html.has-orbit .screen { display: block; position: relative; height: calc(var(--screen-len, 480) * 1svh); margin: 0 calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; }
 html.has-orbit .screen__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
-.screen__quad { position: absolute; left: 0; top: 0; z-index: 2; transform-origin: 0 0; will-change: transform; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
+.screen__quad { position: absolute; left: 0; top: 0; z-index: 2; transform-origin: 0 0; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
 /* the type sits in the sticky background, under the chapter body: let clicks through the body's empty spacers to it */
 html.has-orbit .ch--rip .ch__body { pointer-events: none; }
 html.has-orbit .ch--rip .ch__body > * { pointer-events: auto; }

@@ -696,7 +696,7 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
 
 def orbit_walk():
     """Home, Why us: the camera walks down the painted loggia, from midway along the table, and
-    ends inside the laptop (the why-orbit clip, 5.4 s to 11.5 s of the source, scrubbed by scroll
+    ends inside the laptop (the why-orbit clip from 5.4 s, CLIP.t0 in motion.js, scrubbed by scroll
     in orbit() in motion.js). Nothing else shows during the walk. Desktop only; phones keep the
     still and the stacked reasons."""
     return '''<div class="orbit" data-orbit data-length="315" aria-hidden="true">
