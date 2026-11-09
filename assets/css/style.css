@@ -742,6 +742,8 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .form.is-sent .form__ok { display: grid; gap: 8px; }
 .form__err { display: none; padding: 20px; background: #F4E3D6; border-radius: 6px; }
 .form.is-error .form__err { display: grid; gap: 8px; }
+.form__why { font-size: 13px; color: var(--mid); }
+.form__why:empty { display: none; }
 .form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* spam trap: people never see or fill it */
 .form [type=submit][disabled] { opacity: .6; cursor: progress; }
 

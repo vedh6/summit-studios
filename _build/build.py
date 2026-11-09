@@ -972,7 +972,7 @@ def talk_form(p='c'):
       {row('name', 'name', 'Full name', extra=' autocomplete="name" required')}
       {row('business', 'business', 'Business / brand', extra=' autocomplete="organization"')}
       {row('email', 'email', 'Email', 'email', ' autocomplete="email" required')}
-      {row('site', 'website', 'Current website, if you have one', 'url', ' inputmode="url"')}
+      {row('site', 'website', 'Current website, if you have one', 'text', ' autocomplete="url"')}
       <div class="tf__row tf__row--select"><label class="sr" for="{p}-kind">What kind of business?</label><select id="{p}-kind" name="business_type"><option value="" selected>What kind of business?</option>{kinds}</select><svg class="tf__chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </div>
       <div class="tf__b">

@@ -52,14 +52,23 @@
       const data = {};   // a field ticked more than once (the help chips) goes as one comma-separated line
       for (const [k, v] of new FormData(f)) data[k] = k in data ? data[k] + ', ' + v : v;
       data._url = location.href;
+      // sent as an ordinary form post (not JSON), so the browser needn't ask FormSubmit's permission
+      // first (that round trip alone took 10-15 s); given up on after 30 s so it never hangs
+      const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 30000);
+      let why = '';
       try {
-        const r = await fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+        const r = await fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', headers: { Accept: 'application/json' }, body: new URLSearchParams(data), signal: ctl.signal });
         const j = await r.json().catch(() => ({}));
-        if (!r.ok || String(j.success) !== 'true') throw new Error(j.message || r.status);
+        if (!r.ok || String(j.success) !== 'true') { why = j.message || ''; throw new Error(why || r.status); }
         f.classList.add('is-sent');
       } catch (err) {
+        if (err.name === 'AbortError') why = 'The form service took too long to answer.';
+        const box = f.querySelector('.form__err');
+        let p = box && box.querySelector('.form__why');
+        if (box && !p) { p = d.createElement('p'); p.className = 'form__why'; box.append(p); }
+        if (p) p.textContent = why;   // e.g. FormSubmit's "This form needs Activation..." while it's being set up
         f.classList.add('is-error');
-      } finally { btn.disabled = false; lab.textContent = label; }
+      } finally { clearTimeout(timer); btn.disabled = false; lab.textContent = label; }
     });
   });
 
