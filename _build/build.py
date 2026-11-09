@@ -967,7 +967,7 @@ def talk_form(p='c'):
     chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
     return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
-      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_cc" value="team@summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="tf__a">
       {row('name', 'name', 'Full name', extra=' autocomplete="name" required')}
       {row('business', 'business', 'Business / brand', extra=' autocomplete="organization"')}
