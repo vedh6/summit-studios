@@ -123,7 +123,8 @@
       if (!zoomAt || !img.naturalWidth) return;
       const w = bg.clientWidth, h = bg.clientHeight, c = Math.max(w / img.naturalWidth, h / img.naturalHeight);
       const dw = img.naturalWidth * c, dh2 = img.naturalHeight * c;
-      const o = `${((w - dw) / 2 + zoomAt[0] * dw).toFixed(1)}px ${((h - dh2) / 2 + zoomAt[1] * dh2).toFixed(1)}px`;
+      const pos = getComputedStyle(img).objectPosition.split(' ').map(v => (v.endsWith('%') ? parseFloat(v) / 100 : .5));   // where cover crops the picture
+      const o = `${((w - dw) * pos[0] + zoomAt[0] * dw).toFixed(1)}px ${((h - dh2) * pos[1] + zoomAt[1] * dh2).toFixed(1)}px`;
       [img, etch].forEach(el => { if (el) { el.style.transformOrigin = o; el.style.willChange = 'transform'; } });
     };   // the parts, not the card (its reveal tween owns the card's opacity)
     let etch = null;

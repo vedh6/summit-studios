@@ -127,13 +127,19 @@ FAQ_ALL = [
 ]
 
 
-# Client voices on the home page.
-# PLACEHOLDERS: draft wording only. Replace with real, approved quotes (and names) before launch.
+# Client voices on the home page: real reviews, carried over from the studio's previous site.
+# (quote, name, role)
 VOICES = [
-    ('Enquiries used to come in through a contact form nobody checked. Now they land on my phone with the job, the budget and the timeline already filled in.',
-     'Director', 'Engineering firm'),
-    ('Patients book at night, get a reminder the day before and actually turn up. The front desk finally has time to look after the people in the room.',
-     'Practice owner', 'Private clinic'),
-    ('They asked better questions about our business than we had asked ourselves. The site looks like us, only sharper, and it brings in work.',
-     'Founder', 'Builders &amp; developers'),
+    ('They understood what we needed without much back and forth. Clean, professional, and our patients find it easy to use.',
+     'Dr. Dheeraj', 'Founder, Rivelin Aligners'),
+    ('Quick, reliable, and they didn’t make me chase them for updates. The final result looked better than I expected.',
+     'Dr. Mariam Anjum Iftikhar', 'Gynaec-Oncologist &amp; Robotic Surgeon'),
+    ('We needed a team that could keep up with our pace and actually deliver. They did, no drama.',
+     'Prasanna Technologies', 'Software firm'),
+    ('Really appreciate the effort and patience your team showed, especially with all the revisions. Professional throughout.',
+     'Dr. Shravan Shetty', 'Orthodontist'),
+    ('Got exactly what I asked for, no unnecessary complications. Easy to work with and delivered on time.',
+     'Dr. Joylene D’Almeida', 'Obstetrician &amp; Gynaecologist'),
+    ('Clean work, fast turnaround. They kept things simple and the end result speaks for itself.',
+     'Dr. Vivian R D’Almeida', 'Orthopaedic Surgeon'),
 ]

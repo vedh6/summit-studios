@@ -419,7 +419,8 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voices__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 64px; }
 .voice { position: relative; margin: 0; padding: 34px 30px 28px; border-radius: 6px; background: rgba(250, 245, 232, .78); display: grid; gap: 28px; align-content: space-between; box-shadow: 0 1px 0 rgba(90, 60, 30, .08); }
 .voice:nth-child(2) { background: #2E1A10; background-image: var(--tex-paint), radial-gradient(120% 90% at 70% 30%, #5E3622, #2A170E);
-  background-size: 320px 320px, 480px 480px, 200px 200px, 100% 100%; background-blend-mode: overlay, multiply, soft-light, normal; color: var(--paper); transform: translateY(28px); }
+  background-size: 320px 320px, 480px 480px, 200px 200px, 100% 100%; background-blend-mode: overlay, multiply, soft-light, normal; color: var(--paper); }
+.voice:nth-child(3n+2) { transform: translateY(28px); }   /* the middle column sits a step lower */
 .voice__mark { font-family: var(--script); font-size: 96px; line-height: 1; color: #B8873E; height: 44px; overflow: visible; display: block; margin-top: -4px; }
 .voice__q { margin: 0; font-family: var(--serif); font-size: clamp(22px, 1rem + .7vw, 28px); line-height: 1.08; letter-spacing: -.02em; }
 .voice__by { display: grid; gap: 2px; font-family: var(--sans); font-size: 14px; }
@@ -774,7 +775,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .call__tag { display: none; }
   .steps { grid-template-columns: 1fr; gap: 28px; }
   .split { grid-template-columns: 1fr; gap: 24px; }
-  .voices { padding: 72px 12px 64px; } .voices__row { grid-template-columns: 1fr; margin-top: 36px; } .voice:nth-child(2) { transform: none; }
+  .voices { padding: 72px 12px 64px; } .voices__row { grid-template-columns: 1fr; margin-top: 36px; } .voice:nth-child(3n+2) { transform: none; }
   .faq { grid-template-columns: 1fr; padding: 48px 12px 90px; gap: 30px; } .faq__head { position: static; } .faq__a { padding-right: 0; font-size: 18px; }
   .ftr { padding: 130px 12px 20px; gap: 56px; } .ftr__tear { height: 110px; } .ftr__cta { grid-template-columns: 1fr; } .ftr__cols { grid-template-columns: 1fr 1fr; }
   .duo { grid-template-columns: 1fr; padding: 48px 12px 24px; gap: 48px; }
@@ -914,6 +915,8 @@ html.has-tunnel .tun__prompt { display: block; }
    fly-through plays over its screen. The spacer gives the walk its scroll length. */
 .paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }   /* transform and origin set by orbit() */
 html.orbit-live .paint--orbit { opacity: 1; }
+/* phones and tablets keep the still: crop it so the laptop on the table stays in view */
+html:not(.has-orbit) .ch--rip .ch__bg .paint:not(video) { object-position: 65% 50%; }
 /* Why us (home): the heading and its line stay put through the walk; orbit() fades them as the
    camera nears the laptop. The negative margin starts the walk a short beat after they arrive.
    They sit above the screen's button, so they must let clicks through. */
@@ -942,5 +945,8 @@ html.screen-live .screen__quad { opacity: 1; }
 .screen__t { font-family: var(--grotesk); font-weight: 700; font-size: 2.15em; line-height: .96; letter-spacing: -.035em; text-wrap: balance; max-width: 13ch; }
 .screen__p { font-family: var(--serif); font-size: 1.08em; line-height: 1.1; letter-spacing: -.015em; max-width: 31ch; color: #3B2A18; }
 .screen__cta { margin-top: .35em; }
+.screen__panel--end { justify-items: center; }   /* the last screen is just the call to action */
+.screen__panel--end .screen__cta { margin-top: 0; }
+.screen__panel--end .pill { font-size: .56em; height: 2.6em; padding: 0 1.25em; }   /* sized to the screen, not the page */
 .why-fallback { display: contents; }
 html.has-orbit .why-fallback { display: none; }

@@ -695,10 +695,11 @@ WAVE_TEAR = ('<div class="tear-down" aria-hidden="true" data-rip><svg class="wav
 
 
 def orbit_walk():
-    """Home, Why us: the camera walks the painted loggia and ends inside the laptop on the table
-    (the why-orbit clip, scrubbed by scroll in orbit() in motion.js). Nothing else shows during
-    the walk. Desktop only; phones keep the still and the stacked reasons."""
-    return '''<div class="orbit" data-orbit data-length="420" aria-hidden="true">
+    """Home, Why us: the camera walks down the painted loggia, from midway along the table, and
+    ends inside the laptop (the why-orbit clip, 5.4 s to 11.5 s of the source, scrubbed by scroll
+    in orbit() in motion.js). Nothing else shows during the walk. Desktop only; phones keep the
+    still and the stacked reasons."""
+    return '''<div class="orbit" data-orbit data-length="315" aria-hidden="true">
       <div class="orbit__pin"></div>
     </div>'''
 
@@ -718,8 +719,6 @@ def screen_quad():
           <p class="screen__p">{p}</p>
         </article>''' for i, (t, s, p) in enumerate(WHY))
     end = f'''<article class="screen__panel screen__panel--end" data-panel>
-          <p class="screen__num label">Why us</p>
-          <h3 class="screen__t">{swash('Premium work from the people who build it.')}</h3>
           <div class="screen__cta">{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark')}</div>
         </article>'''
     return f'<div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div>'
@@ -740,12 +739,12 @@ def chapter_why(tear=False):
     {sub_head('Four reasons, one studio')}
     {feat_grid([(t, p) for t, s, p in WHY])}
     {scene}'''
-    paint = ('why-orbit-poster', 'A sunlit Renaissance loggia seen from the end of a long marble table, with a modern laptop at its far end and Tuscan hills beyond the arches') if tear else \
+    paint = ('why-orbit-poster', 'A sunlit Renaissance loggia with a long marble table, a modern laptop open on it a few steps ahead and Tuscan hills beyond the arches') if tear else \
             ('studio-review', 'A Renaissance noblewoman and a young designer reviewing printed website layouts together')
     html = chapter('why', 'Why us', paint[0], paint[1],
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
     if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
-        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".71,.55"', 1)
+        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".67,.56"', 1)
         html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
         html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
@@ -773,12 +772,12 @@ def chapter_start():
 
 
 def voices_section():
-    """Home: three client quotes on parchment, big serif."""
+    """Home: client reviews on parchment, big serif, three to a row."""
     cards = ''.join(f'''<figure class="voice" data-reveal>
       <span class="voice__mark" aria-hidden="true">&ldquo;</span>
       <blockquote class="voice__q">{q}</blockquote>
-      <figcaption class="voice__by"><span class="voice__role">{role}</span><span class="voice__org">{org}</span></figcaption>
-    </figure>''' for q, role, org in VOICES)
+      <figcaption class="voice__by"><span class="voice__role">{name}</span><span class="voice__org">{role}</span></figcaption>
+    </figure>''' for q, name, role in VOICES)
     return f'''<section class="voices" id="voices" aria-labelledby="voices-t" data-ink>
   <p class="label voices__eyebrow">Client voices</p>
   <h2 class="voices__h" id="voices-t">{swash('In their words.')}</h2>

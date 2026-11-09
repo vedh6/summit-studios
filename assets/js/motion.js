@@ -903,14 +903,14 @@ void main(){
       quad.style.fontSize = (w0 / 30).toFixed(2) + 'px';
       quad.style.transform = homography(w0, h0, q);
     };
-    // the clip travels over the first 80% of the walk; the push-in takes the last 20%, on the
+    // the clip travels over the first 70% of the walk; the push-in takes the last 30%, on the
     // held last frame, with the first reason already on the screen
-    const TRAVEL = .8;
+    const TRAVEL = .7;
     // "Why us" and its line stay through the travel and leave as the camera nears the laptop
     const open = sec.querySelector('.ch__open');
     const fadeOpen = p => {
       if (!open) return;
-      const f = 1 - gsap.utils.clamp(0, 1, (p - .56) / .12);
+      const f = 1 - gsap.utils.clamp(0, 1, (p - .3) / .19);
       open.style.opacity = f.toFixed(3);
       open.style.transform = f < 1 ? `translateY(${(-(1 - f) * 28).toFixed(1)}px)` : '';
     };
