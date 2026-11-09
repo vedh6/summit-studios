@@ -150,8 +150,9 @@ def paper_defs():
             f'<image id="pt-g1" href="{g1}" width="240" height="240" preserveAspectRatio="none"/>')
     tiles = ''.join(f'<use href="#pt-g2" x="{x}" y="{y}"/>' for y in range(0, 720, 180) for x in range(0, 720, 180)) + \
             ''.join(f'<use href="#pt-g1" x="{x}" y="{y}"/>' for y in range(0, 720, 240) for x in range(0, 720, 240))
-    pats = ''.join(f'<pattern id="grain-{n}" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="{col}"/><use href="#pt-m"/>{tiles}</pattern>'
-                   for n, col in (('bg', '#DCDCD0'), ('parch', '#ECE3CD')))
+    grain = '<use href="#pt-m"/>' + tiles
+    pats = ''.join(f'<pattern id="grain-{n}" patternUnits="userSpaceOnUse" width="720" height="720"><rect width="720" height="720" fill="{col}"/>{tex}</pattern>'
+                   for n, col, tex in (('bg', '#DCDCD0', grain), ('parch', '#ECE3CD', grain), ('wall', '#F1EFE9', '')))   # the Contact wall is plain
     return f'<defs>{imgs}</defs>{pats}'
 
 
@@ -205,7 +206,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <main id="main" class="main">
 {body}
 </main>
-{footer('parchment' if file in ('index.html', '404.html') else 'bg')}
+{footer('parchment' if file in ('index.html', '404.html') else 'wall' if file == 'contact.html' else 'bg')}
 {ROUGH_DEFS}
 {SCRIPTS}
 </body>
@@ -950,37 +951,51 @@ INDUSTRIES_PAGE = simple_page('industrial', 'A Renaissance landscape with transm
     ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Book a free 15-minute call', 'get-started.html')) for i in ['industrial', 'clinics', 'trades'])
     + chapter_start())
 
-CONTACT_FORM = '''<form class="form" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+TALK_KINDS = ['Clinic or healthcare', 'Engineering or industrial', 'Trades or construction', 'Property or interiors',
+              'Technology', 'Food or hospitality', 'Something else']
+TALK_HELP = ['Website design &amp; build', 'Growth marketing', 'AI receptionist', 'WhatsApp automation',
+             'Custom software or CRM', 'Web app or dashboard', 'Maintenance &amp; support', 'Not sure yet']
+ARROW = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
+def talk_form(p='c'):
+    """The enquiry form: a card of ruled rows with floating uppercase labels, the kind of
+    business, chips for what they need, and a black send bar. Posts to FormSubmit (main.js)."""
+    row = lambda fid, name, label, kind='text', extra='': (
+        f'<div class="tf__row"><input id="{p}-{fid}" name="{name}" type="{kind}" placeholder=" "{extra}><label for="{p}-{fid}">{label}</label></div>')
+    kinds = ''.join(f'<option>{k}</option>' for k in TALK_KINDS)
+    chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
+    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
       <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
-      <div class="form__row">
-        <div class="field"><label class="label" for="c-name">Your name</label><input id="c-name" name="name" type="text" autocomplete="name" required></div>
-        <div class="field"><label class="label" for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
-      </div>
-      <div class="form__row">
-        <div class="field"><label class="label" for="c-company">Company</label><input id="c-company" name="company" type="text" autocomplete="organization"></div>
-        <div class="field"><label class="label" for="c-site">Current website</label><input id="c-site" name="website" type="url" placeholder="https://" inputmode="url"></div>
-      </div>
-      <div class="field"><label class="label" for="c-need">What do you need?</label>
-        <select id="c-need" name="need"><option>A new website</option><option>A website redesign</option><option>An AI receptionist</option><option>WhatsApp automation</option><option>A CRM or custom software</option><option>A web app or dashboard</option><option>Not sure yet</option></select>
-      </div>
-      <div class="field"><label class="label" for="c-msg">Tell us a bit about it</label><textarea id="c-msg" name="message" rows="4"></textarea></div>
-      <div class="form__actions"><button class="pill pill--dark" type="submit">Send message</button><span class="form__hint">We reply within one working day.</span></div>
+      {row('name', 'name', 'Full name', extra=' autocomplete="name" required')}
+      {row('business', 'business', 'Business / brand', extra=' autocomplete="organization"')}
+      {row('email', 'email', 'Email', 'email', ' autocomplete="email" required')}
+      {row('site', 'website', 'Current website, if you have one', 'url', ' inputmode="url"')}
+      <div class="tf__row tf__row--select"><label class="sr" for="{p}-kind">What kind of business?</label><select id="{p}-kind" name="business_type"><option value="" selected>What kind of business?</option>{kinds}</select><svg class="tf__chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <fieldset class="tf__chips"><legend>How can we help?</legend><div class="tf__chipset">{chips}</div></fieldset>
+      <div class="tf__row tf__row--area"><textarea id="{p}-msg" name="message" rows="4" placeholder=" "></textarea><label for="{p}-msg">Your message</label></div>
+      <button class="tf__send" type="submit"><span data-label>Send message</span>{ARROW}</button>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, book a call and pick the next free slot.</p></div>
       <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>'''
 
+
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
-CONTACT = simple_page('handshake', 'A Renaissance merchant and a young designer shaking hands', 'Contact &middot; we reply within one working day',
-    chapter('reach', 'Contact', 'handshake', 'A Renaissance merchant and a young designer shaking hands in a loggia',
-            'Book a free 15-minute call, send a message, or write to us directly. We reply within one working day.',
-            f'''{sub_head('Ways to reach us')}
-    <!-- TODO: add email address and WhatsApp number -->
-    {feat_grid([('Call', 'Book a free 15-minute call. Pick a slot that suits you. No pitch.'), ('Email', '<a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a> for anything, or <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> to reach Vedh directly.'), ('WhatsApp', '+ … (to be added)'), ('Where', 'Worldwide, remotely. We work with clients in any time zone.')])}
-    <div class="cta" data-reveal>{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}</div>
-    <div id="write"></div>
-    {sub_head('Send a message')}
-    {CONTACT_FORM}'''))
+CONTACT = f'''
+<section class="talk" id="top" data-ink aria-labelledby="talk-t">
+  <figure class="talk__frame" data-reveal>
+    <div class="talk__mat"><img class="talk__art" src="assets/img/paint/handshake.jpg" alt="A Renaissance merchant and a young designer shaking hands in a loggia above the Venetian lagoon" width="1344" height="752" fetchpriority="high"></div>
+  </figure>
+  <h1 class="talk__h" id="talk-t" data-reveal>Let&rsquo;s start a<br>conversation<br>about it.</h1>
+  {talk_form('c')}
+  <div class="talk__alt" data-reveal>
+    <p class="talk__or">Prefer to talk it through?</p>
+    {pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}
+    <p class="talk__mail">Or write to <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>, or to Vedh directly at <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a>. We reply within one working day.</p>
+  </div>
+</section>
+'''
 
 GET_STARTED_CH = [('call', 'The call'), ('book', 'Pick a time'), ('review', 'Free review')]
 GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit planting a banner', 'Get started &middot; book a free 15-minute call',
@@ -993,7 +1008,7 @@ GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit p
     <!-- TODO: put your Calendly or Cal.com link in data-cal, e.g. data-cal="https://calendly.com/your-name/15min" -->
     <div class="cal" data-cal="" data-reveal><p class="cal__msg"><span class="label">Booking calendar</span>Add your Calendly or Cal.com link to this page and the calendar will appear here. Until then, use the form below.</p></div>
     {sub_head('Prefer to write?')}
-    {CONTACT_FORM.replace('c-', 'g-')}
+    {talk_form('g')}
     <div id="review"></div>
     {sub_head('Not ready for a call?')}
     {spot('Get a free review of your current website', 'Send us the link. We will reply with a short video or written note on what we would change and why. No pitch, no obligation.')}
@@ -1025,7 +1040,7 @@ PAGES = {
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
     'services.html': ('Services | Summit Studios', 'Websites that bring in customers, AI receptionists, WhatsApp automation, custom CRMs, web apps and dashboards, backend and maintenance.', SERVICES_PAGE, SERVICES_CH, False),
     'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
-    'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Book a free 15-minute call, send a message, or reach us by email or WhatsApp.', CONTACT, CONTACT_CH, False),
+    'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Book a free 15-minute call, send a message, or reach us by email.', CONTACT, CONTACT_CH, False),
     'get-started.html': ('Book a free 15-minute call | Summit Studios', 'Book a free 15-minute call with Summit Studios. We look at your current site, you tell us what you need, and we give you a straight answer on fit and cost.', GET_STARTED, GET_STARTED_CH, False),
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
 }

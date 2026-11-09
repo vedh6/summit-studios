@@ -48,8 +48,9 @@
       e.preventDefault();
       if (!f.checkValidity()) { f.reportValidity(); return; }
       f.classList.remove('is-error');
-      const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
-      const data = Object.fromEntries(new FormData(f));
+      const lab = btn.querySelector('[data-label]') || btn, label = lab.textContent; btn.disabled = true; lab.textContent = 'Sending…';
+      const data = {};   // a field ticked more than once (the help chips) goes as one comma-separated line
+      for (const [k, v] of new FormData(f)) data[k] = k in data ? data[k] + ', ' + v : v;
       data._url = location.href;
       try {
         const r = await fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
@@ -58,7 +59,7 @@
         f.classList.add('is-sent');
       } catch (err) {
         f.classList.add('is-error');
-      } finally { btn.disabled = false; btn.textContent = label; }
+      } finally { btn.disabled = false; lab.textContent = label; }
     });
   });
 

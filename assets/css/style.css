@@ -26,6 +26,7 @@
   --col: var(--sb-w);   /* where chapter text starts */
   --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .25' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='1' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 0.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");   /* aged parchment */
   --parchment: #ECE3CD;
+  --wall: #F1EFE9;   /* Contact: the gallery wall */
   /* soft warm mottling, like old paper that has aged unevenly; paired with --tex-paper's grain */
   --tex-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0042' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .29 0 0 0 0 .14 .9 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
   --paper-tex: var(--tex-paper), var(--tex-mottle);
@@ -450,6 +451,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .ftr__tear .tear { width: 100%; height: 100%; display: block; transform: scaleY(-1); }
 .ftr .tear__paper { fill: url(#grain-bg) var(--bg); }
 .ftr[data-above="parchment"] .tear__paper { fill: url(#grain-parch) var(--parchment); }
+.ftr[data-above="wall"] .tear__paper { fill: url(#grain-wall) var(--wall); }
 .ftr .tear__fibre { fill: #FBF8EF; }
 .ftr__cta { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
 .ftr__h { font-family: var(--serif); font-weight: 400; font-size: clamp(48px, 2rem + 4.4vw, 112px); line-height: .92; letter-spacing: -.035em; max-width: 14ch; }
@@ -742,6 +744,59 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .form.is-error .form__err { display: grid; gap: 8px; }
 .form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* spam trap: people never see or fill it */
 .form [type=submit][disabled] { opacity: .6; cursor: progress; }
+
+/* ---------- Enquiry form (Contact, Get started): a card of ruled rows ---------- */
+.tf { --tf-line: rgba(70, 52, 28, .2); --tf-label: #84775F; gap: 0; width: 100%; max-width: 640px; background: #F0E2C3; box-shadow: 0 1px 0 rgba(70, 52, 28, .06), 0 34px 60px -34px rgba(60, 40, 20, .4); }
+.tf__row { position: relative; border-bottom: 1px solid var(--tf-line); transition: background .25s var(--ease); }
+.tf__row:focus-within { background: rgba(255, 252, 244, .45); }
+.tf__row input, .tf__row textarea, .tf__row select { display: block; width: 100%; margin: 0; border: 0; border-radius: 0; background: transparent; font: 400 16px/1.35 var(--sans); color: var(--ink); padding: 32px 28px 13px; outline: 0; -webkit-appearance: none; appearance: none; }
+.tf__row textarea { min-height: 150px; resize: vertical; padding-top: 40px; }
+.tf__row label:not(.sr) { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); font: 500 14px/1 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); pointer-events: none; transition: top .25s var(--ease), font-size .25s var(--ease), letter-spacing .25s var(--ease), transform .25s var(--ease); }
+.tf__row--area label:not(.sr) { top: 30px; transform: none; }
+.tf__row :focus + label, .tf__row :not(:placeholder-shown) + label { top: 13px; transform: none; font-size: 10.5px; letter-spacing: .09em; }
+.tf__row--select select { padding: 25px 56px 23px 28px; cursor: pointer; }
+.tf__row--select select:has(option[value=""]:checked) { font: 500 14px/1.35 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); padding-top: 27px; padding-bottom: 27px; }
+.tf__chev { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); color: var(--ink); pointer-events: none; }
+.tf__chips { margin: 0; padding: 24px 28px 26px; border: 0; border-bottom: 1px solid var(--tf-line); min-width: 0; }
+.tf__chips legend { float: left; width: 100%; padding: 0; margin-bottom: 16px; font: 500 14px/1 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); }
+.tf__chipset { clear: both; display: flex; flex-wrap: wrap; gap: 9px; }
+.tf__chip { position: relative; display: inline-flex; }
+.tf__chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.tf__chip span { padding: 8px 13px 9px; border: 1px solid rgba(70, 52, 28, .34); border-radius: 2px; font: 400 15px/1.2 var(--sans); color: var(--ink); transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease); }
+.tf__chip:hover span { background: rgba(255, 252, 244, .55); }
+.tf__chip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.tf__chip input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tf__send { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 24px 28px; background: #12120C; color: #F4EFE3; font: 500 14px/1 var(--grotesk); letter-spacing: .08em; text-transform: uppercase; transition: background .3s var(--ease); }
+.tf__send:hover { background: #2A2A1C; }
+.tf__send svg { transition: transform .3s var(--ease); }
+.tf__send:hover svg { transform: translateX(4px); }
+.tf__send:focus-visible { outline-offset: -5px; outline-color: #F4EFE3; }
+.tf .form__ok, .tf .form__err { margin: 0; border-radius: 0; padding: 28px; }
+.tf .form__ok { background: transparent; }
+
+/* ---------- Contact: the painting framed on a gallery wall, the headline beneath it ---------- */
+.talk { position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--header-h) + clamp(28px, 4vw, 56px)) 16px 150px;
+  background: var(--wall) radial-gradient(ellipse 62% 900px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }   /* a plain warm white wall, lit from above the frame */
+/* a slim dark wood frame with a lit top edge, a white mount with a bevelled window, and its shadow on the wall */
+.talk__frame { width: min(60vw, 1040px, 100svh); padding: clamp(9px, 1.05vw, 15px); background: #1B1612;
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, 0) 28%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, .3));
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .16), inset -1px -1px 0 rgba(0, 0, 0, .55), 0 2px 3px rgba(30, 20, 10, .2), 0 26px 46px -20px rgba(40, 28, 16, .45), 0 80px 130px -60px rgba(40, 28, 16, .42); }
+.talk__mat { padding: clamp(16px, 3.6vw, 56px); background: #FAF8F3; box-shadow: inset 0 3px 7px -2px rgba(0, 0, 0, .3), inset 2px 0 5px -3px rgba(0, 0, 0, .2), inset -2px 0 5px -3px rgba(0, 0, 0, .14); }
+.talk__art { width: 100%; height: auto; box-shadow: 0 0 0 1px rgba(40, 28, 16, .3), 0 0 0 4px #FFFEFA, 0 1px 0 4px rgba(60, 45, 25, .12); }
+.talk__h { margin-top: clamp(44px, 6vw, 96px); font-family: var(--serif); font-weight: 400; font-size: min(12.4vw, 206px); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #14140E; }
+.talk .tf { position: relative; z-index: 1; margin-top: calc(min(12.4vw, 206px) * -.3); }
+.talk__alt { margin-top: 56px; display: grid; justify-items: center; gap: 16px; text-align: center; max-width: 520px; }
+.talk__or { font-family: var(--serif); font-size: clamp(26px, 1.2rem + 1vw, 36px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
+.talk__mail { color: var(--mid); font-size: 14px; }
+@media (max-width: 899px) {
+  .talk__frame { width: 100%; }
+  .tf__row input, .tf__row textarea, .tf__row select { padding-left: 20px; padding-right: 20px; }
+  .tf__row label:not(.sr) { left: 20px; }
+  .tf__row--select select { padding-right: 48px; }
+  .tf__chips, .tf__send { padding-left: 20px; padding-right: 20px; }
+  .tf__chev { right: 18px; }
+  .tf__chip span { font-size: 14px; }
+}
 .cal { border: 1px dashed var(--line); min-height: 360px; display: grid; place-items: center; text-align: center; padding: 32px; border-radius: 6px; max-width: 760px; }
 .cal.has-cal { border: 0; padding: 0; display: block; }
 .cal iframe { width: 100%; height: 720px; border: 0; }
