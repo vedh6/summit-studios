@@ -774,35 +774,25 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .tf .form__ok, .tf .form__err { margin: 0; border-radius: 0; padding: 28px; }
 .tf .form__ok { background: transparent; }
 
-/* ---------- Contact: a palace painting on a white wall. The frame (frame-*.svg from _build/frame_gilt.py)
-   and the painting stay still on screen; the headline and the form scroll through the frame's opening.
-   Three layers: the painting (back), the content, then the wall and frame on top (stage), which cover
-   everything outside the opening. Both still layers are sticky to the section, so the frame leaves
-   with it when the footer arrives. ---------- */
-.talk { --gilt: clamp(22px, 3.4vw, 56px); --crest: clamp(110px, 15vw, 230px); --fm: clamp(12px, 6vw, 110px); --fb: clamp(14px, 2.2vw, 30px);
-  --ft: calc(var(--header-h) + var(--crest) * .4 - var(--gilt) * .5 + 8px);   /* the frame's outer edges */
-  --wt: calc(var(--ft) + var(--gilt)); --wl: calc(var(--fm) + var(--gilt)); --wb: calc(var(--fb) + var(--gilt));   /* the opening */
-  position: relative; z-index: 1; background: var(--wall); }
-.talk__back, .talk__stage { position: sticky; top: 0; height: 100svh; margin-bottom: -100svh; }
-.talk__back { z-index: 0; }
-.talk__stage { z-index: 2; pointer-events: none; }
-.talk__window { position: absolute; top: var(--wt); left: var(--wl); right: var(--wl); bottom: var(--wb); overflow: hidden; background: #2A1E12; }
-.talk__window img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-.talk__wall { position: absolute; background: var(--wall); pointer-events: auto; }
-.talk__wall--t { top: 0; left: 0; right: 0; height: var(--wt); background: var(--wall) radial-gradient(ellipse 70% 400px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }
-.talk__wall--b { bottom: 0; left: 0; right: 0; height: var(--wb); }
-.talk__wall--l { top: var(--wt); bottom: var(--wb); left: 0; width: var(--wl); }
-.talk__wall--r { top: var(--wt); bottom: var(--wb); right: 0; width: var(--wl); }
-.talk__frame { position: absolute; top: var(--ft); left: var(--fm); right: var(--fm); bottom: var(--fb); border: var(--gilt) solid transparent; border-image: url("../img/frame-gilt.svg") 90 round;
-  box-shadow: 0 2px 4px rgba(30, 20, 10, .3), 0 30px 56px -22px rgba(40, 28, 16, .55), 0 80px 140px -50px rgba(40, 28, 16, .45); }
-/* the carved crest on top and a gilt boss on each corner, standing proud of the moulding */
-.talk__crest { position: absolute; z-index: 3; left: 50%; bottom: calc(100% + var(--gilt) * .5); width: var(--crest); height: auto; transform: translateX(-50%); filter: drop-shadow(0 8px 9px rgba(40, 25, 8, .32)); }
-.talk__boss { position: absolute; z-index: 3; width: calc(var(--gilt) * 1.5); height: auto; filter: drop-shadow(0 5px 6px rgba(40, 25, 8, .35)); }
-.talk__boss--tl { left: calc(var(--gilt) * -1.25); top: calc(var(--gilt) * -1.25); }
-.talk__boss--tr { right: calc(var(--gilt) * -1.25); top: calc(var(--gilt) * -1.25); }
-.talk__boss--bl { left: calc(var(--gilt) * -1.25); bottom: calc(var(--gilt) * -1.25); }
-.talk__boss--br { right: calc(var(--gilt) * -1.25); bottom: calc(var(--gilt) * -1.25); }
-.talk__inner { position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--wt) + clamp(28px, 4vw, 64px)) calc(var(--wl) + 14px) calc(var(--wb) + clamp(40px, 6vw, 80px)); }
+/* ---------- Contact: a palace painting on a white wall. A real gilt frame (assets/img/frame-gilt.png,
+   cut from a generated photograph by tools/frameproc.swift in the project's Claude folder: corners as
+   photographed, each edge a stretch that repeats seamlessly) holds the painting and stays still on
+   screen; the headline and the form scroll over it. The crest is its own piece (frame-crest.png),
+   laid on the top edge's centre with its own moulding faded into the frame's. Every number below
+   comes from frameproc's measurements, in units of --gilt, the moulding's mean width. ---------- */
+.talk { --gilt: clamp(24px, 3.6vw, 50px); --fm: clamp(14px, 6vw, 110px); --fb: clamp(16px, 2.4vw, 34px);
+  --ft: calc(var(--header-h) + var(--gilt) * 1.1 + 14px);   /* the frame's outer top: room for the crest under the header */
+  --wt: calc(var(--ft) + var(--gilt) * .9713); --wl: calc(var(--fm) + var(--gilt) * 1.0235);   /* the opening */
+  position: relative; z-index: 1; background: var(--wall) radial-gradient(ellipse 70% 520px at 50% 0, #FDFCFA, rgba(253, 252, 250, 0)) no-repeat; }
+.talk__stage { position: sticky; top: 0; z-index: 0; height: 100svh; margin-bottom: -100svh; pointer-events: none; }
+.talk__frame { position: absolute; top: var(--ft); left: var(--fm); right: var(--fm); bottom: var(--fb);
+  border-style: solid; border-color: transparent;
+  border-width: calc(var(--gilt) * .9713) calc(var(--gilt) * 1.0235) calc(var(--gilt) * .9817) calc(var(--gilt) * 1.0235);
+  border-image: url("../img/frame-gilt.png") 103 114 106 114 / 1.1075 1.1633 1.1277 1.1633 / .1075 .1633 .1277 .1633 round;
+  filter: drop-shadow(0 3px 3px rgba(40, 26, 10, .28)) drop-shadow(0 26px 30px rgba(40, 28, 16, .3)); }
+.talk__art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+.talk__crest { position: absolute; left: 50%; top: calc(var(--gilt) * -2.0679); width: calc(var(--gilt) * 3.7493); height: auto; transform: translateX(-50%); }
+.talk__inner { position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--wt) + clamp(28px, 4vw, 64px)) calc(var(--wl) + 14px) calc(var(--fb) + var(--gilt) + clamp(40px, 6vw, 80px)); }
 .talk__h { --hs: min(calc((100vw - 2 * var(--wl) - 48px) / 7.3), 170px); font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
   text-shadow: 0 2px 30px rgba(28, 16, 4, .6), 0 1px 3px rgba(28, 16, 4, .45); }
 .talk .tf { position: relative; z-index: 1; margin-top: calc(min(calc((100vw - 2 * var(--wl) - 48px) / 7.3), 170px) * -.3); }

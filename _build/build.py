@@ -984,12 +984,10 @@ def talk_form(p='c'):
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
 CONTACT = f'''
 <section class="talk" id="top" data-ink aria-labelledby="talk-t">
-  <div class="talk__back" aria-hidden="true"><div class="talk__window"><img src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high"></div></div>
   <div class="talk__stage" aria-hidden="true">
-    <div class="talk__wall talk__wall--t"></div><div class="talk__wall talk__wall--b"></div><div class="talk__wall talk__wall--l"></div><div class="talk__wall talk__wall--r"></div>
     <div class="talk__frame">
-      <img class="talk__crest" src="assets/img/frame-crest.svg" alt="" width="320" height="128">
-      {''.join(f'<img class="talk__boss talk__boss--{c}" src="assets/img/frame-boss.svg" alt="" width="100" height="100">' for c in ('tl', 'tr', 'bl', 'br'))}
+      <img class="talk__art" src="assets/img/paint/handshake.jpg" alt="" width="1344" height="752" fetchpriority="high">
+      <img class="talk__crest" src="assets/img/frame-crest.png" alt="" width="359" height="198">
     </div>
   </div>
   <div class="talk__inner">
