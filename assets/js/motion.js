@@ -888,10 +888,11 @@ void main(){
       return { q, cx, cy, S, tx: W / 2 - cx, ty: H / 2 - cy };
     };
     let g = geo(), k = 0;
+    const endStill = sec.querySelector('[data-orbit-end]');   // the last frame in 4K, moved exactly with the video
     const place = () => {
-      const s = 1 + (g.S - 1) * k;
-      video.style.transformOrigin = `${g.cx.toFixed(1)}px ${g.cy.toFixed(1)}px`;
-      video.style.transform = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
+      const s = 1 + (g.S - 1) * k, o = `${g.cx.toFixed(1)}px ${g.cy.toFixed(1)}px`, t = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
+      video.style.transformOrigin = o; video.style.transform = t;
+      if (endStill) { endStill.style.transformOrigin = o; endStill.style.transform = t; }
     };
     const quadAt = kk => { const s = 1 + (g.S - 1) * kk; return g.q.map(([x, y]) => [g.cx + (x - g.cx) * s + g.tx * kk, g.cy + (y - g.cy) * s + g.ty * kk]); };
     // the text layer, mapped onto the screen wherever the push-in has it. Its own size is the

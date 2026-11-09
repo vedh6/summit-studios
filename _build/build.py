@@ -747,7 +747,7 @@ def chapter_why(tear=False):
         html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".67,.56"', 1)
         html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
-        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
+        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video><img class="paint paint--orbit-end" data-orbit-end src="assets/img/paint/why-orbit-end.jpg" alt="" width="3840" height="2160" loading="lazy" decoding="async">' + screen_quad() + '</div>\n  <div class="rip-space"', 1)
     return html
 
 

@@ -979,6 +979,11 @@ html.has-tunnel .tun__prompt { display: block; }
    fly-through plays over its screen. The spacer gives the walk its scroll length. */
 .paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }   /* transform and origin set by orbit() */
 html.orbit-live .paint--orbit { opacity: 1; }
+/* the walk's last frame, upscaled to 4K: laid exactly over the video, it takes over once the camera has
+   landed, so the push-in to the laptop and the screen stay sharp (desktop only, like the walk) */
+.paint--orbit-end { display: none; }
+html.has-orbit .paint--orbit-end { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s var(--ease); }
+html.screen-live .paint--orbit-end { opacity: 1; }
 /* phones and tablets keep the still: crop it so the laptop on the table stays in view */
 html:not(.has-orbit) .ch--rip .ch__bg .paint:not(video) { object-position: 65% 50%; }
 /* Why us (home): the heading and its line stay put through the walk; orbit() fades them as the
