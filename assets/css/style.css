@@ -1011,6 +1011,9 @@ html.screen-live .screen__quad { opacity: 1; }
 .screen__cta { margin-top: .35em; }
 .screen__panel--end { justify-items: center; }   /* the last screen is just the call to action */
 .screen__panel--end .screen__cta { margin-top: 0; }
-.screen__panel--end .pill { font-size: .56em; height: 2.6em; padding: 0 1.25em; }   /* sized to the screen, not the page */
+.screen__panel--end .pill { font-size: .56em; height: 2.7em; padding: 0 1.5em; border-radius: .16em; letter-spacing: .01em;   /* sized to the screen, not the page */
+  background: rgba(28, 20, 10, .42); color: #FBF6EA; border: 1px solid rgba(255, 246, 226, .55); box-shadow: 0 .4em 1.2em rgba(40, 25, 8, .2);
+  -webkit-backdrop-filter: blur(6px) saturate(1.2); backdrop-filter: blur(6px) saturate(1.2); }   /* a translucent glass rectangle */
+.screen__panel--end .pill:hover { background: rgba(28, 20, 10, .6); }
 .why-fallback { display: contents; }
 html.has-orbit .why-fallback { display: none; }
