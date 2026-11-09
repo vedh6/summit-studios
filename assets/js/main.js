@@ -1,5 +1,5 @@
 /* Summit Studios v3: behaviour that works without the motion layer.
-   Menu, local clock, demo forms, booking embed, project filters. */
+   Menu, local clock, forms, booking embed, project filters. */
 (() => {
   'use strict';
   const d = document;
@@ -39,9 +39,27 @@
     tick(); setInterval(tick, 15000);
   }
 
-  /* ---------- Demo forms (no backend wired yet) ---------- */
-  d.querySelectorAll('form[data-demo]').forEach(f => {
-    f.addEventListener('submit', e => { e.preventDefault(); if (!f.checkValidity()) { f.reportValidity(); return; } f.classList.add('is-sent'); });
+  /* ---------- Forms: sent by email through FormSubmit ----------
+     Without JS the form posts normally (FormSubmit shows its own thank-you page). With JS it
+     posts to the AJAX endpoint and shows the inline Sent / Not sent state. */
+  d.querySelectorAll('form[data-send]').forEach(f => {
+    const btn = f.querySelector('[type=submit]');
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      f.classList.remove('is-error');
+      const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
+      const data = Object.fromEntries(new FormData(f));
+      data._url = location.href;
+      try {
+        const r = await fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || String(j.success) !== 'true') throw new Error(j.message || r.status);
+        f.classList.add('is-sent');
+      } catch (err) {
+        f.classList.add('is-error');
+      } finally { btn.disabled = false; btn.textContent = label; }
+    });
   });
 
   /* ---------- Booking embed ---------- */

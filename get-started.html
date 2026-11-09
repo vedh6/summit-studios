@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=239c0dad">
+<link rel="stylesheet" href="assets/css/style.css?v=7531af03">
 <link rel="stylesheet" href="assets/css/motion.css?v=246abe92">
 <script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
 
@@ -54,7 +54,9 @@
     <!-- TODO: put your Calendly or Cal.com link in data-cal, e.g. data-cal="https://calendly.com/your-name/15min" -->
     <div class="cal" data-cal="" data-reveal><p class="cal__msg"><span class="label">Booking calendar</span>Add your Calendly or Cal.com link to this page and the calendar will appear here. Until then, use the form below.</p></div>
     <h3 class="n1 sub" data-reveal><span class="swash">P</span>refer to write?</h3>
-    <form class="form" data-demo novalidate data-reveal>
+    <form class="form" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
+      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="form__row">
         <div class="field"><label class="label" for="g-name">Your name</label><input id="g-name" name="name" type="text" autocomplete="name" required></div>
         <div class="field"><label class="label" for="g-email">Email</label><input id="g-email" name="email" type="email" autocomplete="email" required></div>
@@ -69,15 +71,19 @@
       <div class="field"><label class="label" for="g-msg">Tell us a bit about it</label><textarea id="g-msg" name="message" rows="4"></textarea></div>
       <div class="form__actions"><button class="pill pill--dark" type="submit">Send message</button><span class="form__hint">We reply within one working day.</span></div>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, book a call and pick the next free slot.</p></div>
+      <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>
     <div id="review"></div>
     <h3 class="n1 sub" data-reveal><span class="swash">N</span>ot ready for a call?</h3>
     <div class="spot" data-reveal><p class="spot__t">Get a free review of your current website</p><p class="n2">Send us the link. We will reply with a short video or written note on what we would change and why. No pitch, no obligation.</p></div>
-    <form class="form form--inline" data-demo data-reveal novalidate>
+    <form class="form form--inline" data-send data-subject="Free website review request" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
+      <input type="hidden" name="_subject" value="Free website review request"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="field"><label class="label" for="rv-url">Your website</label><input id="rv-url" name="url" type="url" placeholder="https://" required inputmode="url"></div>
       <div class="field"><label class="label" for="rv-email">Where to send it</label><input id="rv-email" name="email" type="email" placeholder="you@company.com" required></div>
       <div class="form__actions"><button class="pill pill--dark" type="submit">Send me the review</button><span class="form__hint">Usually within two working days.</span></div>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. Your review is on its way within two working days.</p></div>
+      <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>
     <div class="ch__end"><span class="rule"></span><a class="back" href="#top">Back to top</a></div>
   </div>
@@ -109,7 +115,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
-<script src="assets/js/main.js?v=c0c60774" defer></script>
+<script src="assets/js/main.js?v=a3aef677" defer></script>
 <script src="assets/js/motion.js?v=59ed9478" defer></script>
 </body>
 </html>

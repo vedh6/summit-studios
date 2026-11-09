@@ -737,6 +737,10 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .form__ok { display: none; padding: 20px; background: var(--paper); border-radius: 6px; }
 .form.is-sent > :not(.form__ok) { display: none; }
 .form.is-sent .form__ok { display: grid; gap: 8px; }
+.form__err { display: none; padding: 20px; background: #F4E3D6; border-radius: 6px; }
+.form.is-error .form__err { display: grid; gap: 8px; }
+.form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* spam trap: people never see or fill it */
+.form [type=submit][disabled] { opacity: .6; cursor: progress; }
 .cal { border: 1px dashed var(--line); min-height: 360px; display: grid; place-items: center; text-align: center; padding: 32px; border-radius: 6px; max-width: 760px; }
 .cal.has-cal { border: 0; padding: 0; display: block; }
 .cal iframe { width: 100%; height: 720px; border: 0; }

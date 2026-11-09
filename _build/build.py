@@ -951,7 +951,9 @@ INDUSTRIES_PAGE = simple_page('industrial', 'A Renaissance landscape with transm
     ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Book a free 15-minute call', 'get-started.html')) for i in ['industrial', 'clinics', 'trades'])
     + chapter_start())
 
-CONTACT_FORM = '''<form class="form" data-demo novalidate data-reveal>
+CONTACT_FORM = '''<form class="form" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
+      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="form__row">
         <div class="field"><label class="label" for="c-name">Your name</label><input id="c-name" name="name" type="text" autocomplete="name" required></div>
         <div class="field"><label class="label" for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
@@ -966,6 +968,7 @@ CONTACT_FORM = '''<form class="form" data-demo novalidate data-reveal>
       <div class="field"><label class="label" for="c-msg">Tell us a bit about it</label><textarea id="c-msg" name="message" rows="4"></textarea></div>
       <div class="form__actions"><button class="pill pill--dark" type="submit">Send message</button><span class="form__hint">We reply within one working day.</span></div>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, book a call and pick the next free slot.</p></div>
+      <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>'''
 
 CONTACT_CH = [('reach', 'Reach us'), ('write', 'Write')]
@@ -978,7 +981,6 @@ CONTACT = simple_page('handshake', 'A Renaissance merchant and a young designer 
     <div class="cta" data-reveal>{pill('Book a free 15-minute call', 'get-started.html', 'pill--dark pill--big')}</div>
     <div id="write"></div>
     {sub_head('Send a message')}
-    <!-- TODO: connect to a form backend (Formspree, Vercel function, etc.). Currently shows a success state only. -->
     {CONTACT_FORM}'''))
 
 GET_STARTED_CH = [('call', 'The call'), ('book', 'Pick a time'), ('review', 'Free review')]
@@ -996,11 +998,14 @@ GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit p
     <div id="review"></div>
     {sub_head('Not ready for a call?')}
     {spot('Get a free review of your current website', 'Send us the link. We will reply with a short video or written note on what we would change and why. No pitch, no obligation.')}
-    <form class="form form--inline" data-demo data-reveal novalidate>
+    <form class="form form--inline" data-send data-subject="Free website review request" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
+      <input type="hidden" name="_subject" value="Free website review request"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="field"><label class="label" for="rv-url">Your website</label><input id="rv-url" name="url" type="url" placeholder="https://" required inputmode="url"></div>
       <div class="field"><label class="label" for="rv-email">Where to send it</label><input id="rv-email" name="email" type="email" placeholder="you@company.com" required></div>
       <div class="form__actions"><button class="pill pill--dark" type="submit">Send me the review</button><span class="form__hint">Usually within two working days.</span></div>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. Your review is on its way within two working days.</p></div>
+      <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:vedh.shetty@summitxstudio.com">vedh.shetty@summitxstudio.com</a> and we will reply within one working day.</p></div>
     </form>'''))
 
 NOT_FOUND_CH = [('lost', 'Not found')]
