@@ -91,7 +91,7 @@ DAVINCI = '''<svg class="dv" viewBox="0 0 340 464" aria-hidden="true">
 # ---------- shell ----------
 
 NAV = [('industries.html', 'Industries'), ('projects.html', 'Projects'), ('studio.html', 'Studio'),
-       ('services.html', 'Services'), ('contact.html', 'Contact')]
+       ('services.html', 'Services')]   # Contact is the button at the right of the header
 
 
 def header(file=''):
@@ -102,7 +102,7 @@ def header(file=''):
   <nav class="hdr__nav" id="nav" aria-label="Main">{links}</nav>
   <div class="hdr__right">
     <a class="hdr__link hdr__site" href="index.html">summitxstudio.com</a>
-    {pill('Book a free call', 'get-started.html', 'pill--hdr')}
+    <a class="pill pill--hdr" href="contact.html"{cur if file == 'contact.html' else ''}>Contact</a>
     <button class="hdr__menu" type="button" data-menu aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
   </div>
 </header>'''
