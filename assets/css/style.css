@@ -436,22 +436,25 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voice__cover { position: relative; flex: none; aspect-ratio: 16 / 10; max-height: 40%; overflow: hidden; background: var(--light); }
 .voice__cover img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform .6s var(--ease); }
 .voice:hover .voice__cover img { transform: scale(1.05); }
-/* one smooth gradient over the whole card, cover included: light brown to a mid brown (no dark bands).
-   Over the cover it starts as a faint wash and is opaque by the cover's foot; below that it's a plain
-   two-colour ramp (the stops above it sit on the same line, so the colour change is even all the way down) */
+/* one smooth gradient over the whole card, cover included: a faint wash over the top of the cover,
+   opaque by the cover's foot, then a plain two-colour ramp down to the card's foot. The colours are
+   variables (--g0..--g3 as rgb triplets) so the scheme is one block */
 .voice::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(216, 194, 160, .1) 0%, rgba(199, 174, 140, .42) 18%, rgb(180, 151, 119) 38%, var(--brown) 100%);
-  background: linear-gradient(in oklab 180deg, rgba(216, 194, 160, .1) 0%, rgba(199, 174, 140, .42) 18%, rgb(180, 151, 119) 38%, var(--brown) 100%); }
+  background: linear-gradient(180deg, rgb(var(--g0) / .1) 0%, rgb(var(--g1) / .42) 18%, rgb(var(--g2)) 38%, rgb(var(--g3)) 100%);
+  background: linear-gradient(in oklab 180deg, rgb(var(--g0) / .1) 0%, rgb(var(--g1) / .42) 18%, rgb(var(--g2)) 38%, rgb(var(--g3)) 100%); }
+/* the scheme (user's pick, "B"): cream at the top to warm sand at the foot, ink type, umber roles, ink button */
+.voice { --g0: 250 246 236; --g1: 246 240 226; --g2: 243 235 217; --g3: 224 209 178; --t-name: #292919; --t-role: #8A5A26; --t-q: #292919; --q-sh: none;
+  background: rgb(224 209 178); box-shadow: inset 0 0 0 1px rgba(90, 60, 30, .14), 0 26px 40px -30px rgba(40, 26, 10, .45); }
 .voice__mono { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 6%; background-color: #E9DCBE; background-image: var(--paper-tex); background-size: var(--paper-size);
   font-family: var(--serif); font-size: clamp(72px, 6vw, 110px); letter-spacing: -.02em; line-height: 1; color: #9A6A33; }
 .voice__body { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 4px 24px 24px; color: var(--cream); }
 .voice__by { display: grid; gap: 5px; margin: 0; font-family: var(--sans); }
-.voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #24170C; }
-.voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #43290F; }
-.voice__q { margin: auto 0 0; padding-top: 16px; text-shadow: 0 1px 2px rgba(60, 36, 16, .25); font-family: var(--serif); font-size: clamp(20px, .8rem + .6vw, 25px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
-.voice__site.pill--go { flex: none; height: 36px; padding: 0 44px 0 16px; font-size: 13px; background: var(--cream); color: var(--dark); --ic: var(--cream); }
-.voice__site.pill--go .pill__ic { top: 4px; right: 4px; width: 28px; height: 28px; }
-.voice__site.pill--go:hover { padding: 0 16px 0 44px; background: #FFF8EA; }
+.voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--t-name); }
+.voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--t-role); }
+.voice__q { margin: auto 0 0; padding-top: 16px; color: var(--t-q); text-shadow: var(--q-sh); font-family: var(--serif); font-size: clamp(20px, .8rem + .6vw, 25px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
+.voice__site.pill--go { flex: none; height: 36px; padding: 0 44px 0 16px; font-size: 13px; background: #292919; color: #F3EBDA; --ic: #292919; }
+.voice__site.pill--go .pill__ic { top: 4px; right: 4px; width: 28px; height: 28px; background: #F3EBDA; }
+.voice__site.pill--go:hover { padding: 0 16px 0 44px; background: #3A3A28; }
 .voice__site.pill--go:hover .pill__ic { right: calc(100% - 32px); }
 .voice__site:focus-visible { outline: 2px solid #D9B26A; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .voice__cover img { transition: none; } .voice:hover .voice__cover img { transform: none; } }
