@@ -538,6 +538,8 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
   .ba { grid-template-columns: 1fr; } .ba__arrow { justify-self: center; transform: rotate(90deg); }
   .iw, .iw--solo .iw__card { grid-template-columns: 1fr; gap: 32px; }
 }
+/* an empty page (Studio, while it's rebuilt): paper between the header and the footer */
+.blank { min-height: 70svh; }
 /* FAQ */
 .faq { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); padding: 80px 20px 140px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 60px; align-items: start; }
 .faq__head { position: sticky; top: calc(var(--header-h) + 30px); }

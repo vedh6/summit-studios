@@ -240,9 +240,11 @@
   /* ---------- Reveals: a quiet fade-up ---------- */
   function reveals() {
     const blocks = [...d.querySelectorAll('[data-reveal]')];
-    if (reduced) { gsap.set(blocks, { opacity: 1, y: 0 }); return; }
-    gsap.set(blocks, { opacity: 0, y: 24 });
-    ScrollTrigger.batch(blocks, { start: 'top 92%', once: true, onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .9, ease: EXPO, stagger: Math.min(.08, .5 / b.length) }) });
+    if (reduced) { if (blocks.length) gsap.set(blocks, { opacity: 1, y: 0 }); return; }
+    if (blocks.length) {   // a page can have none (Studio while it's empty): no tween on an empty list
+      gsap.set(blocks, { opacity: 0, y: 24 });
+      ScrollTrigger.batch(blocks, { start: 'top 92%', once: true, onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .9, ease: EXPO, stagger: Math.min(.08, .5 / b.length) }) });
+    }
     // Fanned cards spread as they arrive
     d.querySelectorAll('[data-fan]').forEach(fan => {
       const cards = [...fan.querySelectorAll('.fan__card')];

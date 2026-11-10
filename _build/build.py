@@ -834,8 +834,7 @@ def chapter_start():
       {chip('Get a free website review', 'get-started.html#review')}
       {chip('Email us', 'mailto:team@summitxstudio.com')}
     </div>
-    {sub_head('Questions, answered')}
-    {feat_grid([(q, a) for q, a in FAQ_ALL[:4]])}'''
+'''   # no 'Questions, answered' here (user removed it from Industries and Projects; the home page keeps its FAQ)
     return chapter('start', 'Start', 'summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page',
                    "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body)
 
@@ -968,21 +967,10 @@ PROJECTS_PAGE = tunnel() + (
 ''', tear=False)
     + chapter_start())
 
-STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('start', 'Start')]
-STUDIO = simple_page('workshop', 'A Renaissance workshop where apprentices work on modern laptops', 'Studio &middot; a small team with a high bar',
-    chapter('who', 'Studio', 'handshake', 'A Renaissance merchant and a young designer shaking hands in a loggia over a bay',
-            'Designers and developers who treat your website as a business asset, not a brochure.',
-            f'''{media('assets/img/photo/review.jpg', 'Two people reviewing printed website mockups', 'media--wide')}
-    {sub_head('Who we are')}
-    {spot('Thirty-plus sites, one team', "From dental clinics and doctor portfolios to software companies, real estate firms and architectural studios, we specialise in modern, high-performing digital experiences tailored to each client's vision and business goals.")}
-    {spot('Why we exist', 'Every brand deserves a digital presence that reflects its ambition. Through thoughtful design, modern technology and an uncompromising commitment to quality, we turn ideas into digital experiences that elevate brands, inspire audiences and drive real growth.')}''')
-    + chapter('how', 'Method', 'studio-method', 'A Renaissance master showing apprentices the stages of a website, from sketch to finished page',
-              'Three principles on every project, and a process with no surprises.',
-              f'''{sub_head('Three principles')}
-    {feat_grid([('Exceptional design', "Sophisticated, distinctive and specific to your brand. If it could be anyone's website, it is not finished."), ('Seamless functionality', 'Fast on a phone, easy to navigate, and wired into booking, enquiries and the tools you already use.'), ('Measurable business impact', 'More calls, more bookings, more quotes. We design for the result, then measure it.')])}
-    {sub_head('How a project runs')}
-    {feat_grid([('Brief', 'You tell us what you need. We look at your site and say what we would change.'), ('Design', 'A clear proposal, then design in the open. You see every stage.'), ('Build', 'Fast, clean and mobile-first, by the same people who designed it.'), ('Launch', 'Measured, tuned and handed over with everything you need.'), ('Care', 'Updates, monitoring and new features. We do not vanish.')])}''')
-    + chapter_why() + chapter_start())
+STUDIO_CH = []
+# Studio: cleared (user, 2026-11-10: 'clear the content in it rn') -- to be rebuilt. The page and its menu
+# link stay; an empty paper block keeps the footer clear of the header. Old content is in git (before this commit).
+STUDIO = '<section class="blank" id="top" aria-label="Studio" data-ink></section>'
 
 
 def service_chapter(s, paint, alt, cid, word, feats, img):
