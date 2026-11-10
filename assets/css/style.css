@@ -1001,6 +1001,19 @@ html.has-tunnel .tun__prompt { display: block; }
 .row__art { position: absolute; z-index: 1; top: 44px; bottom: 44px; width: 68%; overflow: hidden; border-radius: 10px; }
 .row--r .row__art { right: 0; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, .22) 15%, #000 44%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, .22) 15%, #000 44%); }
 .row--l .row__art { left: 0; -webkit-mask-image: linear-gradient(270deg, transparent 0%, rgba(0, 0, 0, .22) 15%, #000 44%); mask-image: linear-gradient(270deg, transparent 0%, rgba(0, 0, 0, .22) 15%, #000 44%); }
+/* "Visit" on each project: the user's interactive hover button in the site's colours. At rest a paper pill
+   with a small ink dot by the word; on hover the dot floods the pill, the word slides out to the right and
+   "Visit ->" slides in from the right in paper. */
+.ihb { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; width: 128px; height: 44px; margin-top: 4px; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font: 600 14px/1 var(--sans); letter-spacing: .01em; text-decoration: none; }
+.ihb__t { display: inline-block; transform: translateX(4px); transition: transform .3s var(--ease), opacity .3s var(--ease); }
+.ihb__in { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--paper); opacity: 0; transform: translateX(48px); transition: transform .3s var(--ease), opacity .3s var(--ease); }
+.ihb__dot { position: absolute; z-index: 1; left: 20%; top: 40%; width: 8px; height: 8px; border-radius: 8px; background: var(--ink); transition: left .3s var(--ease), top .3s var(--ease), width .3s var(--ease), height .3s var(--ease), transform .3s var(--ease); }
+.ihb:hover .ihb__t, .ihb:focus-visible .ihb__t { transform: translateX(48px); opacity: 0; }
+.ihb:hover .ihb__in, .ihb:focus-visible .ihb__in { transform: translateX(-4px); opacity: 1; }
+.ihb:hover .ihb__dot, .ihb:focus-visible .ihb__dot { left: 0; top: 0; width: 100%; height: 100%; transform: scale(1.8); }
+.ihb:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .ihb__t, .ihb__in, .ihb__dot { transition: none; } }
 .row__art img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 1.4s var(--ease); }
 .row:hover .row__art img { transform: scale(1.025); }
 .row__line { max-width: 34ch; }

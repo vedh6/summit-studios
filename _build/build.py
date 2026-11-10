@@ -652,6 +652,14 @@ def chapter_industry(iid, final_chip=None):
 SHOW_FIRST = 6   # Projects page: rows after this sit behind "Show all"
 
 
+def visit_button(url, name, host):
+    """Projects: "Visit" as an interactive pill (from the user's InteractiveHoverButton): a dot by the word
+    floods the pill on hover while the word slides out and "Visit ->" slides in."""
+    arrow = '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    return (f'<a class="ihb" href="{url}" target="_blank" rel="noopener" aria-label="Visit {name}, {host} (opens in a new tab)">'
+            f'<span class="ihb__t">Visit</span><span class="ihb__in" aria-hidden="true"><span>Visit</span>{arrow}</span><span class="ihb__dot" aria-hidden="true"></span></a>')
+
+
 def work_row(i, p):
     more = ' row--more' if i > SHOW_FIRST else ''
     if not p.get('url'):
@@ -668,7 +676,7 @@ def work_row(i, p):
         <h4 class="h4 row__name">{p['name']}</h4>
         <p class="label row__meta">{p['sector']} &middot; {p['type']}</p>
         <p class="n3 row__line">{p['line']}</p>
-        {chip(p.get('visit') or 'Visit ' + host, p['url'], external=True)}
+        {visit_button(p['url'], p['name'], host)}
       </div>
     </article>'''
 
