@@ -429,25 +429,26 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voices__row { display: flex; align-items: flex-start; gap: 20px; width: max-content; }
 /* A card per client: a cover of their own website, who they are, the quote, and a "View site" button.
    The card runs from light parchment under the cover to dark umber at its foot. */
-.voice { --vw: clamp(272px, min(27vw, calc((100svh - 270px) * .66)), 430px); --light: #E4D5B2; --dark: #1A120A; --cream: #F3EBDA;
+.voice { --vw: clamp(272px, min(27vw, calc((100svh - 270px) * .66)), 430px); --light: #D8C2A0; --brown: #7A5233; --dark: #1A120A; --cream: #F3EBDA;
   position: relative; flex: 0 0 var(--vw); width: var(--vw); min-height: calc(var(--vw) * 1.55); margin: 0; scroll-snap-align: start;
-  display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; background: var(--dark);
+  display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; background: var(--brown);
   box-shadow: 0 1px 0 rgba(90, 60, 30, .1), 0 26px 40px -30px rgba(40, 26, 10, .6); }
 .voice__cover { position: relative; flex: none; aspect-ratio: 16 / 10; max-height: 40%; overflow: hidden; background: var(--light); }
 .voice__cover img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform .6s var(--ease); }
 .voice:hover .voice__cover img { transform: scale(1.05); }
-/* one gradient over the whole card, cover included: a faint parchment wash over the top of the site,
-   opaque parchment by the foot of the cover, then down to dark umber */
+/* one smooth gradient over the whole card, cover included: light brown to a mid brown (no dark bands).
+   Over the cover it starts as a faint wash and is opaque by the cover's foot; below that it's a plain
+   two-colour ramp (the stops above it sit on the same line, so the colour change is even all the way down) */
 .voice::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(244, 235, 214, .14) 0%, rgba(240, 229, 204, .34) 16%, rgba(234, 221, 192, .72) 29%, var(--light) 39%,
-    #C9AB80 50%, #8A6742 63%, #45301C 78%, var(--dark) 100%); }
+  background: linear-gradient(180deg, rgba(216, 194, 160, .1) 0%, rgba(199, 174, 140, .42) 18%, rgb(180, 151, 119) 38%, var(--brown) 100%);
+  background: linear-gradient(in oklab 180deg, rgba(216, 194, 160, .1) 0%, rgba(199, 174, 140, .42) 18%, rgb(180, 151, 119) 38%, var(--brown) 100%); }
 .voice__mono { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 6%; background-color: #E9DCBE; background-image: var(--paper-tex); background-size: var(--paper-size);
   font-family: var(--serif); font-size: clamp(72px, 6vw, 110px); letter-spacing: -.02em; line-height: 1; color: #9A6A33; }
 .voice__body { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 4px 24px 24px; color: var(--cream); }
 .voice__by { display: grid; gap: 5px; margin: 0; font-family: var(--sans); }
-.voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #2A1C10; }
-.voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6B4423; }
-.voice__q { margin: auto 0 0; padding-top: 16px; font-family: var(--serif); font-size: clamp(20px, .8rem + .6vw, 25px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
+.voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #24170C; }
+.voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #43290F; }
+.voice__q { margin: auto 0 0; padding-top: 16px; text-shadow: 0 1px 2px rgba(60, 36, 16, .25); font-family: var(--serif); font-size: clamp(20px, .8rem + .6vw, 25px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
 .voice__site.pill--go { flex: none; height: 36px; padding: 0 44px 0 16px; font-size: 13px; background: var(--cream); color: var(--dark); --ic: var(--cream); }
 .voice__site.pill--go .pill__ic { top: 4px; right: 4px; width: 28px; height: 28px; }
 .voice__site.pill--go:hover { padding: 0 16px 0 44px; background: #FFF8EA; }
