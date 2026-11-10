@@ -1023,8 +1023,10 @@ void main(){
       if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28, willChange: 'transform, opacity' }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true, onComplete: () => gsap.set(inn.children, { clearProps: 'willChange' }) }); }
     };
     screenShow = setActive;
+    // starts the moment the walk's push-in ends ('top bottom': the spacer follows the walk's), so no
+    // dead stretch of scrolling with nothing changing between the zoom and the second reason
     ScrollTrigger.create({
-      trigger: sp, start: 'top top', end: 'bottom bottom', scrub: true,
+      trigger: sp, start: 'top bottom', end: 'bottom bottom', scrub: true,
       // the first reason is already on the screen through the push-in, so here it gets half a share and the next one comes sooner
       onUpdate: self => { setActive(Math.min(n - 1, Math.floor(self.progress * (n - .5) + .5))); if (self.isActive && orbitFinal) orbitFinal(); },
       onToggle: self => { whyPhase = self.isActive || self.progress >= 1; whyLive(); if (self.isActive && orbitFinal) orbitFinal(); },

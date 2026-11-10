@@ -707,7 +707,7 @@ def orbit_walk():
 def screen_reasons():
     """Home, Why us: the scroll length over which the reasons take turns on the laptop's screen
     (screen() in motion.js). The text itself is screen_quad(), in the chapter's sticky background."""
-    return '''<div class="screen" data-screen data-length="480" aria-hidden="true"><div class="screen__pin"></div></div>'''
+    return '''<div class="screen" data-screen data-length="170" aria-hidden="true"><div class="screen__pin"></div></div>'''
 
 
 def screen_quad():
