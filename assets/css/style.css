@@ -521,7 +521,13 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 .ch--box .ch__word { color: var(--paper); font-size: clamp(3.25rem, 1rem + 8.4vw, 11rem); text-shadow: 0 2px 34px rgba(30, 18, 8, .6), 0 1px 4px rgba(30, 18, 8, .4); }
 .ch--box .ch__lead { max-width: 24ch; margin-top: 22px; color: var(--paper); text-shadow: 0 2px 22px rgba(30, 18, 8, .8), 0 1px 3px rgba(30, 18, 8, .6); }
 .ch--box .ch__body { padding-top: 72px; }
-@media (max-width: 899px) { .ch--box { padding-top: calc(var(--header-h) + 12px); } .ch__box { height: min(78svh, 640px); min-height: 420px; } }
+@media (max-width: 899px) { .ch--box { --inset: 0px; padding-top: calc(var(--header-h) + 12px); } .ch__box { height: min(78svh, 640px); min-height: 420px; } }   /* phones: edge to edge */
+/* phones: a painted chapter's picture scrolls away with its word and lead (no fixed picture that fades and
+   leaves cream type on bare paper) */
+@media (max-width: 899px) {
+  .ch:not(.ch--paper):not(.ch--rip):not(.ch--cut):not(.ch--box):not(.ch--plain):not(.ch--corner) .ch__bg { position: relative; top: auto; }
+  .ch.is-faded:not(.ch--paper):not(.ch--rip):not(.ch--cut):not(.ch--box):not(.ch--plain):not(.ch--corner) .ch__bg { opacity: 1; }
+}
 .ba { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: 18px; max-width: 1140px; }
 .ba__col { border-radius: 14px; padding: 26px 28px 28px; }
 .ba__col--old { border: 1px dashed rgba(41, 41, 25, .3); color: var(--mid); }
@@ -926,6 +932,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .talk__h { font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
   text-shadow: 0 2px 30px rgba(28, 16, 4, .6), 0 1px 3px rgba(28, 16, 4, .45); }
 .talk .tf { position: relative; z-index: 1; margin-top: calc(var(--hs) * -.36); }
+@media (max-width: 899px) { .talk .tf { margin-top: 18px; } }   /* phones: the headline is three lines; let all of it show */
 /* after the form, on the wall */
 .talk__alt { display: grid; justify-items: center; gap: 14px; padding: clamp(48px, 6vw, 80px) 4px clamp(64px, 8vw, 110px); text-align: center; }
 .talk__or { font-family: var(--serif); font-size: clamp(26px, 1.2rem + 1vw, 34px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
@@ -983,7 +990,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .calls__cord { display: none; }
   .calls__h { font-size: clamp(48px, 15vw, 64px); max-width: 6.5ch; }
   .bird { scale: .7; } .bird:nth-child(1) { left: 52% !important; } .bird:nth-child(2) { left: 34% !important; top: 10% !important; }
-  #start .bird:nth-child(1) { left: 64% !important; top: 15% !important; } #start .bird:nth-child(2) { left: 82% !important; top: 25% !important; }   /* phones: the top-right corner, clear of her head */
+  #start .bird:nth-child(1) { left: 77% !important; top: 9% !important; } #start .bird:nth-child(2) { left: 89% !important; top: 27% !important; }   /* phones: the open sky right of her face */   /* phones: the top-right corner, clear of her head */
   .srp { padding: 14px; border-radius: 14px; }
   .srp__ov { grid-template-columns: minmax(0, 1fr) 84px; align-items: start; padding: 14px; gap: 12px; }
   .srp__thumb { aspect-ratio: 1; }
@@ -1039,7 +1046,11 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   html.nav-open .hdr { color: var(--paper); }
   .hdr__nav .hdr__link { padding: 16px 0; font-family: var(--grotesk); font-weight: 700; font-size: 32px; letter-spacing: -.03em; border-bottom: 1px solid var(--line-light); border-radius: 0; }
   .hdr__nav .hdr__link[aria-current="page"] { background: none; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 7px; }
-  .hdr__menu { display: flex; }
+  .hdr__menu { display: flex; width: 40px; height: 40px; padding: 0 11px; border-radius: 50%; background: var(--white); color: var(--black); transition: background .3s, color .3s; }   /* a solid button, readable over anything */
+  html.ui-ink[data-ui] .hdr__menu, html.orbit-ink[data-ui] .hdr__menu, html[data-ui="light"] .hdr__menu { background: var(--black); color: var(--white); }
+  html.ui-over-paint[data-ui] .hdr__menu { background: var(--white); color: var(--black); }
+  .hdr__brand { transition: opacity .35s var(--ease), transform .35s var(--ease); }
+  html.hdr-tuck:not(.nav-open) .hdr__brand { opacity: 0; transform: translateY(-12px); pointer-events: none; }   /* the wordmark has no background: it steps aside while you scroll down (main.js) */
   .hdr__sub { display: none; }
 }
 

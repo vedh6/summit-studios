@@ -169,6 +169,18 @@
     if (window.__summit) hook(); else addEventListener('load', hook);
   });
 
+  /* ---------- Phones: the header wordmark steps aside while you scroll down ----------
+     It has no background, so on a phone it sat on top of the content. It comes back as soon as you
+     scroll up, or near the top of the page. The Contact and menu buttons are solid and always stay. */
+  let lastY = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    if (innerWidth >= 900 || y < innerHeight * .4) root.classList.remove('hdr-tuck');
+    else if (y > lastY + 4) root.classList.add('hdr-tuck');
+    else if (y < lastY - 4) root.classList.remove('hdr-tuck');
+    lastY = y;
+  }, { passive: true });
+
   /* ---------- Projects index: filter by sector (every project shows under "All") ---------- */
   const work = d.querySelector('[data-work]');
   if (work) {
