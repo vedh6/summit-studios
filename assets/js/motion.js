@@ -868,7 +868,7 @@ void main(){
     let ready = false, target = CLIP.t0, shown = CLIP.t0;
     gsap.ticker.add(() => {
       if (!ready || !video.duration) return;
-      const atEnd = !video.seeking && Math.abs(shown - (video.duration - .06)) < .05;
+      const atEnd = Math.abs(shown - (video.duration - .06)) < .05;   // not tied to seeking: the last seeks made the screen's text blink off and on
       if (atEnd !== whyAtEnd) { whyAtEnd = atEnd; whyLive(); }
       if (video.seeking) return;
       const diff = target - shown;
@@ -878,10 +878,13 @@ void main(){
     });
     loadClip(video, () => { video.currentTime = CLIP.t0; ready = true; });
 
-    // where the screen's corners sit on the page (object-fit: cover), and the push-in that
-    // centres the screen and grows it as far as it still fits
+    // where the screen's corners sit in the framed picture (object-fit: cover), and the push-in that
+    // centres the screen and grows it as far as it still fits. All in the frame's own coordinates:
+    // the video and the text layer are its children. The 4K clip's own last frame is the end picture:
+    // a separate 4K still swapped in there looked different and cost a big redraw every frame
+    const frame = video.parentElement;
     const geo = () => {
-      const W = innerWidth, H = innerHeight, c = Math.max(W / CLIP.w, H / CLIP.h), dw = CLIP.w * c, dh = CLIP.h * c, ox = (W - dw) / 2, oy = (H - dh) / 2;
+      const W = frame.clientWidth || innerWidth, H = frame.clientHeight || innerHeight, c = Math.max(W / CLIP.w, H / CLIP.h), dw = CLIP.w * c, dh = CLIP.h * c, ox = (W - dw) / 2, oy = (H - dh) / 2;
       const q = CLIP.quad.map(([fx, fy]) => [ox + fx * dw, oy + fy * dh]);
       const cx = (q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, cy = (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4;
       const qw = Math.max(q[1][0], q[2][0]) - Math.min(q[0][0], q[3][0]), qh = Math.max(q[2][1], q[3][1]) - Math.min(q[0][1], q[1][1]);
@@ -889,11 +892,9 @@ void main(){
       return { q, cx, cy, S, tx: W / 2 - cx, ty: H / 2 - cy };
     };
     let g = geo(), k = 0;
-    const endStill = sec.querySelector('[data-orbit-end]');   // the last frame in 4K, moved exactly with the video
     const place = () => {
       const s = 1 + (g.S - 1) * k, o = `${g.cx.toFixed(1)}px ${g.cy.toFixed(1)}px`, t = `translate(${(g.tx * k).toFixed(1)}px, ${(g.ty * k).toFixed(1)}px) scale(${s.toFixed(4)})`;
       video.style.transformOrigin = o; video.style.transform = t;
-      if (endStill) { endStill.style.transformOrigin = o; endStill.style.transform = t; }
     };
     const quadAt = kk => { const s = 1 + (g.S - 1) * kk; return g.q.map(([x, y]) => [g.cx + (x - g.cx) * s + g.tx * kk, g.cy + (y - g.cy) * s + g.ty * kk]); };
     // the text layer, mapped onto the screen wherever the push-in has it. Its own size is the
@@ -922,6 +923,32 @@ void main(){
       clearTimeout(restT);
       restT = setTimeout(rest, 120);
     };
+    // The approach: the picture hangs in a gilt frame on the parchment; near the laptop the camera
+    // walks up to the frame until the picture fills the screen (the frame passes out of view), while
+    // the push-in inside it centres the laptop. One transform on the framed box, about the picture's centre.
+    const wall = frame.parentElement, APPROACH = [.55, 1];   // ends with the push-in, so the frame comes to rest when everything does
+    let A = null, a = 0, wallTf = '', wallT = 0, inWall = false;
+    const wallGeo = () => {
+      const cs = getComputedStyle(wall), fw = frame.clientWidth, fh = frame.clientHeight;
+      if (!fw || !fh) return null;
+      const W = d.documentElement.clientWidth || innerWidth, H = innerHeight;
+      const ox = (parseFloat(cs.borderLeftWidth) || 0) + fw / 2, oy = (parseFloat(cs.borderTopWidth) || 0) + fh / 2;   // the picture's centre in the box
+      const px = sec.getBoundingClientRect().left + wall.offsetLeft + ox, py = (parseFloat(cs.top) || 0) + oy;   // ... and on screen while the frame is held
+      return { o: `${ox.toFixed(1)}px ${oy.toFixed(1)}px`, s: Math.max(W / fw, H / fh) * 1.003, dx: W / 2 - px, dy: H / 2 - py };
+    };
+    const ink = () => root.classList.toggle('orbit-ink', inWall && a < .5);   // ink header on the parchment, light once the picture fills the screen
+    const placeWall = () => {
+      if (!A) A = wallGeo();
+      if (!A) return;
+      const e = a * a * (3 - 2 * a);
+      const tf = e > 0 ? `translate(${(A.dx * e).toFixed(1)}px, ${(A.dy * e).toFixed(1)}px) scale(${(1 + (A.s - 1) * e).toFixed(4)})` : '';
+      if (tf === wallTf) return;
+      wallTf = tf;
+      wall.style.transformOrigin = A.o; wall.style.transform = tf;
+      wall.style.willChange = 'transform';   // one drawing while it moves; redrawn sharp once it rests
+      clearTimeout(wallT); wallT = setTimeout(() => { wall.style.willChange = 'auto'; }, 140);
+      ink();
+    };
     // the clip travels over the first 70% of the walk; the push-in takes the last 30%, on the
     // held last frame, with the first reason already on the screen
     const TRAVEL = .7;
@@ -941,20 +968,24 @@ void main(){
         fadeOpen(p);
         if (ready && video.duration) target = CLIP.t0 + gsap.utils.clamp(0, 1, p / TRAVEL) * (video.duration - .06 - CLIP.t0);
         k = gsap.utils.clamp(0, 1, (p - TRAVEL) / (1 - TRAVEL));
-        place(); mapScreen();
+        a = gsap.utils.clamp(0, 1, (p - APPROACH[0]) / (APPROACH[1] - APPROACH[0]));
+        place(); mapScreen(); placeWall();
         whyK = k; whyLive();
         if (!whyPhase && screenShow) screenShow(k > 0 ? 0 : -1);
       },
       onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
     });
-    const refresh = () => { g = geo(); box = null; lastTf = ''; place(); mapScreen(); };
+    // while the picture hangs in its frame the header sits on parchment: ink, from the end of the rip to the chapter's end
+    ScrollTrigger.create({ trigger: sec.querySelector('.rip-space') || sec, start: 'bottom top+=60', endTrigger: sec, end: 'bottom top+=60',
+      onToggle: self => { inWall = self.isActive; ink(); } });
+    const refresh = () => { g = geo(); box = null; lastTf = ''; A = null; wallTf = null; place(); mapScreen(); placeWall(); };
     refresh();
     ScrollTrigger.addEventListener('refresh', refresh);
     addEventListener('resize', refresh);
     if (still) still.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
     // the screen phase can insist on the walk's final state (full push-in, last frame), so the
     // type never lands on a mid-walk frame if the scrub is still catching up
-    orbitFinal = () => { if (k !== 1) { k = 1; whyK = 1; place(); mapScreen(); } if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
+    orbitFinal = () => { if (a !== 1) { a = 1; placeWall(); } if (k !== 1) { k = 1; whyK = 1; place(); mapScreen(); } if (ready && video.duration) { const end = video.duration - .06; if (Math.abs(shown - end) > .01) { target = shown = end; video.currentTime = end; } } };
   }
 
   // The CSS matrix3d that maps a w x h box (origin top-left) onto the quad q (TL, TR, BR, BL)

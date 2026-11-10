@@ -95,8 +95,8 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 /* ---------- UI theme: light text over paintings, ink text over the page ---------- */
 html[data-ui="dark"] { --ui: var(--paper); --ui-dim: rgba(247, 247, 238, .6); --ui-line: var(--line-light); }
 html[data-ui="light"] { --ui: var(--ink); --ui-dim: rgba(41, 41, 25, .6); --ui-line: var(--line); }
-html.ui-ink[data-ui] { --ui: var(--ink); --ui-dim: rgba(41, 41, 25, .6); --ui-line: var(--line); }
-html.ui-ink[data-ui] .pill--hdr { background: var(--black); color: var(--white); --ic: var(--black); }
+html.ui-ink[data-ui], html.orbit-ink[data-ui] { --ui: var(--ink); --ui-dim: rgba(41, 41, 25, .6); --ui-line: var(--line); }
+html.ui-ink[data-ui] .pill--hdr, html.orbit-ink[data-ui] .pill--hdr { background: var(--black); color: var(--white); --ic: var(--black); }
 
 /* ---------- Header ---------- */
 .hdr {
@@ -988,11 +988,8 @@ html.has-tunnel .tun__prompt { display: block; }
    fly-through plays over its screen. The spacer gives the walk its scroll length. */
 .paint--orbit { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }   /* transform and origin set by orbit() */
 html.orbit-live .paint--orbit { opacity: 1; }
-/* the walk's last frame, upscaled to 4K: laid exactly over the video, it takes over once the camera has
-   landed, so the push-in to the laptop and the screen stay sharp (desktop only, like the walk) */
-.paint--orbit-end { display: none; }
-html.has-orbit .paint--orbit-end { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s var(--ease); }
-html.screen-live .paint--orbit-end { opacity: 1; }
+/* once the clip is on, the still under it is hidden: nothing to redraw while the frame and the push-in zoom */
+html.has-orbit.orbit-live .ch--rip .ch__pic > img.paint { visibility: hidden; }
 /* phones and tablets keep the still: crop it so the laptop on the table stays in view */
 html:not(.has-orbit) .ch--rip .ch__bg .paint:not(video) { object-position: 65% 50%; }
 /* Why us (home): the heading and its line stay put through the walk; orbit() fades them as the
@@ -1002,6 +999,36 @@ html.has-orbit .ch--rip .ch__open { position: sticky; top: 0; height: 100svh; mi
 /* no shade over the picture here, so the type carries its own soft shadow for the pale marble */
 html.has-orbit .ch--rip .ch__bg::after { background: none; }
 html.has-orbit .ch--rip .ch__word, html.has-orbit .ch--rip .ch__lead { text-shadow: 0 2px 34px rgba(38, 24, 10, .62), 0 1px 4px rgba(38, 24, 10, .42); }
+/* The walk hangs in the Contact page's gilt frame on the parchment, about three quarters of the screen
+   wide: the clip is AI-made and soft, and shown smaller the same detail reads sharper. --fw x --fh: the
+   picture (16:9, nothing cropped); --g: the gilt; --cr: how far the crest rises above the frame. The
+   frame and its crest are centred in the space under the header; --fy is the frame's top.
+   orbit() measures the picture's box (.ch__pic), so the walk, the push-in and the laptop's text all live inside it. */
+.ch__pic { position: absolute; inset: 0; overflow: hidden; }
+/* the wall the frame hangs on stays still while the frame is held (a sticky sheet of the same parchment, under the
+   frame); the section is clipped sideways so the frame growing to full screen never widens the page */
+html.has-orbit .ch--rip { overflow-x: clip; }
+html.has-orbit .ch--rip::before { content: ''; display: block; position: sticky; z-index: 0; top: 0; height: 100svh; margin-bottom: -100svh; pointer-events: none;
+  background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); }
+.frame-crest { display: none; }
+html.has-orbit .ch--rip {
+  --g: clamp(24px, 3.6vw, 50px); --gt: calc(var(--g) * .9713); --gb: calc(var(--g) * .9817); --gs: calc(var(--g) * 1.0235); --cr: calc(var(--g) * 1.1);
+  --fw: min(72vw, calc((100svh - var(--header-h) - var(--cr) - var(--gt) - var(--gb) - 40px) * 16 / 9));
+  --fh: calc(var(--fw) * 9 / 16);
+  --fy: calc(var(--header-h) + var(--cr) + (100svh - var(--header-h) - var(--cr) - var(--gt) - var(--fh) - var(--gb)) / 2);
+}
+html.has-orbit .ch--rip .ch__bg {
+  box-sizing: content-box; top: var(--fy); width: var(--fw); height: var(--fh); overflow: visible;
+  margin: 0 auto calc(-1 * (var(--fh) + var(--gt) + var(--gb)));
+  border-style: solid; border-color: transparent; border-width: var(--gt) var(--gs) var(--gb) var(--gs);
+  border-image: url("../img/frame-gilt.png") 103 114 106 114 / 1.1075 1.1633 1.1277 1.1633 / .1075 .1633 .1277 .1633 round;
+  box-shadow: 0 3px 4px rgba(40, 26, 10, .2), 0 32px 44px -14px rgba(40, 28, 16, .4);   /* a box-shadow, not a filter: a filter would re-render the video every frame */
+}
+html.has-orbit .ch--rip .frame-crest { display: block; position: absolute; z-index: 3; left: 50%; top: calc(var(--g) * -2.0679); width: calc(var(--g) * 3.7493); height: auto; transform: translateX(-50%); filter: drop-shadow(0 3px 3px rgba(40, 26, 10, .28)); }
+/* the heading sits inside the picture, at its lower left, sized to it */
+html.has-orbit .ch--rip .ch__open { padding-left: calc((100% - var(--fw)) / 2 + 40px); padding-bottom: calc(100svh - var(--fy) - var(--gt) - var(--fh) + 34px); }
+html.has-orbit .ch--rip .ch__word { font-size: clamp(4rem, 1rem + 7.4vw, 9.5rem); }
+html.has-orbit .ch--rip .ch__lead { font-size: clamp(1.5rem, .85rem + 1.25vw, 2.25rem); margin-top: 22px; max-width: 26ch; }
 .orbit { display: none; }
 html.has-orbit .orbit { display: block; position: relative; height: calc(var(--orbit-len, 420) * 1svh); margin: -40px calc(-1 * var(--gutter)) 0 calc(-1 * var(--col)); max-width: none !important; pointer-events: none; }
 html.has-orbit .orbit__pin { position: sticky; top: 0; height: 100svh; }

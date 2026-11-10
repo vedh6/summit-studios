@@ -159,7 +159,7 @@
       }
       const fade = (1 - Math.max(0, Math.min(1, (prog - .45) / .45))).toFixed(3);
       cards.forEach(c => { c.style.opacity = fade; });
-      root.classList.toggle('ui-over-paint', r.top + minY < 70 && r.bottom > -vh * .2);
+      root.classList.toggle('ui-over-paint', !root.classList.contains('has-orbit') && r.top + minY < 70 && r.bottom > -vh * .2);   // framed walk: parchment under the header
     };
     size(); zoomOrigin(); draw();
     if (img && !img.complete) img.addEventListener('load', () => { zoomOrigin(); draw(); }, { once: true });
