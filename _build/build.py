@@ -661,18 +661,22 @@ def chapter_industry(d):
     return chapter('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
 
 
-def rebirth_intro():
-    """Industries opener copy: the idea behind the page (renaissance = rebirth), then every industry we
-    have built for, with how many of our sites are in each."""
+def hero_rebirth():
+    """Industries opener: the palace gallery of framed websites fills the first screen, and the idea sits
+    on it -- renaissance means rebirth -- with every industry we've built for (and how many of our sites
+    are in each) on a frosted panel. Cream type with a soft shadow; no tint over the painting."""
     count = lambda d: sum(1 for p in PROJECTS if p.get('url') and p['slug'] == d['slug'])
     items = ''.join(f'''<li><a href="#ind-{d['id']}"><span class="rb__name">{d['name']}</span><span class="rb__lead" aria-hidden="true"></span><span class="label rb__n">{count(d)} {'site' if count(d) == 1 else 'sites'}</span></a></li>'''
                     for d in INDUSTRIES)
-    return f'''<section class="rb" id="rebirth" aria-labelledby="rebirth-t" data-ink>
-  <p class="label rb__eyebrow">Our approach</p>
-  <h2 class="rb__h" id="rebirth-t">{swash('Renaissance means rebirth.')}</h2>
-  <div class="rb__cols">
-    <p class="n2 rb__p">Most businesses we meet already have a website. It is just tired: a template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
-    <nav class="rb__idx" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve reborn sites in</p><ol class="rb__list">{items}</ol></nav>
+    return f'''<section class="hero hero--rb" id="top" aria-labelledby="rebirth-t" data-hero>
+  <div class="hero__bg"><img class="paint" src="assets/img/paint/projects-gallery.jpg" alt="A Renaissance palace gallery where visitors admire websites hung in gilt frames" width="1344" height="752" fetchpriority="high"></div>
+  <div class="hrb">
+    <div class="hrb__text">
+      <p class="label hrb__eyebrow">Industries</p>
+      <h1 class="hrb__h" id="rebirth-t">{swash('Renaissance means rebirth.')}</h1>
+      <p class="n2 hrb__p">Most businesses we meet already have a website. It is just tired: a template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
+    </div>
+    <nav class="hrb__panel" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve reborn sites in</p><ol class="rb__list">{items}</ol></nav>
   </div>
 </section>'''
 
@@ -971,8 +975,7 @@ def price_cards():
 
 
 INDUSTRIES_CH = [('ind-' + d['id'], d['word']) for d in INDUSTRIES] + [('start', 'Start')]
-INDUSTRIES_PAGE = simple_page('projects-gallery', 'A Renaissance palace gallery where visitors admire websites hung in gilt frames', 'Industries &middot; a rebirth for every kind of business',
-    rebirth_intro() + ''.join(chapter_industry(d) for d in INDUSTRIES) + chapter_start())
+INDUSTRIES_PAGE = hero_rebirth() + ''.join(chapter_industry(d) for d in INDUSTRIES) + chapter_start()
 
 TALK_KINDS = ['Clinic or healthcare', 'Engineering or industrial', 'Trades or construction', 'Property or interiors',
               'Technology', 'Food or hospitality', 'Something else']

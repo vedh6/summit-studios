@@ -468,18 +468,22 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
    .rb: the idea (renaissance = rebirth) and an index of every industry we've built for, with how many
    of our sites are in each. .ba: per industry, the typical old site next to what we rebuild it into.
    .iw: our sites in that industry, framed, each with a Visit button. */
-.rb { position: relative; z-index: 1; padding: 120px 20px 110px; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
-.rb__eyebrow { color: var(--mid); margin-bottom: 14px; }
-.rb__h { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 2rem + 5vw, 128px); line-height: .9; letter-spacing: -.035em; color: var(--ink); max-width: 12ch; }
-.rb__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 40px 80px; margin-top: 56px; align-items: start; }
-.rb__p { max-width: 30ch; color: var(--ink); }
-.rb__idxh { color: var(--mid); margin-bottom: 18px; }
+/* the opener: content over the gallery painting (no tint): text bottom-left, the index on a frosted panel */
+.hero--rb { height: auto; min-height: max(100svh, 640px); display: flex; align-items: flex-end; }
+.hrb { position: relative; z-index: 1; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); gap: 32px 60px; align-items: end; padding: calc(var(--header-h) + 40px) 20px 32px; }
+.hrb__eyebrow { color: rgba(247, 247, 238, .85); margin-bottom: 12px; text-shadow: 0 1px 6px rgba(30, 18, 8, .6); }
+.hrb__h { font-family: var(--serif); font-weight: 400; font-size: clamp(52px, 1.6rem + 5vw, 120px); line-height: .9; letter-spacing: -.035em; color: var(--paper); max-width: 11ch;
+  text-shadow: 0 2px 34px rgba(30, 18, 8, .7), 0 1px 4px rgba(30, 18, 8, .5); }
+.hrb__p { margin-top: 26px; max-width: 30ch; color: var(--paper); text-shadow: 0 2px 22px rgba(30, 18, 8, .8), 0 1px 3px rgba(30, 18, 8, .6); }
+.hrb__panel { padding: 22px 26px 12px; border-radius: 14px; background: rgba(246, 240, 226, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 24px 50px -30px rgba(20, 12, 4, .7); }
+.rb__idxh { color: var(--mid); margin-bottom: 12px; }
 .rb__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-.rb__list a { display: flex; align-items: baseline; gap: 14px; padding: 16px 2px; border-bottom: 1px solid var(--line); color: var(--ink); transition: padding .4s var(--ease), color .3s; }
-.rb__name { font-family: var(--grotesk); font-weight: 700; font-size: clamp(20px, .9rem + .7vw, 28px); letter-spacing: -.03em; }
+.rb__list li:last-child a { border-bottom: 0; }
+.rb__list a { display: flex; align-items: baseline; gap: 14px; padding: 12px 2px; border-bottom: 1px solid var(--line); color: var(--ink); transition: padding .4s var(--ease), color .3s; }
+.rb__name { font-family: var(--grotesk); font-weight: 700; font-size: clamp(18px, .8rem + .55vw, 23px); letter-spacing: -.03em; }
 .rb__lead { flex: 1; border-bottom: 1px dotted rgba(41, 41, 25, .35); transform: translateY(-5px); }
 .rb__n { color: var(--mid); white-space: nowrap; }
-.rb__list a:hover { padding-left: 12px; }
+.rb__list a:hover { padding-left: 10px; }
 .rb__list a:hover .rb__n { color: var(--ink); }
 .ba { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: 18px; max-width: 1140px; }
 .ba__col { border-radius: 14px; padding: 26px 28px 28px; }
@@ -507,7 +511,7 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 .iw--solo .iw__card { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; align-items: center; }
 @media (max-width: 1100px) { .iw { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 899px) {
-  .rb { padding: 80px 12px 72px; } .rb__cols { grid-template-columns: 1fr; margin-top: 32px; }
+  .hrb { grid-template-columns: 1fr; padding: calc(var(--header-h) + 24px) 12px 20px; } .hrb__panel { padding: 16px 18px 6px; }
   .ba { grid-template-columns: 1fr; } .ba__arrow { justify-self: center; transform: rotate(90deg); }
   .iw, .iw--solo .iw__card { grid-template-columns: 1fr; gap: 32px; }
 }
