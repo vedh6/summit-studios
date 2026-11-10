@@ -315,16 +315,6 @@ SERVICE_FEATURES = {
                  ('Ongoing maintenance', "Fixes, tuning and new features. We don't vanish once it's live.")],
 }
 
-INDUSTRY_MEDIA = {'industrial': ('device/desk-eagle', 'A studio monitor showing the Eagle Electricals website', 'eagle'),
-                  'clinics': ('device/phone-doctor', 'A phone showing the Dr. Mahesh website', 'doctor'),
-                  'trades': ('device/phone-pranava', 'A phone showing the Pranava Builders website', 'pranava')}
-INDUSTRY_WORD = {'industrial': 'Industrial', 'clinics': 'Clinics', 'trades': 'Trades'}
-INDUSTRY_PAINT = {'industrial': ('industrial', 'A Renaissance landscape with transmission pylons and an engineer looking out over a valley'),
-                  'clinics': ('ind-clinics', 'A Renaissance physician greeting a family at a carved reception desk with a tablet showing appointments'),
-                  'trades': ('trades', 'A Renaissance painting of builders raising a modern building beside a Florentine dome')}
-INDUSTRY_SUB = {'industrial': 'Credibility, inspected', 'clinics': 'Bookings, made', 'trades': 'Referrals, backed up'}
-
-
 def svc(sid):
     return next(s for s in SERVICES if s['id'] == sid)
 
@@ -630,23 +620,61 @@ def duo_section():
 </section>'''
 
 
-def chapter_industry(iid, final_chip=None):
-    d = next(x for x in INDUSTRIES if x['id'] == iid)
-    f, alt, key = INDUSTRY_MEDIA[iid]
-    p = proj(key)
-    paint, palt = INDUSTRY_PAINT[iid]
-    host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
-    shots = ''.join(f'<img class="shot" src="assets/img/work/{key}-{n}.jpg" alt="{p["name"]} website, {lbl}" width="960" height="600" loading="lazy" decoding="async">'
-                    for n, lbl in enumerate(p['shots'] + ['on a phone'], start=1))
+def work_cards(projects):
+    """Industries: our sites in this industry, as framed screenshots with a Visit button.
+    A single project gets a wide card (screenshot beside its text)."""
+    def card(p):
+        host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
+        return f'''<article class="iw__card">
+        <a class="iw__shot" href="{p['url']}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><span class="browser"><span class="browser__bar"><i></i><i></i><i></i></span><img src="assets/img/work/{p['key']}-1.jpg" alt="" width="960" height="600" loading="lazy" decoding="async"></span></a>
+        <div class="iw__info"><h4 class="iw__name">{p['name']}</h4><p class="label iw__type">{p['type']}</p><p class="n3 iw__line">{p['line']}</p>{visit_button(p['url'], p['name'], host)}</div>
+      </article>'''
+    solo = ' iw--solo' if len(projects) == 1 else ''
+    return f'<div class="iw{solo}" data-reveal>{"".join(card(p) for p in projects)}</div>'
+
+
+def before_after(old, new):
+    """Industries: "the rebirth" -- where most sites in the industry are, next to what we rebuild it into."""
+    o = ''.join(f'<li>{x}</li>' for x in old)
+    n = ''.join(f'<li>{x}</li>' for x in new)
+    return f'''<div class="ba" data-reveal>
+      <div class="ba__col ba__col--old"><p class="label ba__lab">Where most sites are</p><ul class="ba__list">{o}</ul></div>
+      <span class="ba__arrow" aria-hidden="true"><svg viewBox="0 0 20 20" width="22" height="22"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="ba__col ba__col--new"><p class="label ba__lab">The rebirth</p><ul class="ba__list">{n}</ul></div>
+    </div>'''
+
+
+def chapter_industry(d):
+    """Industries: one chapter per industry we have built for: why the business needs a website, the
+    rebirth (old site -> what we make of it), our work in it, and what we build for it."""
+    work = [p for p in PROJECTS if p.get('url') and p['slug'] == d['slug']]
     body = f'''
-    {media(f'assets/img/{f}.jpg', alt, 'media--wide')}
-    {sub_head(INDUSTRY_SUB[iid])}
-    {spot(p['name'], p['line'], 'Visit ' + host, p['url'], external=True)}
-    <div class="shots" data-reveal>{shots}</div>
+    {sub_head('Why you need a website')}
+    {feat_grid(d['why'])}
+    {sub_head('From tired to reborn')}
+    {before_after(d['old'], d['new'])}
+    {sub_head('Our work here' if len(work) == 1 else f'Our work here, {len(work)} sites')}
+    {work_cards(work)}
     {sub_head('What we build')}
-    {feat_grid([(b, '') for b in d['build']], 'fg--tags')}
-    <p data-reveal>{final_chip or chip('How we help ' + d['visual'].lower(), 'industries.html#' + iid)}</p>'''
-    return chapter('ind-' + iid, INDUSTRY_WORD[iid], paint, palt, d['pitch'] + ' ' + d['p'].split('. ')[0] + '.', body)
+    {feat_grid([(x, '') for x in d['build']], 'fg--tags')}
+    <p data-reveal>{chip('Start a conversation', 'contact.html')}</p>'''
+    return chapter('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
+
+
+def rebirth_intro():
+    """Industries opener copy: the idea behind the page (renaissance = rebirth), then every industry we
+    have built for, with how many of our sites are in each."""
+    count = lambda d: sum(1 for p in PROJECTS if p.get('url') and p['slug'] == d['slug'])
+    items = ''.join(f'''<li><a href="#ind-{d['id']}"><span class="rb__name">{d['name']}</span><span class="rb__lead" aria-hidden="true"></span><span class="label rb__n">{count(d)} {'site' if count(d) == 1 else 'sites'}</span></a></li>'''
+                    for d in INDUSTRIES)
+    return f'''<section class="rb" id="rebirth" aria-labelledby="rebirth-t" data-ink>
+  <p class="label rb__eyebrow">Our approach</p>
+  <h2 class="rb__h" id="rebirth-t">{swash('Renaissance means rebirth.')}</h2>
+  <div class="rb__cols">
+    <p class="n2 rb__p">Most businesses we meet already have a website. It is just tired: a template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
+    <nav class="rb__idx" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve reborn sites in</p><ol class="rb__list">{items}</ol></nav>
+  </div>
+</section>'''
 
 
 
@@ -942,10 +970,9 @@ def price_cards():
     return f'<div class="price" data-reveal>{cards}</div>'
 
 
-INDUSTRIES_CH = [('ind-industrial', 'Industrial'), ('ind-clinics', 'Clinics'), ('ind-trades', 'Trades'), ('start', 'Start')]
-INDUSTRIES_PAGE = simple_page('industrial', 'A Renaissance landscape with transmission pylons', 'Industries &middot; every industry buys differently',
-    ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Start a conversation', 'contact.html')) for i in ['industrial', 'clinics', 'trades'])
-    + chapter_start())
+INDUSTRIES_CH = [('ind-' + d['id'], d['word']) for d in INDUSTRIES] + [('start', 'Start')]
+INDUSTRIES_PAGE = simple_page('projects-gallery', 'A Renaissance palace gallery where visitors admire websites hung in gilt frames', 'Industries &middot; a rebirth for every kind of business',
+    rebirth_intro() + ''.join(chapter_industry(d) for d in INDUSTRIES) + chapter_start())
 
 TALK_KINDS = ['Clinic or healthcare', 'Engineering or industrial', 'Trades or construction', 'Property or interiors',
               'Technology', 'Food or hospitality', 'Something else']
@@ -1037,7 +1064,7 @@ PAGES = {
                    HOME, HOME_CHAPTERS, True),
     'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
-    'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
+    'industries.html': ('Industries | Summit Studios', 'Websites reborn for healthcare, industrial and engineering, technology, construction and real estate, interiors, food and e-commerce, and hospitality.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
     'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
     'get-started.html': ('Get started | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
