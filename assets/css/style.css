@@ -422,33 +422,42 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voices { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); padding: 120px 20px 100px; }
 .voices__eyebrow { color: var(--mid); margin-bottom: 14px; }
 .voices__h { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 2rem + 5vw, 128px); line-height: .9; letter-spacing: -.035em; color: var(--ink); }
-.voices__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 64px; }   /* cards in a row share a height: dividers line up */
-/* One card per client: a cover of their own website fading into the card, the quote, who said it,
-   and a "View site" button that opens their site. Warm near-black so the screenshots carry the colour. */
-.voice { --card: #18110A; --cream: #F3EBDA; position: relative; margin: 0; border-radius: 16px; overflow: hidden; background: var(--card); color: var(--cream); display: flex; flex-direction: column;
+/* One row of tall cards, the next peeking in at the right edge (phones: swipe it; desktop: voices()
+   in motion.js holds the section and slides the row as you scroll). */
+.voices__track { margin: 56px -20px 0; padding: 0 20px 4px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding: 0 20px; scrollbar-width: none; }
+.voices__track::-webkit-scrollbar { display: none; }
+.voices__row { display: flex; align-items: flex-start; gap: 20px; width: max-content; }
+/* A card per client: a cover of their own website, who they are, the quote, and a "View site" button.
+   The card runs from light parchment under the cover to dark umber at its foot. */
+.voice { --vw: clamp(272px, min(27vw, calc((100svh - 270px) * .66)), 430px); --light: #E4D5B2; --dark: #1A120A; --cream: #F3EBDA;
+  position: relative; flex: 0 0 var(--vw); width: var(--vw); min-height: calc(var(--vw) * 1.55); margin: 0; scroll-snap-align: start;
+  display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; background: var(--dark);
   box-shadow: 0 1px 0 rgba(90, 60, 30, .1), 0 26px 40px -30px rgba(40, 26, 10, .6); }
-.voice__cover { position: relative; height: clamp(210px, 17vw, 280px); overflow: hidden; background: #2A1C10; }   /* the card's own radius rounds its top */
+.voice__cover { position: relative; flex: none; aspect-ratio: 16 / 10; max-height: 40%; overflow: hidden; background: var(--light); }
 .voice__cover img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform .6s var(--ease); }
 .voice:hover .voice__cover img { transform: scale(1.05); }
-.voice__cover::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 44%; pointer-events: none;   /* a short, eased fade: light sites don't turn muddy grey */
-  background: linear-gradient(0deg, var(--card) 2%, rgba(24, 17, 10, .86) 22%, rgba(24, 17, 10, .45) 55%, rgba(24, 17, 10, .12) 80%, rgba(24, 17, 10, 0)); }
-.voice__mono { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 8%;
-  background: radial-gradient(90% 80% at 50% 30%, #4A2E1A, #22160C); background-image: var(--tex-paint), radial-gradient(90% 80% at 50% 30%, #4A2E1A, #22160C);
-  background-size: 320px 320px, 480px 480px, 200px 200px, 100% 100%; background-blend-mode: overlay, multiply, soft-light, normal;
-  font-family: var(--serif); font-size: clamp(76px, 6vw, 112px); letter-spacing: -.02em; line-height: 1; color: #D9B26A; }
-.voice__body { position: relative; flex: 1; display: grid; grid-template-rows: 1fr auto; gap: 18px; padding: 2px 24px 24px; }
-.voice__q { margin: 0; padding-bottom: 20px; border-bottom: 1px solid rgba(243, 235, 218, .18); font-family: var(--serif); font-size: clamp(21px, .9rem + .6vw, 26px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
-.voice__by { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-family: var(--sans); }
-.voice__who { display: grid; gap: 4px; min-width: 0; }
-.voice__name { font-size: 15px; font-weight: 500; }
-.voice__role { font-size: 13px; font-weight: 500; background: linear-gradient(90deg, #EACD8A, #CC9443 55%, #B3722F); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.voice__site.pill--go { flex: none; height: 36px; padding: 0 44px 0 16px; font-size: 13px; background: var(--cream); color: var(--card); --ic: var(--cream); }
+.voice__cover::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 34%; pointer-events: none;
+  background: linear-gradient(0deg, var(--light) 3%, rgba(228, 213, 178, .72) 30%, rgba(228, 213, 178, 0)); }
+.voice__mono { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 6%; background-color: #E9DCBE; background-image: var(--paper-tex); background-size: var(--paper-size);
+  font-family: var(--serif); font-size: clamp(72px, 6vw, 110px); letter-spacing: -.02em; line-height: 1; color: #9A6A33; }
+.voice__body { position: relative; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 4px 24px 24px;
+  background: linear-gradient(180deg, var(--light) 0%, #C7A87C 20%, #81603C 42%, #3B2817 64%, var(--dark) 100%); color: var(--cream); }
+.voice__by { display: grid; gap: 5px; margin: 0; font-family: var(--sans); }
+.voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #2A1C10; }
+.voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6B4423; }
+.voice__q { margin: auto 0 0; padding-top: 16px; font-family: var(--serif); font-size: clamp(20px, .8rem + .6vw, 25px); line-height: 1.1; letter-spacing: -.015em; text-wrap: pretty; }
+.voice__site.pill--go { flex: none; height: 36px; padding: 0 44px 0 16px; font-size: 13px; background: var(--cream); color: var(--dark); --ic: var(--cream); }
 .voice__site.pill--go .pill__ic { top: 4px; right: 4px; width: 28px; height: 28px; }
 .voice__site.pill--go:hover { padding: 0 16px 0 44px; background: #FFF8EA; }
 .voice__site.pill--go:hover .pill__ic { right: calc(100% - 32px); }
 .voice__site:focus-visible { outline: 2px solid #D9B26A; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .voice__cover img { transition: none; } .voice:hover .voice__cover img { transform: none; } }
-@media (max-width: 1180px) { .voices__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* desktop: the section holds for as long as the row needs to slide its full width (--vx, set by voices()) */
+html.has-voices .voices { height: calc(100svh + var(--vx, 0px)); padding: 0; }
+html.has-voices .voices__pin { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; padding: calc(var(--header-h) + 24px) 20px 28px; }
+html.has-voices .voices__track { flex: 1; min-height: 0; margin: 36px 0 0; padding: 0; overflow: visible; scroll-snap-type: none; }
+html.has-voices .voices__row { height: 100%; will-change: transform; }
+html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw) * 1.7); }
 /* FAQ */
 .faq { position: relative; z-index: 1; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); padding: 80px 20px 140px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 60px; align-items: start; }
 .faq__head { position: sticky; top: calc(var(--header-h) + 30px); }
@@ -860,7 +869,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .call__tag { display: none; }
   .steps { grid-template-columns: 1fr; gap: 28px; }
   .split { grid-template-columns: 1fr; gap: 24px; }
-  .voices { padding: 72px 12px 64px; } .voices__row { grid-template-columns: 1fr; margin-top: 36px; }
+  .voices { padding: 72px 12px 64px; } .voices__track { margin: 32px -12px 0; padding: 0 12px 4px; scroll-padding: 0 12px; } .voice { --vw: 82vw; }
   .faq { grid-template-columns: 1fr; padding: 48px 12px 90px; gap: 30px; } .faq__head { position: static; } .faq__a { padding-right: 0; font-size: 18px; }
   .ftr { padding: 130px 12px 20px; gap: 56px; } .ftr__tear { height: 110px; } .ftr__cta { grid-template-columns: 1fr; } .ftr__cols { grid-template-columns: 1fr 1fr; }
   .duo { grid-template-columns: 1fr; padding: 48px 12px 24px; gap: 48px; }

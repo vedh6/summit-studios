@@ -778,8 +778,10 @@ UP_ARROW = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M7 17 17 7M
 
 
 def voices_section():
-    """Home: client reviews as dark cards, each topped with a cover of the client's own website and
-    a "View site" link to it. A client without a site gets a monogram instead of the cover."""
+    """Home: client reviews as tall cards in one row, the next one peeking in at the right edge. On desktop
+    the section holds still and the row slides left as you scroll (voices() in motion.js); phones swipe it.
+    Each card: a cover of the client's own site, who they are, the quote, and a "View site" link. The card
+    runs from light under the cover to dark at its foot. A client without a site gets a monogram cover."""
     def card(q, name, role, url, cover):
         host = re.sub(r'^www\.', '', url.split('//')[-1].split('/')[0]) if url else ''
         if cover:
@@ -789,18 +791,21 @@ def voices_section():
             top = f'<span class="voice__mono" aria-hidden="true">{initials}</span>'
         site = (f'<a class="pill pill--go voice__site" href="{url}" target="_blank" rel="noopener" aria-label="View {name}&rsquo;s website, {host} (opens in a new tab)">'
                 f'<span class="pill__t">View site</span><span class="pill__ic" aria-hidden="true">{UP_ARROW}</span></a>') if url else ''
-        return f'''<figure class="voice" data-reveal>
+        return f'''<article class="voice" data-reveal>
       <div class="voice__cover">{top}</div>
       <div class="voice__body">
+        <p class="voice__by"><span class="voice__name">{name}</span><span class="voice__role">{role}</span></p>
         <blockquote class="voice__q">&ldquo;{q}&rdquo;</blockquote>
-        <figcaption class="voice__by"><span class="voice__who"><span class="voice__name">{name}</span><span class="voice__role">{role}</span></span>{site}</figcaption>
+        {site}
       </div>
-    </figure>'''
+    </article>'''
     cards = ''.join(card(*v) for v in VOICES)
-    return f'''<section class="voices" id="voices" aria-labelledby="voices-t" data-ink>
-  <p class="label voices__eyebrow">Client voices</p>
-  <h2 class="voices__h" id="voices-t">{swash('In their words.')}</h2>
-  <div class="voices__row">{cards}</div>
+    return f'''<section class="voices" id="voices" aria-labelledby="voices-t" data-ink data-voices>
+  <div class="voices__pin">
+    <p class="label voices__eyebrow">Client voices</p>
+    <h2 class="voices__h" id="voices-t">{swash('In their words.')}</h2>
+    <div class="voices__track" data-voices-track><div class="voices__row">{cards}</div></div>
+  </div>
 </section>'''
 
 

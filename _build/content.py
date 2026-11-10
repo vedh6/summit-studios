@@ -136,7 +136,7 @@ VOICES = [
     ('Quick, reliable, and they didn’t make me chase them for updates. The final result looked better than I expected.',
      'Dr. Mariam Anjum Iftikhar', 'Gynaec-Oncologist &amp; Robotic Surgeon', 'https://www.drmariamanjumifthikar.com/', 'maria'),
     ('We needed a team that could keep up with our pace and actually deliver. They did, no drama.',
-     'Prasanna Technologies', 'Software firm', '', ''),
+     'Prasanna Technologies', 'Software firm', 'https://www.prasannatechnologies.com/index.html', 'prasanna'),
     ('Really appreciate the effort and patience your team showed, especially with all the revisions. Professional throughout.',
      'Dr. Shravan Shetty', 'Orthodontist', 'https://www.drshravanshetty.com/', 'shravan'),
     ('Got exactly what I asked for, no unnecessary complications. Easy to work with and delivered on time.',

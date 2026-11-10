@@ -1006,6 +1006,23 @@ void main(){
     return `matrix3d(${H[0]},${H[3]},0,${H[6]},${H[1]},${H[4]},0,${H[7]},0,0,1,0,${H[2]},${H[5]},0,1)`;
   }
 
+  /* ---------- Client voices: the row of cards slides left as you scroll ----------
+     The section holds (sticky) for as long as the row needs to slide its whole width; the scroll
+     moves the row. Phones and reduced motion keep the plain swipeable row. */
+  function voices() {
+    const sec = d.querySelector('[data-voices]');
+    if (!sec || !desktop() || reduced) return;
+    const track = sec.querySelector('[data-voices-track]'), row = track && track.firstElementChild;
+    if (!row) return;
+    root.classList.add('has-voices');
+    let travel = 0, p = 0;
+    const set = () => { row.style.transform = `translate3d(${(-travel * p).toFixed(1)}px, 0, 0)`; };
+    const measure = () => { travel = Math.max(0, row.scrollWidth - track.clientWidth); sec.style.setProperty('--vx', travel + 'px'); };
+    measure();
+    ScrollTrigger.addEventListener('refreshInit', measure);
+    ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', onUpdate: self => { p = self.progress; set(); }, onRefresh: self => { p = self.progress; set(); } });
+  }
+
   /* ---------- On the screen: the reasons take turns ---------- */
   function screen() {
     const sp = d.querySelector('[data-screen]');
@@ -1177,6 +1194,7 @@ void main(){
   corners();
   orbit();
   screen();
+  voices();
   d.querySelectorAll('[data-scene]').forEach(pinnedScene);
   draftingBox();
   footerSide();
