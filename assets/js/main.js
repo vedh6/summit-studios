@@ -169,27 +169,19 @@
     if (window.__summit) hook(); else addEventListener('load', hook);
   });
 
-  /* ---------- Projects index: filter, and "Show all" for the rows past the first six ----------
-     A filter shows every matching row; "All" goes back to the first six until Show all is used. */
+  /* ---------- Projects index: filter by sector (every project shows under "All") ---------- */
   const work = d.querySelector('[data-work]');
   if (work) {
     const rows = [...work.querySelectorAll('.row')];
-    const more = d.querySelector('[data-more]');
-    let f = 'all', expanded = !more;
+    let f = 'all';
     const apply = () => {
-      rows.forEach(r => { r.hidden = f === 'all' ? (!expanded && r.classList.contains('row--more')) : r.dataset.sector !== f; });
-      if (more) more.parentElement.hidden = expanded || f !== 'all';
+      rows.forEach(r => { r.hidden = f !== 'all' && r.dataset.sector !== f; });
       if (window.__summit && window.__summit.ScrollTrigger) window.__summit.ScrollTrigger.refresh();
     };
     d.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
       d.querySelectorAll('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
       f = b.dataset.filter; apply();
     }));
-    if (more) more.addEventListener('click', () => {
-      expanded = true; apply();
-      const next = rows.find(r => r.classList.contains('row--more'));
-      if (next) { next.setAttribute('tabindex', '-1'); next.focus({ preventScroll: true }); }
-    });
     apply();
   }
 })();

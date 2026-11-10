@@ -649,7 +649,6 @@ def chapter_industry(iid, final_chip=None):
     return chapter('ind-' + iid, INDUSTRY_WORD[iid], paint, palt, d['pitch'] + ' ' + d['p'].split('. ')[0] + '.', body)
 
 
-SHOW_FIRST = 6   # Projects page: rows after this sit behind "Show all"
 
 
 def visit_button(url, name, host):
@@ -661,15 +660,14 @@ def visit_button(url, name, host):
 
 
 def work_row(i, p):
-    more = ' row--more' if i > SHOW_FIRST else ''
     if not p.get('url'):
-        return f'''<article class="row row--soon{more}" data-sector="{p['slug']}" data-reveal>
+        return f'''<article class="row row--soon" data-sector="{p['slug']}" data-reveal>
       <div class="row__info"><p class="row__n">{i:02d}</p><h4 class="h4 row__name">{p['name']}</h4><p class="label row__meta">{p['sector']} &middot; {p['type']}</p><p class="n3 row__line">{p['line']}</p></div>
       <div class="row__strip row__strip--soon"><span class="label">Coming soon</span></div>
     </article>'''
     host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
     side = 'r' if i % 2 else 'l'   # alternate: screenshot right, then left
-    return f'''<article class="row row--{side}{more}" data-sector="{p['slug']}" data-reveal>
+    return f'''<article class="row row--{side}" data-sector="{p['slug']}" data-reveal>
       <a class="row__art" href="{p['url']}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="assets/img/work/{p['key']}-wide.jpg" alt="" width="1440" height="900" loading="lazy" decoding="async"></a>
       <div class="row__info">
         <p class="row__n">{i:02d}</p>
@@ -906,7 +904,7 @@ PROJECTS_PAGE = tunnel() + (
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
     <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>
-    {f'<p class="rows__more"><button class="chip" type="button" data-more>Show all {len(PROJECTS)} projects</button></p>' if len(PROJECTS) > SHOW_FIRST else ''}''', tear=False)
+''', tear=False)
     + chapter_start())
 
 STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('start', 'Start')]

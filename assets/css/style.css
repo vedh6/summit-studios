@@ -739,10 +739,8 @@ html.has-tunnel #index.ch--plain { margin-top: -40svh; }   /* rises as the opene
 .row__info .chip { margin-top: 18px; }
 .row__strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .row__strip--soon { display: grid; place-items: center; min-height: 160px; border: 1px dashed var(--line); color: var(--muted); }
-.rows__more { display: none; padding-top: 8px; border-top: 1px solid var(--line); }
-.js .rows__more { display: block; }
 /* .row sets display: grid, which would otherwise beat the hidden attribute the filter sets */
-.row[hidden], .js .rows__more[hidden] { display: none; }
+.row[hidden] { display: none; }
 .row:focus { outline: none; }
 .shot { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center; background: var(--paper); transition: transform .5s var(--ease); }
 .row:hover .shot { transform: translateY(-3px); }
