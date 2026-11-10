@@ -835,8 +835,10 @@ def chapter_start():
       {chip('Email us', 'mailto:team@summitxstudio.com')}
     </div>
 '''   # no 'Questions, answered' here (user removed it from Industries and Projects; the home page keeps its FAQ)
-    return chapter('start', 'Start', 'summit', 'A Renaissance figure on a mountain summit above the clouds planting a banner painted as a web page',
-                   "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body)
+    # the lady with the laptop, her rock and the swallows, cut out onto the page's paper (like the AI Concierge)
+    return chapter('start', 'Start', 'summit-cut', 'A Renaissance woman in a gold-trimmed cloak working on a laptop on a rock ledge, swallows flying above',
+                   "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body, cut=True
+                   ).replace(' id="start" data-ch ', ' id="start" data-ch data-ink ', 1)   # all on paper: ink header throughout
 
 
 UP_ARROW = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'

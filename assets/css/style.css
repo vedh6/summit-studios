@@ -376,6 +376,19 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 /* normal scroll: painting and text move up together as one block */
 .ch--cut .ch__bg { position: relative; top: auto; }
 .ch--cut .ch__open { height: 100svh; min-height: 0; }
+/* Start (Industries, Projects): the lady with the laptop, her rock and the swallows cut out onto the page's
+   paper. The type is ink in the open space on the right, between the swallows and the rock; phones put
+   it under the picture. Mask and picture share one position, so they line up. */
+#start.ch--cut .ch__bg .paint { -webkit-mask: url(../img/paint/summit-cut-fig.png) 30% 50% / cover no-repeat; mask: url(../img/paint/summit-cut-fig.png) 30% 50% / cover no-repeat; object-position: 30% 50%; }
+#start.ch--cut .ch__bg::after { background: none; }
+#start.ch--cut .ch__word, #start.ch--cut .ch__lead { color: var(--ink); text-shadow: none; }
+#start.ch--cut .ch__word { font-size: clamp(3.5rem, 1rem + 5vw, 8rem); }
+#start.ch--cut .ch__lead { font-size: clamp(20px, .8rem + .9vw, 30px); max-width: 26ch; margin-top: 16px; }
+@media (min-width: 900px) { #start.ch--cut .ch__open { justify-content: flex-start; padding: 27svh 3vw 40px 66vw; } }
+@media (max-width: 899px) {
+  #start.ch--cut .ch__bg { height: 64svh; margin-bottom: 0; }
+  #start.ch--cut .ch__open { height: auto; padding-top: 12px; padding-bottom: 8px; }
+}
 .ch--cut .ch__bg .paint { object-position: 50% 30%; }   /* wide screens trim the desk, never the halo */
 .ch--cut .ch__bg::after { background: linear-gradient(180deg, rgba(41, 41, 25, 0) 45%, rgba(30, 24, 14, .55) 100%); }
 

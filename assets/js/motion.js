@@ -193,6 +193,10 @@
   function chapters() {
     const items = [...d.querySelectorAll('[data-ch-link]')];
     const setUI = light => root.setAttribute('data-ui', light ? 'light' : 'dark');
+    // ink header: a count, not a toggle -- next to each other, one section's 'leave' can fire after the
+    // next one's 'enter' at the same scroll position and would switch the ink off under the new section
+    let inkN = 0;
+    const inkUI = on => { inkN = Math.max(0, inkN + (on ? 1 : -1)); root.classList.toggle('ui-ink', inkN > 0); };
     let lightCount = 0;
     d.querySelectorAll('[data-ch]').forEach(sec => {
       const body = sec.querySelector('[data-ch-body]');
@@ -215,7 +219,7 @@
       // A cut-out on cream: ink header from the top of the chapter until its painting fades
       if (sec.classList.contains('ch--cut')) ScrollTrigger.create({
         trigger: sec, start: 'top top+=60', end: () => 'top+=' + Math.round(innerHeight * .42) + ' top',   // cream top of the painting is under the header
-        onToggle: self => root.classList.toggle('ui-ink', self.isActive),
+        onToggle: self => inkUI(self.isActive),
       });
       // Active chapter in the list
       ScrollTrigger.create({
@@ -231,7 +235,7 @@
     d.querySelectorAll('[data-ink]').forEach(sec => {
       ScrollTrigger.create({ trigger: sec, start: 'top top+=60', end: 'bottom top+=60',
         onToggle: self => {
-          root.classList.toggle('ui-ink', self.isActive);
+          inkUI(self.isActive);
           if (self.isActive) items.forEach(a => a.parentElement.classList.toggle('is-active', a.dataset.chLink === sec.id));
         } });
     });
