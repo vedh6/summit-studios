@@ -566,6 +566,10 @@ html:not(.has-process) .proc__rail { overflow-x: auto; }
 html.proc-tail .proc + .ch--plain { margin-top: -100svh; }
 .ch--plain > .tear { position: absolute; left: 0; bottom: calc(100% - 1px); width: 100%; height: 220px; display: block; pointer-events: none; }
 .ch--plain .ch__open, .ch--plain .ch__word { color: var(--ink); }
+/* Projects: the list follows the opener on the same paper (no torn edge, no change of colour), its heading close under it */
+#index.ch--plain { background: none; }
+html.has-tunnel #index.ch--plain { margin-top: -40svh; }   /* rises as the opener's title fades: no blank screen between them */
+#index .ch__open { min-height: 0; padding-top: 40px; }
 .ch--plain .ch__lead { color: var(--ink); }
 .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 40px 64px; align-items: center; max-width: none !important; }
 /* Swallows rising behind the Growth chapter */

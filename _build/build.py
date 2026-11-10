@@ -264,12 +264,12 @@ def torn_edge(cid, seed=7):
     </svg>'''
 
 
-def chapter(cid, word, painting, alt, lead, body, line=False, paper=False, corner=None, deco='', cut=False):
+def chapter(cid, word, painting, alt, lead, body, line=False, paper=False, corner=None, deco='', cut=False, tear=True):
     """One chapter: sticky painting, giant word and serif lead over it, then the body."""
     corner_html = (f'<div class="corner" data-corner><div class="corner__stage"><div class="corner__page">{corner.replace(" data-reveal", "")}</div></div></div>'
                    if corner else '')
     return f'''<section class="ch{' ch--paper' if paper else ''}{' ch--corner' if corner else ''}{'' if painting else ' ch--plain'}{' ch--cut' if cut else ''}" id="{cid}" data-ch aria-labelledby="{cid}-t">
-  {f'<div class="ch__bg" data-ch-bg><img class="paint" src="assets/img/paint/{painting}.jpg" alt="{alt}" width="1344" height="752" loading="lazy" decoding="async"></div>' if painting else torn_edge(cid + '-top', seed=11)}
+  {f'<div class="ch__bg" data-ch-bg><img class="paint" src="assets/img/paint/{painting}.jpg" alt="{alt}" width="1344" height="752" loading="lazy" decoding="async"></div>' if painting else (torn_edge(cid + '-top', seed=11) if tear else '')}
   <div class="ch__open">
     <h2 class="h1 ch__word{' ch__word--line' if line else ''}" id="{cid}-t" data-word>{word}</h2>
     <p class="n1 ch__lead{' ch__lead--wide' if line else ''}"{'' if cut else ' data-reveal'}>{swash(lead)}</p>
@@ -894,11 +894,11 @@ def tunnel():
 
 
 PROJECTS_PAGE = tunnel() + (
-    chapter('index', 'Projects', None, '',
+    chapter('index', 'Projects', None, '',   # no torn edge: the list follows the opener on the same paper
             'Work that wins work. The live ones below; more as clients agree to be shown.',
             f'''<div class="filters label" data-reveal><span>Filter</span>{''.join(f'<button class="chip" type="button" data-filter="{v}" aria-pressed="{"true" if v == "all" else "false"}">{t}</button>' for v, t in FILTERS)}</div>
     <div class="rows" data-work>{''.join(work_row(i + 1, p) for i, p in enumerate(PROJECTS))}</div>
-    {f'<p class="rows__more"><button class="chip" type="button" data-more>Show all {len(PROJECTS)} projects</button></p>' if len(PROJECTS) > SHOW_FIRST else ''}''')
+    {f'<p class="rows__more"><button class="chip" type="button" data-more>Show all {len(PROJECTS)} projects</button></p>' if len(PROJECTS) > SHOW_FIRST else ''}''', tear=False)
     + chapter_start())
 
 STUDIO_CH = [('who', 'Who we are'), ('how', 'How we work'), ('why', 'Why us'), ('start', 'Start')]
