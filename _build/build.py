@@ -774,13 +774,29 @@ def chapter_start():
                    "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body)
 
 
+UP_ARROW = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
 def voices_section():
-    """Home: client reviews on parchment, big serif, three to a row."""
-    cards = ''.join(f'''<figure class="voice" data-reveal>
-      <span class="voice__mark" aria-hidden="true">&ldquo;</span>
-      <blockquote class="voice__q">{q}</blockquote>
-      <figcaption class="voice__by"><span class="voice__role">{name}</span><span class="voice__org">{role}</span></figcaption>
-    </figure>''' for q, name, role in VOICES)
+    """Home: client reviews as dark cards, each topped with a cover of the client's own website and
+    a "View site" link to it. A client without a site gets a monogram instead of the cover."""
+    def card(q, name, role, url, cover):
+        host = re.sub(r'^www\.', '', url.split('//')[-1].split('/')[0]) if url else ''
+        if cover:
+            top = f'<img src="assets/img/voices/{cover}.jpg" alt="The home page of {host}" width="1200" height="750" loading="lazy" decoding="async">'
+        else:
+            initials = ''.join(w[0] for w in re.sub(r'^Dr\.\s*', '', name).split()[:2])
+            top = f'<span class="voice__mono" aria-hidden="true">{initials}</span>'
+        site = (f'<a class="pill pill--go voice__site" href="{url}" target="_blank" rel="noopener" aria-label="View {name}&rsquo;s website, {host} (opens in a new tab)">'
+                f'<span class="pill__t">View site</span><span class="pill__ic" aria-hidden="true">{UP_ARROW}</span></a>') if url else ''
+        return f'''<figure class="voice" data-reveal>
+      <div class="voice__cover">{top}</div>
+      <div class="voice__body">
+        <blockquote class="voice__q">&ldquo;{q}&rdquo;</blockquote>
+        <figcaption class="voice__by"><span class="voice__who"><span class="voice__name">{name}</span><span class="voice__role">{role}</span></span>{site}</figcaption>
+      </div>
+    </figure>'''
+    cards = ''.join(card(*v) for v in VOICES)
     return f'''<section class="voices" id="voices" aria-labelledby="voices-t" data-ink>
   <p class="label voices__eyebrow">Client voices</p>
   <h2 class="voices__h" id="voices-t">{swash('In their words.')}</h2>

@@ -128,18 +128,19 @@ FAQ_ALL = [
 
 
 # Client voices on the home page: real reviews, carried over from the studio's previous site.
-# (quote, name, role)
+# (quote, name, role, site url, cover) -- cover: a capture of the client's own site in
+# assets/img/voices/<cover>.jpg (1200 wide). A card without a url gets a monogram and no "View site".
 VOICES = [
     ('They understood what we needed without much back and forth. Clean, professional, and our patients find it easy to use.',
-     'Dr. Dheeraj', 'Founder, Rivelin Aligners'),
+     'Dr. Dheeraj', 'Founder, Rivelin Aligners', 'https://www.rivelinaligners.com/', 'rivelin'),
     ('Quick, reliable, and they didn’t make me chase them for updates. The final result looked better than I expected.',
-     'Dr. Mariam Anjum Iftikhar', 'Gynaec-Oncologist &amp; Robotic Surgeon'),
+     'Dr. Mariam Anjum Iftikhar', 'Gynaec-Oncologist &amp; Robotic Surgeon', 'https://www.drmariamanjumifthikar.com/', 'maria'),
     ('We needed a team that could keep up with our pace and actually deliver. They did, no drama.',
-     'Prasanna Technologies', 'Software firm'),
+     'Prasanna Technologies', 'Software firm', '', ''),
     ('Really appreciate the effort and patience your team showed, especially with all the revisions. Professional throughout.',
-     'Dr. Shravan Shetty', 'Orthodontist'),
+     'Dr. Shravan Shetty', 'Orthodontist', 'https://www.drshravanshetty.com/', 'shravan'),
     ('Got exactly what I asked for, no unnecessary complications. Easy to work with and delivered on time.',
-     'Dr. Joylene D’Almeida', 'Obstetrician &amp; Gynaecologist'),
+     'Dr. Joylene D’Almeida', 'Obstetrician &amp; Gynaecologist', 'https://www.drjoylenegynaec.com/', 'joylene'),
     ('Clean work, fast turnaround. They kept things simple and the end result speaks for itself.',
-     'Dr. Vivian R D’Almeida', 'Orthopaedic Surgeon'),
+     'Dr. Vivian R D’Almeida', 'Orthopaedic Surgeon', '', ''),
 ]
