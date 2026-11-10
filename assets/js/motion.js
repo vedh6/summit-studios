@@ -975,8 +975,8 @@ void main(){
       },
       onToggle: self => root.classList.toggle('orbit-live', self.isActive || self.progress >= 1),
     });
-    // while the picture hangs in its frame the header sits on parchment: ink, from the end of the rip to the chapter's end
-    ScrollTrigger.create({ trigger: sec.querySelector('.rip-space') || sec, start: 'bottom top+=60', endTrigger: sec, end: 'bottom top+=60',
+    // while the picture hangs in its frame the header sits on parchment: ink, through the chapter
+    ScrollTrigger.create({ trigger: sec, start: 'top top+=60', end: 'bottom top+=60',
       onToggle: self => { inWall = self.isActive; ink(); } });
     const refresh = () => { g = geo(); box = null; lastTf = ''; A = null; wallTf = null; place(); mapScreen(); placeWall(); };
     refresh();

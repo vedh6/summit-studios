@@ -255,9 +255,6 @@ html:not(.has-portal) .portal { display: none; }
 /* Torn entrance into a painted chapter: the parchment above tears away to reveal the painting */
 .tear-down { position: absolute; z-index: 0; top: 0; left: 0; width: 100%; height: calc(100% + 260px); pointer-events: none; }
 /* The cards' paper is drawn by the rip layer, so the painting behind can show through the tear */
-.duo.duo--rip { background: none; z-index: 4; padding-bottom: calc(40px + 34svh); }   /* extra paper below the cards: the tear begins low on the screen */
-.duo--rip > :not(.tear-down) { position: relative; z-index: 1; }
-.ch--rip { margin-top: -100svh; }
 /* Why us (home) sits on the same parchment as the sections after it, fly-through included */
 .ch--rip { background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
 /* The handshake painting stays still as the background while the text and the fly-through scroll over it */
@@ -353,7 +350,6 @@ html:not(.has-portal) .portal { display: none; }
 .ch--rip .dive__steps { padding: 12px; width: auto; justify-self: stretch; }
 .ch--rip .dive__row, .ch--rip .dive__list { background: rgba(246, 240, 226, .86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-radius: 6px; padding: 18px 18px 20px; }
 .ch--rip .dive { --paper: var(--parchment); --paper-2: #E0D5BB; --mint: #D8CCAF; --mint-lite: #F3ECDC; --cream: #F8F3E6; --line: rgba(70, 50, 25, .18); }
-.rip-space { height: 100svh; }
 html.ui-over-paint[data-ui] { --ui: var(--paper); --ui-dim: rgba(247, 247, 238, .6); --ui-line: var(--line-light); }
 html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--black); --ic: var(--white); }
 /* the header's Contact button: a round arrow badge that glides from the right end to the left and turns as
@@ -1009,7 +1005,7 @@ html.has-orbit .ch--rip .ch__word, html.has-orbit .ch--rip .ch__lead { text-shad
    frame); the section is clipped sideways so the frame growing to full screen never widens the page */
 html.has-orbit .ch--rip { overflow-x: clip; }
 html.has-orbit .ch--rip::before { content: ''; display: block; position: sticky; z-index: 0; top: 0; height: 100svh; margin-bottom: -100svh; pointer-events: none;
-  background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); }
+  background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }   /* lines up with the page's paper as it arrives */
 .frame-crest { display: none; }
 html.has-orbit .ch--rip {
   --g: clamp(24px, 3.6vw, 50px); --gt: calc(var(--g) * .9713); --gb: calc(var(--g) * .9817); --gs: calc(var(--g) * 1.0235); --cr: calc(var(--g) * 1.1);
@@ -1019,7 +1015,7 @@ html.has-orbit .ch--rip {
 }
 html.has-orbit .ch--rip .ch__bg {
   box-sizing: content-box; top: var(--fy); width: var(--fw); height: var(--fh); overflow: visible;
-  margin: 0 auto calc(-1 * (var(--fh) + var(--gt) + var(--gb)));
+  margin: var(--fy) auto calc(-1 * (var(--fh) + var(--gt) + var(--gb) + var(--fy)));   /* laid out where it sticks: wall, frame and heading arrive as one and hold together */
   border-style: solid; border-color: transparent; border-width: var(--gt) var(--gs) var(--gb) var(--gs);
   border-image: url("../img/frame-gilt.png") 103 114 106 114 / 1.1075 1.1633 1.1277 1.1633 / .1075 .1633 .1277 .1633 round;
   box-shadow: 0 3px 4px rgba(40, 26, 10, .2), 0 32px 44px -14px rgba(40, 28, 16, .4);   /* a box-shadow, not a filter: a filter would re-render the video every frame */

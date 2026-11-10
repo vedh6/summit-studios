@@ -621,8 +621,7 @@ def duo_card(painting, crumb, chips, prompt, title, text, link, href):
 
 def duo_section():
     """Home: WhatsApp automation and custom software as two cards (details on the Services page)."""
-    return f'''<section class="duo duo--rip" id="more" aria-label="WhatsApp automation and custom software" data-ink>
-  {WAVE_TEAR}
+    return f'''<section class="duo" id="more" aria-label="WhatsApp automation and custom software" data-ink>
   {duo_card('whatsapp', 'Automations', ['Reminders', 'Replies', 'Broadcasts'], 'Remind tomorrow&rsquo;s patients and ask them to confirm',
             'WhatsApp automation', 'Reminders that cut no-shows, instant replies and chatbots that qualify leads, on the app your customers already use.',
             'Explore WhatsApp automation', 'services.html#whatsapp')}
@@ -746,11 +745,10 @@ def chapter_why(tear=False):
             ('studio-review', 'A Renaissance noblewoman and a young designer reviewing printed website layouts together')
     html = chapter('why', 'Why us', paint[0], paint[1],
                    'No templates, no account managers, no vanishing at launch. Premium work from the people who actually build it.', body)
-    if tear:   # the painting sits one screen earlier, behind the cards, so their paper can rip away over it
-        html = html.replace('class="ch"', 'class="ch ch--rip"', 1).replace('class="paint"', 'class="paint" data-zoom=".67,.56"', 1)
-        html = html.replace('\n  <div class="ch__open">', '\n  <div class="rip-space" aria-hidden="true"></div>\n  <div class="ch__open">', 1)
+    if tear:   # home: the walk (no torn-paper entrance any more: the user didn't want the tear over the framed wall)
+        html = html.replace('class="ch"', 'class="ch ch--rip"', 1)
         # the clip sits over the still; orbit() shows it once the walk begins (the still is its first frame)
-        html = html.replace('</div>\n  <div class="rip-space"', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>' + CREST + '</div>\n  <div class="rip-space"', 1)
+        html = html.replace('</div>\n  <div class="ch__open">', '<video class="paint paint--orbit" data-orbit-video data-src="assets/video/why-orbit.mp4" poster="assets/img/paint/why-orbit-poster.jpg" muted playsinline preload="none"></video>' + screen_quad() + '</div>' + CREST + '</div>\n  <div class="ch__open">', 1)
         # on desktop the picture hangs in the Contact page's gilt frame: .ch__pic clips the picture, the crest sits on the frame
         html = html.replace('<div class="ch__bg" data-ch-bg>', '<div class="ch__bg" data-ch-bg><div class="ch__pic">', 1)
     return html
