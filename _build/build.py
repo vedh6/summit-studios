@@ -90,8 +90,7 @@ DAVINCI = '''<svg class="dv" viewBox="0 0 340 464" aria-hidden="true">
 
 # ---------- shell ----------
 
-NAV = [('industries.html', 'Industries'), ('projects.html', 'Projects'), ('studio.html', 'Studio'),
-       ('services.html', 'Services')]   # Contact is the button at the right of the header
+NAV = [('industries.html', 'Industries'), ('projects.html', 'Projects'), ('studio.html', 'Studio')]   # Contact is the button at the right of the header
 
 
 def header(file=''):
@@ -365,7 +364,7 @@ def chapter_websites():
     body = f'''
     {index_block()}
     {sub_head('Designs, refined')}
-    {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'Explore websites', 'services.html#websites')}
+    {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'See the work', 'projects.html')}
     {feat_grid(SERVICE_FEATURES['websites'])}
     {sub_head('Shown on real screens')}
     {fan_cards()}'''
@@ -571,7 +570,7 @@ def chapter_receptionists():
       <div class="calls__text">
         <h3 class="calls__h">{swash('Calls, answered')}</h3>
         <div class="spot"><p class="spot__t">Never on hold</p><p class="n2">It books appointments, answers the questions you get asked a hundred times a day, captures every lead, and hands off to a real person when it matters.</p>
-          <a class="btn-line" href="services.html#ai-receptionists">Explore AI Concierge <span aria-hidden="true">&#8599;</span></a></div>
+          <a class="btn-line" href="contact.html">Ask about AI Concierge <span aria-hidden="true">&#8599;</span></a></div>
       </div>
       <div class="calls__card" data-reveal>{call_card()}</div>
       <svg class="calls__cord" aria-hidden="true" focusable="false"><path data-cord d=""/></svg>
@@ -586,7 +585,7 @@ def chapter_whatsapp():
     body = f'''
     {media('assets/img/photo/whatsapp.jpg', 'A phone showing a chat conversation', 'media--wide')}
     {sub_head('Messages, automated')}
-    {spot('On the app they already use', s['desc'], 'Explore WhatsApp automation', 'services.html#whatsapp')}'''
+    {spot('On the app they already use', s['desc'], 'Ask about WhatsApp automation', 'contact.html')}'''
     return chapter('whatsapp', 'WhatsApp Automation', 'whatsapp', 'A Renaissance winged messenger flying over a valley holding a glowing phone with a trail of speech bubbles',
                    'Reminders that cut no-shows, instant replies and chatbots that qualify leads before they ever reach you.', body)
 
@@ -596,7 +595,7 @@ def chapter_software():
     body = f'''
     {media('assets/img/device/monitor-pranava.jpg', 'A studio monitor showing the Pranava Builders website', 'media--wide')}
     {sub_head('Tools, tailored')}
-    {spot('Shaped around how you work', crm['desc'], 'Explore custom software', 'services.html#crm')}'''
+    {spot('Shaped around how you work', crm['desc'], 'Ask about custom software', 'contact.html')}'''
     return chapter('software', 'Software', 'software', 'A Renaissance scholar in a library studying charts on a modern monitor',
                    'Custom CRMs, web apps, dashboards and the backend that keeps them fast, secure and growing.', body)
 
@@ -620,14 +619,14 @@ def duo_card(painting, crumb, chips, prompt, title, text, link, href):
 
 
 def duo_section():
-    """Home: WhatsApp automation and custom software as two cards (details on the Services page)."""
+    """Home: WhatsApp automation and custom software as two cards."""
     return f'''<section class="duo" id="more" aria-label="WhatsApp automation and custom software" data-ink>
   {duo_card('whatsapp', 'Automations', ['Reminders', 'Replies', 'Broadcasts'], 'Remind tomorrow&rsquo;s patients and ask them to confirm',
             'WhatsApp automation', 'Reminders that cut no-shows, instant replies and chatbots that qualify leads, on the app your customers already use.',
-            'Explore WhatsApp automation', 'services.html#whatsapp')}
+            'Ask about WhatsApp automation', 'contact.html')}
   {duo_card('software', 'New report', ['Last 30 days', 'All sources', 'Leads'], 'Show me last month&rsquo;s leads by source, and which ones booked',
             'Custom software', 'CRMs, dashboards and web apps shaped around how you work, connected to the tools you already use.',
-            'Explore custom software', 'services.html#crm')}
+            'Ask about custom software', 'contact.html')}
 </section>'''
 
 
@@ -832,8 +831,8 @@ def footer(above='bg'):
     <div class="ftr__btns">{pill('Start a conversation', 'contact.html', 'pill--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
   </div>
   <nav class="ftr__cols" aria-label="Footer">
-    <div><p class="ftr__t">Services</p><a href="services.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="services.html#ai-receptionists">AI Concierge</a><a href="services.html#whatsapp">WhatsApp Automation</a><a href="services.html#crm">Custom Software</a></div>
-    <div><p class="ftr__t">Studio</p><a href="industries.html">Industries</a><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="services.html#pricing">Pricing</a></div>
+    <div><p class="ftr__t">Services</p><a href="index.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="index.html#receptionists">AI Concierge</a><a href="index.html#more">WhatsApp Automation</a><a href="index.html#more">Custom Software</a></div>
+    <div><p class="ftr__t">Studio</p><a href="industries.html">Industries</a><a href="projects.html">Projects</a><a href="studio.html">About</a><a href="contact.html">Get a quote</a></div>
     <div><p class="ftr__t">Talk to us</p><a href="get-started.html">Get started</a><a href="contact.html">Contact</a><a href="mailto:team@summitxstudio.com">team@summitxstudio.com</a></div>
     <div><p class="ftr__t">Worldwide</p><p class="ftr__note">Working with clients across time zones. Local time <span data-clock>--:--</span>.</p></div>
   </nav>
@@ -937,38 +936,6 @@ def price_cards():
     return f'<div class="price" data-reveal>{cards}</div>'
 
 
-SERVICES_CH = [('websites', 'Websites'), ('ai-receptionists', 'AI Concierge'), ('whatsapp', 'WhatsApp Automation'), ('crm', 'Software'), ('pricing', 'Pricing'), ('start', 'Start')]
-SERVICES_PAGE = simple_page('svc-hero', 'A Renaissance workshop where artisans draw a website layout, work on a laptop and grind pigments', 'Services &middot; six things we do well',
-    chapter('websites', 'Websites', 'svc-websites', 'A Renaissance architect drawing a webpage wireframe on vellum with a compass and set square',
-            svc('websites')['tag'] + ' ' + svc('websites')['desc'].split('. ')[0] + '.',
-            f'''{spot(svc('websites')['name'], svc('websites')['desc'], 'Talk to us about this', 'get-started.html')}
-    {sub_head('What we build')}
-    {feat_grid(SERVICE_FEATURES['websites'])}
-    {sub_head('Shown on real screens')}
-    {fan_cards('1')}''')
-    + concierge_service()
-    + chapter('whatsapp', 'WhatsApp Automation', 'svc-whatsapp', 'A Renaissance woman releasing white pigeons from a dovecote, a glowing phone on the windowsill',
-              svc('whatsapp')['tag'] + ' ' + svc('whatsapp')['desc'].split('. ')[0] + '.',
-              f'''{spot('WhatsApp automation', svc('whatsapp')['desc'], 'Talk to us about this', 'get-started.html')}
-    {sub_head('What it covers')}
-    {chat_features(SERVICE_FEATURES['whatsapp'])}''')
-    + chapter('crm', 'Software', 'svc-software', 'A Renaissance merchant in a counting house studying a dashboard of charts on a monitor',
-              'Custom CRMs, web apps, dashboards and the backend that keeps them fast, secure and growing.',
-              f'''{media('assets/img/device/monitor-pranava.jpg', 'A studio monitor showing the Pranava Builders website', 'media--wide')}
-    {spot('Custom CRMs & software', svc('crm')['desc'], 'Talk to us about this', 'get-started.html')}
-    <div id="web-apps"></div>{spot('Web apps & dashboards', svc('web-apps')['desc'])}
-    <div id="backend"></div>{spot('Backend, maintenance & growth', svc('backend')['desc'])}
-    {sub_head('What we build')}
-    {feat_grid(SERVICE_FEATURES['software'], 'fg--spec')}
-    <div class="two">
-      {media('assets/img/photo/dashboard.jpg', 'An ultrawide monitor showing a dashboard')}
-      {media('assets/img/photo/code.jpg', 'Hands typing code on a laptop')}
-    </div>''')
-    + chapter('pricing', 'Pricing', 'summit', 'A Renaissance figure on a mountain summit planting a banner', 'Know roughly what it will cost before you get in touch. Every quote is specific to your project, and you get it in writing.',
-              f'''{sub_head('Three starting points')}
-    {price_cards()}''')
-    + chapter_start())
-
 INDUSTRIES_CH = [('ind-industrial', 'Industrial'), ('ind-clinics', 'Clinics'), ('ind-trades', 'Trades'), ('start', 'Start')]
 INDUSTRIES_PAGE = simple_page('industrial', 'A Renaissance landscape with transmission pylons', 'Industries &middot; every industry buys differently',
     ''.join(f'<span id="{i}"></span>' + chapter_industry(i, final_chip=chip('Start a conversation', 'contact.html')) for i in ['industrial', 'clinics', 'trades'])
@@ -1053,7 +1020,7 @@ NOT_FOUND = simple_page('summit', 'A Renaissance figure on a mountain summit abo
     chapter('lost', '404', None, '', "This page isn't here. The link may be old, or the address mistyped.",
             f'''<div class="cta" data-reveal>
       {pill('Back to the home page', 'index.html', 'pill--dark pill--big')}
-      {chip('Services', 'services.html')}
+      {chip('Studio', 'studio.html')}
       {chip('Projects', 'projects.html')}
       {chip('Contact', 'contact.html')}
     </div>'''))
@@ -1064,7 +1031,6 @@ PAGES = {
                    HOME, HOME_CHAPTERS, True),
     'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
-    'services.html': ('Services | Summit Studios', 'Websites that bring in customers, AI receptionists, WhatsApp automation, custom CRMs, web apps and dashboards, backend and maintenance.', SERVICES_PAGE, SERVICES_CH, False),
     'industries.html': ('Industries | Summit Studios', 'Web design for industrial and engineering firms, healthcare clinics, and trades, property and professional services.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
     'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
     'get-started.html': ('Get started | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
