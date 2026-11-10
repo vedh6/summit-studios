@@ -603,6 +603,24 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 html.has-dots .ftr__word { color: transparent; }
 .ftr__legal { display: flex; justify-content: space-between; font-family: var(--sans); font-size: 13px; color: rgba(247, 247, 238, .55); }
 .ftr__legal a:hover { color: var(--paper); }
+.ftr__ck { margin-left: 18px; color: inherit; transition: color .25s; }
+.ftr__ck:hover, .ftr__ck:focus-visible { color: var(--paper); }
+
+/* ---------- Cookie choice for Google Analytics (main.js adds it for visitors in Europe) ---------- */
+.ck { position: fixed; right: 20px; bottom: 20px; z-index: 130; width: min(380px, calc(100vw - 32px)); padding: 18px 18px 16px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 22px 50px -24px rgba(41, 41, 25, .5);
+  font-family: var(--sans); opacity: 0; transform: translateY(14px); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+.ck.is-in { opacity: 1; transform: none; }
+.ck__t { margin: 0 0 14px; font-size: 14px; line-height: 1.45; }
+.ck__b { display: flex; justify-content: flex-end; gap: 8px; }
+.ck__b button { height: 36px; padding: 0 18px; border-radius: 999px; font-size: 14px; font-weight: 500; line-height: 1; transition: background .25s, border-color .25s; }
+.ck__no { border: 1px solid var(--line); }
+.ck__no:hover { border-color: var(--ink); }
+.ck__yes { background: var(--ink); color: var(--paper); border: 1px solid var(--ink); }
+.ck__yes:hover { background: var(--black); }
+.ck button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 767px) { .ck { left: 16px; right: 16px; bottom: 16px; width: auto; } }
+@media (prefers-reduced-motion: reduce) { .ck { transition: none; } }
 html.at-ftr .sb, html.at-ftr .sb__toggle { opacity: 0 !important; pointer-events: none !important; }
 
 /* Corner reveal (AI Concierge): the next page grows out of the bottom-right corner over the

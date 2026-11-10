@@ -6,6 +6,49 @@
   const root = d.documentElement;
   root.classList.add('js');
 
+  /* ---------- Google Analytics: the cookie choice and what counts as engagement ----------
+     The tag in <head> waits for a yes from visitors in the EEA, UK and Switzerland and counts everyone
+     else; ad cookies are never set. The bar asks once, only where the device clock says Europe; the
+     footer's 'Cookie choices' opens it again for anyone. */
+  const ga = (...a) => { try { if (window.gtag) window.gtag(...a); } catch (e) {} };
+  const CK = 'ga-consent';
+  const askConsent = () => {
+    if (d.querySelector('.ck')) return;
+    const bar = d.createElement('div');
+    bar.className = 'ck'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Cookie choice');
+    bar.innerHTML = '<p class="ck__t">We use Google Analytics to see how people find and use this site. No ads, and nothing is sold.</p>'
+      + '<div class="ck__b"><button type="button" class="ck__no">Decline</button><button type="button" class="ck__yes">Allow</button></div>';
+    const pick = yes => {
+      try { localStorage.setItem(CK, yes ? 'granted' : 'denied'); } catch (e) {}
+      ga('consent', 'update', { analytics_storage: yes ? 'granted' : 'denied' });
+      if (!yes) d.cookie.split(';').forEach(c => {   // a change of mind: clear the Analytics cookies already set
+        const n = c.split('=')[0].trim();
+        if (/^_ga/.test(n)) ['', location.hostname, '.' + location.hostname.replace(/^www\./, '')].forEach(dm => { d.cookie = n + '=; Max-Age=0; path=/' + (dm ? '; domain=' + dm : ''); });
+      });
+      bar.classList.remove('is-in'); setTimeout(() => bar.remove(), 450);
+    };
+    bar.querySelector('.ck__yes').addEventListener('click', () => pick(true));
+    bar.querySelector('.ck__no').addEventListener('click', () => pick(false));
+    d.body.append(bar);
+    requestAnimationFrame(() => requestAnimationFrame(() => bar.classList.add('is-in')));
+  };
+  let ckSaved = null, tz = '';
+  try { ckSaved = localStorage.getItem(CK); } catch (e) {}
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+  if (!ckSaved && /^(Europe|Arctic)\/|^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)$/.test(tz)) setTimeout(askConsent, 1200);
+  d.querySelectorAll('[data-consent-open]').forEach(b => b.addEventListener('click', askConsent));
+
+  // engagement: a click towards Contact / Get started, a client's site opened, an email link
+  d.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    const box = a.closest('section[id], footer, header'), section = box ? (box.id || box.tagName.toLowerCase()) : '';
+    const text = ((a.querySelector('.ihb__t') || a).textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80) || a.getAttribute('aria-label') || '';
+    if (a.protocol === 'mailto:') ga('event', 'email_click', { section });
+    else if (a.host === location.host && /^\/(contact|get-started)(\.html)?$/.test(a.pathname)) ga('event', 'start_conversation', { link_text: text, section });
+    else if (a.target === '_blank' && a.host && a.host !== location.host) ga('event', 'visit_client_site', { site: a.hostname.replace(/^www\./, ''), section });
+  }, true);
+
   /* ---------- Mobile menu ---------- */
   const menuBtn = d.querySelector('[data-menu]');
   const closeMenu = () => { root.classList.remove('nav-open'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false'); };
@@ -61,6 +104,7 @@
         const j = await r.json().catch(() => ({}));
         if (!r.ok || String(j.success) !== 'true') { why = j.message || ''; throw new Error(why || r.status); }
         f.classList.add('is-sent');
+        ga('event', 'generate_lead', { form: /review/i.test(f.dataset.subject || '') ? 'free_review' : 'enquiry' });
       } catch (err) {
         if (err.name === 'AbortError') why = 'The form service took too long to answer.';
         const box = f.querySelector('.form__err');

@@ -175,6 +175,22 @@ ROUGH_DEFS = ('<svg class="sr" width="0" height="0" aria-hidden="true" focusable
               # paper for the torn edges: the very same images as --paper-tex on the page (style.css)
               + PAPER_DEFS + '</svg>')
 
+# Google Analytics (GA4 G-32L59MH1D7, served through the GTM-W7NW7Q25 container Google set up).
+# Consent is set before the tag loads: visitors in the EEA, UK and Switzerland are not counted with
+# cookies until they say yes (main.js shows them the Allow / Decline bar); everyone else is counted;
+# ad cookies are never set. A stored choice (localStorage 'ga-consent') wins over both.
+GA_HEAD = """<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+(function(){var no={ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'},
+yes={ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'},c=null;
+try{c=localStorage.getItem('ga-consent');}catch(e){}
+gtag('consent','default',Object.assign({region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']},no));
+gtag('consent','default',yes);
+if(c==='granted')gtag('consent','update',yes);else if(c==='denied')gtag('consent','update',no);})();
+gtag('js',new Date());
+</script>
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-W7NW7Q25"></script>"""
+
 SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
@@ -194,6 +210,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{GA_HEAD}
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE}{canon}">
@@ -922,7 +939,7 @@ def footer(above='bg'):
   </nav>
   <div class="ftr__base">
     <div class="ftr__mark" data-halftone><p class="ftr__word" aria-hidden="true">Summit Studios</p><canvas class="ftr__dots" aria-hidden="true"></canvas></div>
-    <div class="ftr__legal"><span>&copy; 2026 Summit Studios</span><a href="#top">Back to top &uarr;</a></div>
+    <div class="ftr__legal"><span>&copy; 2026 Summit Studios<button type="button" class="ftr__ck" data-consent-open>Cookie choices</button></span><a href="#top">Back to top &uarr;</a></div>
   </div>
 </footer>'''
 
