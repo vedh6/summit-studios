@@ -436,12 +436,14 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 .voice__cover { position: relative; flex: none; aspect-ratio: 16 / 10; max-height: 40%; overflow: hidden; background: var(--light); }
 .voice__cover img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform .6s var(--ease); }
 .voice:hover .voice__cover img { transform: scale(1.05); }
-.voice__cover::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 34%; pointer-events: none;
-  background: linear-gradient(0deg, var(--light) 3%, rgba(228, 213, 178, .72) 30%, rgba(228, 213, 178, 0)); }
+/* one gradient over the whole card, cover included: a faint parchment wash over the top of the site,
+   opaque parchment by the foot of the cover, then down to dark umber */
+.voice::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(244, 235, 214, .14) 0%, rgba(240, 229, 204, .34) 16%, rgba(234, 221, 192, .72) 29%, var(--light) 39%,
+    #C9AB80 50%, #8A6742 63%, #45301C 78%, var(--dark) 100%); }
 .voice__mono { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 6%; background-color: #E9DCBE; background-image: var(--paper-tex); background-size: var(--paper-size);
   font-family: var(--serif); font-size: clamp(72px, 6vw, 110px); letter-spacing: -.02em; line-height: 1; color: #9A6A33; }
-.voice__body { position: relative; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 4px 24px 24px;
-  background: linear-gradient(180deg, var(--light) 0%, #C7A87C 20%, #81603C 42%, #3B2817 64%, var(--dark) 100%); color: var(--cream); }
+.voice__body { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 4px 24px 24px; color: var(--cream); }
 .voice__by { display: grid; gap: 5px; margin: 0; font-family: var(--sans); }
 .voice__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #2A1C10; }
 .voice__role { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6B4423; }
