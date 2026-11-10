@@ -1017,14 +1017,16 @@ void main(){
       if (i === active) return;
       const out = panels[active], inn = panels[i]; active = i;
       panels.forEach((p, k) => p.classList.toggle('is-active', k === i));
-      if (out) gsap.to(out, { opacity: 0, y: -18, duration: .3, ease: 'power2.in', overwrite: true });
+      // the outgoing reason fades on its own layer, so the screen's text isn't redrawn on every frame of the fade
+      if (out) gsap.fromTo(out, { willChange: 'transform, opacity' }, { opacity: 0, y: -18, duration: .3, ease: 'power2.in', overwrite: true, onComplete: () => gsap.set(out, { clearProps: 'willChange' }) });
       // the lines get their own layers only while they move, so the screen's text isn't repainted every frame
       if (inn) { gsap.set(inn, { opacity: 1, y: 0, overwrite: true }); gsap.fromTo(inn.children, { opacity: 0, y: 28, willChange: 'transform, opacity' }, { opacity: 1, y: 0, duration: .8, ease: EXPO, stagger: .09, overwrite: true, onComplete: () => gsap.set(inn.children, { clearProps: 'willChange' }) }); }
     };
     screenShow = setActive;
     ScrollTrigger.create({
       trigger: sp, start: 'top top', end: 'bottom bottom', scrub: true,
-      onUpdate: self => { setActive(Math.min(n - 1, Math.floor(self.progress * n))); if (self.isActive && orbitFinal) orbitFinal(); },
+      // the first reason is already on the screen through the push-in, so here it gets half a share and the next one comes sooner
+      onUpdate: self => { setActive(Math.min(n - 1, Math.floor(self.progress * (n - .5) + .5))); if (self.isActive && orbitFinal) orbitFinal(); },
       onToggle: self => { whyPhase = self.isActive || self.progress >= 1; whyLive(); if (self.isActive && orbitFinal) orbitFinal(); },
     });
   }
