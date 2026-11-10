@@ -640,7 +640,7 @@ def before_after(old, new):
     return f'''<div class="ba" data-reveal>
       <div class="ba__col ba__col--old"><p class="label ba__lab">Where most sites are</p><ul class="ba__list">{o}</ul></div>
       <span class="ba__arrow" aria-hidden="true"><svg viewBox="0 0 20 20" width="22" height="22"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <div class="ba__col ba__col--new"><p class="label ba__lab">The rebirth</p><ul class="ba__list">{n}</ul></div>
+      <div class="ba__col ba__col--new"><p class="label ba__lab">What we build instead</p><ul class="ba__list">{n}</ul></div>
     </div>'''
 
 
@@ -668,7 +668,7 @@ def industries_lead():
     that says what each industry section covers."""
     return f'''<section class="ind-lead" aria-labelledby="ind-lead-t" data-ink>
   <p class="label ind-lead__eyebrow">Industry by industry</p>
-  <h2 class="ind-lead__h" id="ind-lead-t">{swash('Here&rsquo;s what a rebirth looks like in each industry we&rsquo;ve built for.')}</h2>
+  <h2 class="ind-lead__h" id="ind-lead-t">{swash('Every industry buys differently.')}</h2>
   <p class="n3 ind-lead__p">Why the business needs a website, what its old site usually gets wrong, and what we turn it into.</p>
 </section>'''
 
@@ -680,7 +680,7 @@ def chapter_industry(d):
     body = f'''
     {sub_head('Why you need a website')}
     {feat_grid(d['why'])}
-    {sub_head('From tired to reborn')}
+    {sub_head('What we change')}
     {before_after(d['old'], d['new'])}
     {sub_head('Our work here' if len(work) == 1 else f'Our work here, {len(work)} sites')}
     {work_cards(work)}
@@ -703,9 +703,9 @@ def hero_rebirth():
     <div class="hrb__text">
       <p class="label hrb__eyebrow">Industries</p>
       <h1 class="hrb__h" id="rebirth-t">{swash('Renaissance means rebirth.')}</h1>
-      <p class="n2 hrb__p">Most businesses we meet already have a website. It is just a tired template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
+      <p class="n2 hrb__p">Most businesses we meet already have a website. It is just a tired template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We rethink it, redesign it and rebuild it into something unique and modern that brings in work.</p>
     </div>
-    <nav class="hrb__panel" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve reborn sites in</p><ol class="rb__list">{items}</ol></nav>
+    <nav class="hrb__panel" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve built for</p><ol class="rb__list">{items}</ol></nav>
   </div>
 </section>'''
 
@@ -1096,7 +1096,7 @@ PAGES = {
                    HOME, HOME_CHAPTERS, True),
     'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
     'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
-    'industries.html': ('Industries | Summit Studios', 'Websites reborn for healthcare, industrial and engineering, technology, construction and real estate, interiors, food and e-commerce, and hospitality.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
+    'industries.html': ('Industries | Summit Studios', 'Websites for healthcare, industrial and engineering, technology, construction and real estate, interiors, food and e-commerce, and hospitality.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
     'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
     'get-started.html': ('Get started | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
