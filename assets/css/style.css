@@ -492,6 +492,11 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 .rb__n { color: var(--mid); white-space: nowrap; }
 .rb__list a:hover { padding-left: 10px; }
 .rb__list a:hover .rb__n { color: var(--ink); }
+/* the lead-in between the opening painting and the first industry: generous space above and below */
+.ind-lead { position: relative; z-index: 1; padding: clamp(110px, 16vh, 190px) 20px clamp(20px, 4vh, 48px); }
+.ind-lead__eyebrow { color: var(--mid); margin-bottom: 18px; }
+.ind-lead__h { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 1.3rem + 3.4vw, 84px); line-height: .95; letter-spacing: -.03em; color: var(--ink); max-width: 24ch; text-wrap: balance; }
+.ind-lead__p { margin-top: 24px; max-width: 40ch; color: var(--mid); font-size: clamp(20px, 1rem + .4vw, 26px); }
 /* Industries: each chapter opens on a large picture set into the page (under the header, from the left
    edge, open space on the right), with its word and lead inside it; it scrolls with the page, nothing sticky or animated.
    Legibility from a soft text shadow, not a tint over the painting. */

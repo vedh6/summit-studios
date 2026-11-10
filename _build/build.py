@@ -663,6 +663,16 @@ def chapter_box(cid, word, painting, alt, lead, body):
 </section>'''
 
 
+def industries_lead():
+    """Industries: room to breathe between the opening painting and the first industry, with a lead-in
+    that says what each industry section covers."""
+    return f'''<section class="ind-lead" aria-labelledby="ind-lead-t" data-ink>
+  <p class="label ind-lead__eyebrow">Industry by industry</p>
+  <h2 class="ind-lead__h" id="ind-lead-t">{swash('Here&rsquo;s what a rebirth looks like in each industry we&rsquo;ve built for.')}</h2>
+  <p class="n3 ind-lead__p">Why the business needs a website, what its old site usually gets wrong, and what we turn it into.</p>
+</section>'''
+
+
 def chapter_industry(d):
     """Industries: one chapter per industry we have built for: why the business needs a website, the
     rebirth (old site -> what we make of it), our work in it, and what we build for it."""
@@ -994,7 +1004,7 @@ def price_cards():
 
 
 INDUSTRIES_CH = [('ind-' + d['id'], d['word']) for d in INDUSTRIES] + [('start', 'Start')]
-INDUSTRIES_PAGE = hero_rebirth() + ''.join(chapter_industry(d) for d in INDUSTRIES) + chapter_start()
+INDUSTRIES_PAGE = hero_rebirth() + industries_lead() + ''.join(chapter_industry(d) for d in INDUSTRIES) + chapter_start()
 
 TALK_KINDS = ['Clinic or healthcare', 'Engineering or industrial', 'Trades or construction', 'Property or interiors',
               'Technology', 'Food or hospitality', 'Something else']
