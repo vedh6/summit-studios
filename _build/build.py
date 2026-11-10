@@ -52,6 +52,19 @@ def chip(label, href, external=False):
     return f'<a class="chip" href="{href}"{ext}>{label}<span class="chip__ar">&nearr;</span></a>'
 
 
+IHB_ARROW = '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
+def ihb(label, href, cls='', aria='', external=False):
+    """The user's InteractiveHoverButton, in the site's colours: a paper pill with an ink dot by the word;
+    on hover the dot floods the pill, the word slides out and 'label ->' slides in. cls: ihb--auto (sizes
+    to a longer label), ihb--big (the main call to action), ihb--screen (on the Why us laptop screen)."""
+    ext = ' target="_blank" rel="noopener"' if external else ''
+    lab = f' aria-label="{aria}"' if aria else ''
+    return (f'<a class="ihb{(" " + cls) if cls else ""}" href="{href}"{ext}{lab}>'
+            f'<span class="ihb__t">{label}</span><span class="ihb__in" aria-hidden="true"><span>{label}</span>{IHB_ARROW}</span><span class="ihb__dot" aria-hidden="true"></span></a>')
+
+
 def pill(label, href, cls=''):
     return f'<a class="pill {cls}" href="{href}">{label}</a>'
 
@@ -689,7 +702,7 @@ def chapter_industry(d):
     {work_cards(work)}
     {sub_head('What we build')}
     {feat_grid([(x, '') for x in d['build']], 'fg--tags')}
-    <p data-reveal>{chip('Start a conversation', 'contact.html')}</p>'''
+    <p data-reveal>{ihb('Start a conversation', 'contact.html', 'ihb--auto')}</p>'''
     return chapter_box('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
 
 
@@ -718,9 +731,7 @@ def hero_rebirth():
 def visit_button(url, name, host):
     """Projects: "Visit" as an interactive pill (from the user's InteractiveHoverButton): a dot by the word
     floods the pill on hover while the word slides out and "Visit ->" slides in."""
-    arrow = '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    return (f'<a class="ihb" href="{url}" target="_blank" rel="noopener" aria-label="Visit {name}, {host} (opens in a new tab)">'
-            f'<span class="ihb__t">Visit</span><span class="ihb__in" aria-hidden="true"><span>Visit</span>{arrow}</span><span class="ihb__dot" aria-hidden="true"></span></a>')
+    return ihb('Visit', url, aria=f'Visit {name}, {host} (opens in a new tab)', external=True)
 
 
 def work_row(i, p):
@@ -787,7 +798,7 @@ def screen_quad():
           <p class="screen__p">{p}</p>
         </article>''' for i, (t, s, p) in enumerate(WHY))
     end = f'''<article class="screen__panel screen__panel--end" data-panel>
-          <div class="screen__cta">{pill('Start a conversation', 'contact.html', 'pill--dark')}</div>
+          <div class="screen__cta">{ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--screen')}</div>
         </article>'''
     return f'<div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div>'
 
@@ -833,7 +844,7 @@ def chapter_start():
     {sub_head('No pitch, no pressure')}
     {feat_grid(STEPS)}
     <div class="cta" data-reveal>
-      {pill('Start a conversation', 'contact.html', 'pill--dark pill--big')}
+      {ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--big')}
       {chip('Get a free website review', 'get-started.html#review')}
       {chip('Email us', 'mailto:team@summitxstudio.com')}
     </div>
@@ -901,7 +912,7 @@ def footer(above='bg'):
   <div class="ftr__tear" aria-hidden="true">{torn_edge('ftr', seed=3)}</div>
   <div class="ftr__cta">
     <h2 class="ftr__h">{swash('Let&rsquo;s build something worth finding.')}</h2>
-    <div class="ftr__btns">{pill('Start a conversation', 'contact.html', 'pill--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
+    <div class="ftr__btns">{ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
   </div>
   <nav class="ftr__cols" aria-label="Footer">
     <div><p class="ftr__t">Services</p><a href="index.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="index.html#receptionists">AI Concierge</a><a href="index.html#more">WhatsApp Automation</a><a href="index.html#more">Custom Software</a></div>

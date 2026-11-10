@@ -1113,6 +1113,16 @@ html.has-tunnel .tun__prompt { display: block; }
 .ihb:hover .ihb__in, .ihb:focus-visible .ihb__in { transform: translateX(-4px); opacity: 1; }
 .ihb:hover .ihb__dot, .ihb:focus-visible .ihb__dot { left: 0; top: 0; width: 100%; height: 100%; transform: scale(1.8); }
 .ihb:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+/* longer labels ('Start a conversation'): the pill sizes to the word, the dot sits just before it */
+.ihb--auto { width: auto; padding: 0 30px 0 40px; }
+.ihb--auto .ihb__dot { left: 18px; top: calc(50% - 4px); }
+.ihb--auto:hover .ihb__dot, .ihb--auto:focus-visible .ihb__dot { left: 0; top: 0; }
+.ihb--big { height: 52px; font-size: 16px; padding: 0 34px 0 46px; }
+.ihb--big .ihb__dot { left: 20px; }
+/* on the Why us laptop screen: sized in em, so it scales with the screen's type */
+.ihb--screen { height: 2.6em; font-size: .6em; padding: 0 1.6em 0 2.3em; margin-top: 0; }
+.ihb--screen .ihb__dot { left: 1em; top: calc(50% - .22em); width: .44em; height: .44em; }
+.ihb--screen .ihb__in svg { width: 1em; height: 1em; }
 @media (prefers-reduced-motion: reduce) { .ihb__t, .ihb__in, .ihb__dot { transition: none; } }
 .row__art img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 1.4s var(--ease); }
 .row:hover .row__art img { transform: scale(1.025); }
@@ -1196,9 +1206,5 @@ html.screen-live .screen__quad { opacity: 1; }
 .screen__cta { margin-top: .35em; }
 .screen__panel--end { justify-items: center; }   /* the last screen is just the call to action */
 .screen__panel--end .screen__cta { margin-top: 0; }
-.screen__panel--end .pill { font-size: .56em; height: 2.7em; padding: 0 1.5em; border-radius: .16em; letter-spacing: .01em;   /* sized to the screen, not the page */
-  background: rgba(28, 20, 10, .42); color: #FBF6EA; border: 1px solid rgba(255, 246, 226, .55); box-shadow: 0 .4em 1.2em rgba(40, 25, 8, .2);
-  -webkit-backdrop-filter: blur(6px) saturate(1.2); backdrop-filter: blur(6px) saturate(1.2); }   /* a translucent glass rectangle */
-.screen__panel--end .pill:hover { background: rgba(28, 20, 10, .6); }
 .why-fallback { display: contents; }
 html.has-orbit .why-fallback { display: none; }
