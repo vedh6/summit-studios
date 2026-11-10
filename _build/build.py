@@ -644,6 +644,25 @@ def before_after(old, new):
     </div>'''
 
 
+def chapter_box(cid, word, painting, alt, lead, body):
+    """A chapter that opens on a large picture set into the page (under the header, inset from the
+    edges) with its word and lead inside it. Static: it scrolls with the page like any block -- no
+    sticky background, no fade, no word animation (user: 'this big with the text inside and also static')."""
+    return f'''<section class="ch ch--box" id="{cid}" data-ch aria-labelledby="{cid}-t" data-ink>
+  <div class="ch__box">
+    <img class="paint" src="assets/img/paint/{painting}.jpg" alt="{alt}" width="1344" height="752" loading="lazy" decoding="async">
+    <div class="ch__boxtext">
+      <h2 class="h1 ch__word" id="{cid}-t">{word}</h2>
+      <p class="n1 ch__lead">{swash(lead)}</p>
+    </div>
+  </div>
+  <div class="ch__body" data-ch-body>
+    {body}
+    <div class="ch__end"><span class="rule"></span><a class="back" href="#top">Back to navigation</a></div>
+  </div>
+</section>'''
+
+
 def chapter_industry(d):
     """Industries: one chapter per industry we have built for: why the business needs a website, the
     rebirth (old site -> what we make of it), our work in it, and what we build for it."""
@@ -658,7 +677,7 @@ def chapter_industry(d):
     {sub_head('What we build')}
     {feat_grid([(x, '') for x in d['build']], 'fg--tags')}
     <p data-reveal>{chip('Start a conversation', 'contact.html')}</p>'''
-    return chapter('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
+    return chapter_box('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
 
 
 def hero_rebirth():
