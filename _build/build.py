@@ -674,7 +674,7 @@ def hero_rebirth():
     <div class="hrb__text">
       <p class="label hrb__eyebrow">Industries</p>
       <h1 class="hrb__h" id="rebirth-t">{swash('Renaissance means rebirth.')}</h1>
-      <p class="n2 hrb__p">Most businesses we meet already have a website. It is just tired: a template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
+      <p class="n2 hrb__p">Most businesses we meet already have a website. It is just a tired template from years ago, slow on a phone, and saying nothing about what makes them different. We don&rsquo;t patch it up. We give it a rebirth: rethought, redesigned and rebuilt into something unique and modern that brings in work.</p>
     </div>
     <nav class="hrb__panel" aria-label="Industries"><p class="label rb__idxh">Industries we&rsquo;ve reborn sites in</p><ol class="rb__list">{items}</ol></nav>
   </div>

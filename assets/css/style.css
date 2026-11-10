@@ -475,7 +475,14 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 .hrb__h { font-family: var(--serif); font-weight: 400; font-size: clamp(52px, 1.6rem + 5vw, 120px); line-height: .9; letter-spacing: -.035em; color: var(--paper); max-width: 11ch;
   text-shadow: 0 2px 34px rgba(30, 18, 8, .7), 0 1px 4px rgba(30, 18, 8, .5); }
 .hrb__p { margin-top: 26px; max-width: 30ch; color: var(--paper); text-shadow: 0 2px 22px rgba(30, 18, 8, .8), 0 1px 3px rgba(30, 18, 8, .6); }
-.hrb__panel { padding: 22px 26px 12px; border-radius: 14px; background: rgba(246, 240, 226, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 24px 50px -30px rgba(20, 12, 4, .7); }
+/* the industries list sits straight on the painting (user: transparent): cream type with the heading's soft shadow, light rules */
+.hrb__panel { padding: 0; --sh: 0 2px 18px rgba(30, 18, 8, .75), 0 1px 3px rgba(30, 18, 8, .6); }
+.hrb__panel .rb__idxh { color: rgba(247, 247, 238, .85); text-shadow: var(--sh); }
+.hrb__panel .rb__list { border-top-color: rgba(247, 247, 238, .4); }
+.hrb__panel .rb__list a { color: var(--paper); border-bottom-color: rgba(247, 247, 238, .3); text-shadow: var(--sh); }
+.hrb__panel .rb__lead { border-bottom-color: rgba(247, 247, 238, .45); }
+.hrb__panel .rb__n { color: rgba(247, 247, 238, .82); }
+.hrb__panel .rb__list a:hover .rb__n { color: var(--paper); }
 .rb__idxh { color: var(--mid); margin-bottom: 12px; }
 .rb__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .rb__list li:last-child a { border-bottom: 0; }
@@ -511,7 +518,7 @@ html.has-voices .voice { height: 100%; min-height: 0; max-height: calc(var(--vw)
 .iw--solo .iw__card { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; align-items: center; }
 @media (max-width: 1100px) { .iw { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 899px) {
-  .hrb { grid-template-columns: 1fr; padding: calc(var(--header-h) + 24px) 12px 20px; } .hrb__panel { padding: 16px 18px 6px; }
+  .hrb { grid-template-columns: 1fr; padding: calc(var(--header-h) + 24px) 12px 20px; }
   .ba { grid-template-columns: 1fr; } .ba__arrow { justify-self: center; transform: rotate(90deg); }
   .iw, .iw--solo .iw__card { grid-template-columns: 1fr; gap: 32px; }
 }
