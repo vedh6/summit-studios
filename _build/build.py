@@ -842,6 +842,7 @@ def chapter_start():
     return chapter('start', 'Start', 'summit-cut', 'A Renaissance woman in a gold-trimmed cloak working on a laptop on a rock ledge, swallows flying above',
                    "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body, cut=True
                    ).replace(' id="start" data-ch ', ' id="start" data-ch data-ink ', 1  # all on paper: ink header throughout
+                   ).replace('<h2 class="h1 ch__word" id="start-t" data-word>Start</h2>', '<h2 class="ch__word sr" id="start-t">Start</h2>', 1  # no giant word: the line is the headline (user)
                    ).replace('decoding="async"></div>\n  <div class="ch__open">', 'decoding="async">' + flock(FLOCK_START) + '</div>\n  <div class="ch__open">', 1)   # the two swallows fly over the picture
 
 
@@ -1096,6 +1097,23 @@ PAGES = {
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
 }
 
+def stamp_css():
+    """Images the stylesheet links to (masks, the gilt frame...) get a ?v=<hash> as well: /assets is cached for
+    a year, so without it a changed image keeps showing the old copy (the Start mask's ghost swallows).
+    Rewrites url(../...) in assets/css/style.css in place; runs before the pages so the CSS's own hash is current."""
+    css = OUT / 'assets/css/style.css'
+    src = css.read_text()
+    def sub(m):
+        q, rel = m.group(1), m.group(2)
+        p = (css.parent / rel).resolve()
+        h = hashlib.sha1(p.read_bytes()).hexdigest()[:8] if p.exists() else 'missing'
+        return f'url({q}{rel}?v={h}{q})'
+    out = re.sub(r"""url\((["']?)(\.\./[^"')?]+)(?:\?v=[0-9a-f]+)?\1\)""", sub, src)
+    if out != src:
+        css.write_text(out)
+
+
 if __name__ == '__main__':
+    stamp_css()
     for f, (t, d, body, chapters, ld) in PAGES.items():
         page(f, t, d, body, chapters, MARK, SUB, ld)
