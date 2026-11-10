@@ -511,11 +511,14 @@ SWALLOW = ('''<symbol id="swallow" viewBox="0 0 100 70">
 FLOCK = [(66, 8, 112, 0, 1.0), (60, 11.5, 76, .18, 1.0)]   # a pair, flying together
 
 
-def flock():
+FLOCK_START = [(73, 12, 72, 0, .5), (84, 21, 46, .18, .5)]   # rise at half speed so they stay in view   # Start: two swallows in the open sky above 'Start' (% of the picture)
+
+
+def flock(items=None):
     """Realistic swallows behind a chapter: two wing poses swap to flap, and the flock
     rises up and to the right as you scroll (motion.js birds())."""
     b = ''.join(f'''<span class="bird" style="left:{x}%;top:{y}%;width:{round(w * 1.5)}px;--fd:{d}s" data-bird="{v}"><img class="bird__up" src="assets/img/birds/swallow-up.png" alt="" width="420" height="420" loading="lazy" decoding="async"><img class="bird__down" src="assets/img/birds/swallow-down.png" alt="" width="420" height="420" loading="lazy" decoding="async"></span>'''
-                for x, y, w, d, v in FLOCK)
+                for x, y, w, d, v in (items or FLOCK))
     return f'<div class="flock" aria-hidden="true">{b}</div>'
 
 
@@ -838,7 +841,8 @@ def chapter_start():
     # the lady with the laptop, her rock and the swallows, cut out onto the page's paper (like the AI Concierge)
     return chapter('start', 'Start', 'summit-cut', 'A Renaissance woman in a gold-trimmed cloak working on a laptop on a rock ledge, swallows flying above',
                    "Tell us what you need. We'll look at your current site, tell you what we'd change, and say honestly whether we're the right fit.", body, cut=True
-                   ).replace(' id="start" data-ch ', ' id="start" data-ch data-ink ', 1)   # all on paper: ink header throughout
+                   ).replace(' id="start" data-ch ', ' id="start" data-ch data-ink ', 1  # all on paper: ink header throughout
+                   ).replace('decoding="async"></div>\n  <div class="ch__open">', 'decoding="async">' + flock(FLOCK_START) + '</div>\n  <div class="ch__open">', 1)   # the two swallows fly over the picture
 
 
 UP_ARROW = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'

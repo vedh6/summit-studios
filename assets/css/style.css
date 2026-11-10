@@ -384,7 +384,7 @@ html.ui-over-paint[data-ui] .pill--hdr { background: var(--white); color: var(--
 #start.ch--cut .ch__word, #start.ch--cut .ch__lead { color: var(--ink); text-shadow: none; }
 #start.ch--cut .ch__word { font-size: clamp(3.5rem, 1rem + 5vw, 8rem); }
 #start.ch--cut .ch__lead { font-size: clamp(20px, .8rem + .9vw, 30px); max-width: 26ch; margin-top: 16px; }
-@media (min-width: 900px) { #start.ch--cut .ch__open { justify-content: flex-start; padding: 27svh 3vw 40px 66vw; } }
+@media (min-width: 900px) { #start.ch--cut .ch__open { justify-content: flex-start; padding: 27svh 3vw 40px 66vw; } #start.ch--cut .ch__body { padding-top: 0; margin-top: -4svh; } }   /* the picture's foot fades into the paper; the steps follow close under it */
 @media (max-width: 899px) {
   #start.ch--cut .ch__bg { height: 64svh; margin-bottom: 0; }
   #start.ch--cut .ch__open { height: auto; padding-top: 12px; padding-bottom: 8px; }
@@ -982,6 +982,7 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .calls__cord { display: none; }
   .calls__h { font-size: clamp(48px, 15vw, 64px); max-width: 6.5ch; }
   .bird { scale: .7; } .bird:nth-child(1) { left: 52% !important; } .bird:nth-child(2) { left: 34% !important; top: 10% !important; }
+  #start .bird:nth-child(1) { left: 64% !important; top: 15% !important; } #start .bird:nth-child(2) { left: 82% !important; top: 25% !important; }   /* phones: the top-right corner, clear of her head */
   .srp { padding: 14px; border-radius: 14px; }
   .srp__ov { grid-template-columns: minmax(0, 1fr) 84px; align-items: start; padding: 14px; gap: 12px; }
   .srp__thumb { aspect-ratio: 1; }
