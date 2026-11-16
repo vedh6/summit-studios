@@ -94,7 +94,11 @@
       const lab = btn.querySelector('[data-label]') || btn, label = lab.textContent; btn.disabled = true; lab.textContent = 'Sending…';
       const data = {};   // a field ticked more than once (the help chips) goes as one comma-separated line
       for (const [k, v] of new FormData(f)) data[k] = k in data ? data[k] + ', ' + v : v;
-      data._url = location.href;
+      // FormSubmit identifies a form by the page address in _url, and a new address (another page, a query
+      // string, the preview or the vercel.app host) can count as a new form that needs activating again.
+      // Every form reports one fixed address; the page it was really sent from goes in an ordinary field.
+      data._url = 'https://www.summitxstudio.com/contact';
+      data['Sent from'] = location.host + location.pathname;
       // sent as an ordinary form post (not JSON), so the browser needn't ask FormSubmit's permission
       // first (that round trip alone took 10-15 s); given up on after 30 s so it never hangs
       // FormSubmit can take a while (the first message to a new address triggers its activation email),
