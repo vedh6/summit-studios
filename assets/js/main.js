@@ -129,6 +129,117 @@
     else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .3 }); growers.forEach(g => io.observe(g)); }
   }
 
+  /* ---------- Studio's first screen: a living gradient on the parchment. Simplex noise drifts light
+     tints of the site's gold, sage and clay (after the 'Velaris' WebGL component the user sent; ported,
+     no React). Its neutral is white and the canvas is multiplied onto the paper, so the paper's grain
+     shows through; it is one screen tall and sticky, so it drifts behind the whole page. Runs only while on screen; with
+     reduced motion it draws one still frame; without WebGL the paper is simply plain. ---------- */
+  d.querySelectorAll('[data-vel]').forEach(sec => {
+    const canvas = sec.tagName === 'CANVAS' ? sec : sec.querySelector('canvas'), gl = canvas && canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false });
+    if (!gl) return;
+    const VS = 'attribute vec2 position;varying vec2 vUv;void main(){vUv=position*.5+.5;gl_Position=vec4(position,0.,1.);}';
+    const FS = `precision highp float;varying vec2 vUv;uniform vec2 u_resolution;uniform float u_time;uniform float u_grain;uniform vec3 u_colors[4];uniform vec3 u_bg;uniform float u_end;
+vec3 permute(vec3 x){return mod(((x*34.0)+1.0)*x,289.0);}
+float snoise(vec2 v){const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
+vec2 i=floor(v+dot(v,C.yy));vec2 x0=v-i+dot(i,C.xx);vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);
+vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;i=mod(i,289.0);
+vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));
+vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);m=m*m;m=m*m;
+vec3 x=2.0*fract(p*C.www)-1.0;vec3 h=abs(x)-0.5;vec3 ox=floor(x+0.5);vec3 a0=x-ox;
+m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;return 130.0*dot(m,g);}
+void main(){vec2 uv=vUv;float ratio=u_resolution.x/u_resolution.y;vec2 p=uv-0.5;p.x*=ratio;float t=u_time*0.1;
+float n1=snoise(p*0.4+vec2(t*0.2,-t*0.3));float n2=snoise(p*0.55+vec2(-t*0.15,t*0.25)+n1*0.25);float n3=snoise(p*0.75+vec2(t*0.1,-t*0.2)+n2*0.2);
+vec3 col=u_bg;float dist=length(p)*1.5;float vignette=1.0-smoothstep(0.3,1.2,dist);
+col=mix(col,u_colors[0],smoothstep(-0.2,0.5,n1)*0.85);col=mix(col,u_colors[1],smoothstep(-0.1,0.6,n2)*0.7);
+col=mix(col,u_colors[2],smoothstep(-0.3,0.4,n3)*0.6);col=mix(col,u_colors[3],smoothstep(0.0,0.7,n1*n2)*0.5);
+col=mix(col,u_colors[1],smoothstep(0.8,0.0,dist)*0.25);col=mix(u_bg,col,mix(0.55,1.0,vignette));col=mix(u_bg,col,smoothstep(u_end,u_end+0.38,uv.y));
+float grain=fract(sin(dot(uv,vec2(12.9898,78.233)))*43758.5453+u_time);col+=(grain-0.5)*u_grain*0.1;gl_FragColor=vec4(col,1.0);}`;
+    const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x); return gl.getShaderParameter(x, gl.COMPILE_STATUS) ? x : null; };
+    const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+    const prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const pos = gl.getAttribLocation(prog, 'position'); gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+    const U = n => gl.getUniformLocation(prog, n), rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+    gl.uniform3f(U('u_bg'), ...rgb(sec.dataset.velBg || '#FFFFFF'));
+    gl.uniform3fv(U('u_colors'), new Float32Array((sec.dataset.velColors || '').split(',').slice(0, 4).flatMap(rgb)));
+    gl.uniform1f(U('u_grain'), .2);
+    const uRes = U('u_resolution'), uTime = U('u_time'), uEnd = U('u_end'), SPEED = 1.4;
+    // where the sheet ends, measured up the canvas from its foot (0 = foot, 1 = top): the gradient fades into plain
+    // paper just above it, so it meets the footer's torn paper edge without a line
+    const sheet = canvas.closest('.st') || canvas.parentElement;
+    const end = () => { const c = canvas.getBoundingClientRect(), r = sheet.getBoundingClientRect(); return (c.bottom - r.bottom) / (c.height || 1); };
+    const size = () => { const r = Math.min(devicePixelRatio || 1, 1.5); canvas.width = Math.round(canvas.clientWidth * r); canvas.height = Math.round(canvas.clientHeight * r); gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(uRes, canvas.width, canvas.height); };
+    const frame = t => { gl.uniform1f(uTime, t * .001 * SPEED); gl.uniform1f(uEnd, end()); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); };
+    size();
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let raf = 0, on = false;
+    const loop = t => { frame(t); raf = on ? requestAnimationFrame(loop) : 0; };
+    new ResizeObserver(() => { size(); if (still || !on) frame(9000); }).observe(sec);
+    if (still) { frame(9000); addEventListener('scroll', () => frame(9000), { passive: true }); return; }
+    new IntersectionObserver(es => es.forEach(e => { on = e.isIntersecting; if (on && !raf) raf = requestAnimationFrame(loop); })).observe(sec);
+  });
+
+  /* ---------- Highlighted capabilities (Studio): + opens a card's details; arrows step the row ---------- */
+  d.querySelectorAll('[data-hc]').forEach(sec => {
+    const row = sec.querySelector('[data-hc-row]'), go = [...sec.querySelectorAll('[data-hc-go]')];
+    row.querySelectorAll('.hc__btn').forEach(btn => btn.addEventListener('click', () => {
+      const card = btn.closest('.hc__card'), panel = d.getElementById(btn.getAttribute('aria-controls')), open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open)); panel.hidden = !open; card.classList.toggle('is-open', open);
+      btn.setAttribute('aria-label', (open ? 'Close ' : 'More about ') + card.querySelector('.hc__t').textContent);
+    }));
+    const ends = () => { const max = row.scrollWidth - row.clientWidth - 2; go[0].disabled = row.scrollLeft <= 2; go[1].disabled = row.scrollLeft >= max; };
+    go.forEach(b => b.addEventListener('click', () => {
+      const card = row.querySelector('.hc__card'), step = card.offsetWidth + parseFloat(getComputedStyle(row).columnGap || 0);
+      row.scrollBy({ left: step * +b.dataset.hcGo, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }));
+    row.addEventListener('scroll', ends, { passive: true }); addEventListener('resize', ends); ends();
+  });
+
+  /* ---------- 'Give me another' (Studio): shuffle to another live client, circle the new name ---------- */
+  d.querySelectorAll('[data-spin]').forEach(box => {
+    const items = JSON.parse(box.querySelector('[data-spin-data]').textContent);
+    const q = s => box.querySelector(s), name = q('[data-spin-name]'), say = q('[data-spin-say]'), link = q('[data-spin-link]'), loop = q('.ink__mark path');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cur = 0, busy = false;
+    q('[data-spin-next]').addEventListener('click', () => {
+      if (busy || items.length < 2) return;
+      let next = cur; while (next === cur) next = Math.floor(Math.random() * items.length);
+      cur = next; const it = items[cur];
+      const swap = () => { name.innerHTML = it.name; say.innerHTML = it.say; link.href = it.url; };   // build-time copy from content.py
+      if (still) { swap(); return; }
+      busy = true; box.classList.add('is-swap');
+      setTimeout(() => {
+        swap(); box.classList.remove('is-swap');
+        loop.style.animation = 'none'; loop.getBoundingClientRect(); loop.style.animation = '';   // the loop draws round the new name
+        busy = false;
+      }, 300);
+    });
+  });
+
+  /* ---------- The enquiry scroll unrolls as soon as its top is on screen: on Contact, as the page
+     opens. It waits (at most 1.5 s) for its paper and roller photos so it never opens blank, then
+     holds rolled up for a beat before the lower roller rolls down. ---------- */
+  const scrolls = d.querySelectorAll('[data-unroll]');
+  if (scrolls.length) {
+    const open = f => f.classList.add('is-in');
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) scrolls.forEach(open);
+    else {
+      const f0 = scrolls[0], sheet = f0.querySelector('.tf__sheet'), rod = f0.querySelector('.tf__rod');
+      const css = (sheet ? getComputedStyle(sheet, '::after').backgroundImage : '') + (rod ? getComputedStyle(rod).borderImageSource : '');
+      const urls = [...css.matchAll(/url\("?([^")]+)"?\)/g)].map(m => m[1]);
+      const ready = Promise.race([Promise.all(urls.map(u => { const im = new Image(); im.src = u; return im.decode().catch(() => {}); })), new Promise(r => setTimeout(r, 1500))]);
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target); ready.then(() => setTimeout(() => open(e.target), 450));
+      }), { rootMargin: '0px 0px -10% 0px' });
+      scrolls.forEach(f => io.observe(f));
+    }
+  }
+
   /* ---------- "Calls, answered": the handset cord, drawn to fit the layout ----------
      From the handset's cord stub it falls, loops once, then runs left beneath the text
      and the call card to the screen's edge. Recomputed on resize. */

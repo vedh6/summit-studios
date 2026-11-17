@@ -62,8 +62,8 @@ PROJECTS = [
 
 
 SERVICES = [
-    dict(id='websites', short='Websites', name='Websites that bring in customers', tag='Fast, clean, mobile-first. Built to do a job.',
-         desc="Not just a good-looking site, but one that does a job. We build fast, clean, mobile-first sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google. We've shipped 30+ of them for clinics, brands and businesses.",
+    dict(id='websites', short='Websites', name='Websites that bring in customers', tag='Fast, clean and built to do a job.',
+         desc="Not just a good-looking site, but one that does a job. We build fast, clean sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google. We've shipped 30+ of them for clinics, brands and businesses.",
          chips=['Clinic & practice sites', 'Business & brand sites', 'E-commerce stores', 'SEO & Google setup']),
     dict(id='ai-receptionists', short='AI receptionists', name='AI receptionists', tag='Answers the phone and the chat, 24/7.',
          desc="A smart assistant that answers your phone and chats around the clock. It books appointments, answers the questions you get asked a hundred times a day, captures every lead, and hands off to a real person when it matters. It never sleeps and never puts anyone on hold, so you stop losing customers after hours or when the line's busy.",

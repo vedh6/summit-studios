@@ -8,6 +8,7 @@ initial, then its content scrolls over the painting as it fades to the greige pa
 Copy lives in content.py, the "Why Summit" fly-through in dive.py, layout here. Every local
 asset link gets a ?v=<hash> fingerprint because vercel.json caches /assets for a year.
 """
+import json
 import hashlib
 import pathlib
 import re
@@ -143,7 +144,7 @@ def sidebar(chapters, mark, sub):
 </button>'''
 
 
-FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&display=swap'
+FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&family=IM+Fell+English:ital@0;1&display=swap'
 
 JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Summit Studios","url":"https://www.summitxstudio.com/","email":"team@summitxstudio.com","description":"Premium web design, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide.","areaServed":"Worldwide"}</script>'''
 
@@ -205,6 +206,8 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
     if file != 'index.html':
         chapters = []
         body = body.replace('>Back to navigation<', '>Back to top<')
+    if file == 'studio.html':
+        body = body.replace(' data-reveal', '')   # a static page: everything is simply there
     html = f'''<!doctype html>
 <html lang="en" data-ui="dark">
 <head>
@@ -234,7 +237,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <main id="main" class="main">
 {body}
 </main>
-{footer('parchment' if file in ('index.html', '404.html') else 'wall' if file == 'contact.html' else 'bg')}
+{footer('parchment' if file in ('index.html', '404.html', 'studio.html') else 'wall' if file == 'contact.html' else 'bg')}
 {ROUGH_DEFS}
 {SCRIPTS}
 </body>
@@ -384,7 +387,7 @@ def chapter_websites():
     body = f'''
     {index_block()}
     {sub_head('Designs, refined')}
-    {spot('Fast, clean, mobile-first', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'See the work', 'projects.html')}
+    {spot('Fast, clean, built to do a job', 'We build sites that turn a visitor into a booked appointment or a paying customer, and that actually show up when people search on Google.', 'See the work', 'projects.html')}
     {feat_grid(SERVICE_FEATURES['websites'])}
     {sub_head('Shown on real screens')}
     {fan_cards()}'''
@@ -448,15 +451,17 @@ PROCESS = [('The brief', 'You fill in a short document about your business: what
            ('The moodboard', 'We set the visual direction together: colour, type, imagery and references, agreed before a single screen is drawn.'),
            ('UI &amp; UX', 'Sitemap, user journeys and wireframes, so every page has a job and a clear path to a call or a booking.'),
            ('Visual design', 'Finished designs for desktop and phone, refined with you until they feel exactly right.'),
-           ('Development', 'Hand-built, fast and mobile-first, with motion, accessibility and search baked in from the start.'),
+           ('Development', 'Hand-built and fast on every screen, with motion, accessibility and search baked in from the start.'),
            ('Testing', 'Every page checked on phones, tablets and browsers, with speed, forms and bookings tested end to end.'),
            ('Launch &amp; care', 'We go live, connect Google and analytics, and stay on for updates and new pages.')]
 
 
 def process_section():
     """After chapter I: the brush-spin clip stays put full screen while the build process
-    slides in from the right along the bottom (motion.js process())."""
-    steps_html = ''.join(f'''<li class="proc__step"><span class="proc__n">{i + 1}</span><h3 class="proc__t">{t}</h3><p class="proc__p">{p}</p></li>'''
+    slides in from the right along the bottom as a timeline (motion.js process())."""
+    # a timeline (user, 2026-11-17, after a 21st.dev GSAP timeline): steps alternate above and below a
+    # gold line, each on a stem with a dot at its end (motion.js process() draws them on as they arrive)
+    steps_html = ''.join(f'''<li class="proc__step {'is-top' if i % 2 == 0 else 'is-bot'}"><span class="tl__stem" aria-hidden="true"></span><span class="tl__dot" aria-hidden="true"></span><div class="tl__text"><span class="proc__n">{i + 1}</span><h3 class="proc__t">{t}</h3><p class="proc__p">{p}</p></div></li>'''
                          for i, (t, p) in enumerate(PROCESS))
     return f'''<section class="proc" id="process" aria-labelledby="process-t" data-process>
   <div class="proc__stage">
@@ -467,7 +472,7 @@ def process_section():
       <h2 class="n1 proc__h" id="process-t">{swash('From a blank page to a site that wins work.')}</h2>
     </div>
     <div class="proc__rail">
-      <div class="proc__clip"><ol class="proc__track" data-process-track>{steps_html}</ol></div>
+      <div class="proc__clip"><div class="proc__track" data-process-track><span class="tl__line" aria-hidden="true"><i></i></span><ol class="tl__items">{steps_html}</ol></div></div>
       <p class="label proc__count" aria-hidden="true"><span data-process-now>1</span> / {len(PROCESS)}</p>
     </div>
   </div>
@@ -1002,10 +1007,163 @@ PROJECTS_PAGE = tunnel() + (
 ''', tear=False)
     + chapter_start())
 
+INK_LOOP = 'M14.7 24.3C15.9 23.6 19.3 21.5 22.1 20.2C25.0 18.8 28.3 17.5 31.9 16.3C35.5 15.0 39.5 13.9 43.9 12.8C48.2 11.7 52.9 10.7 57.8 9.8C62.8 8.9 68.1 8.1 73.4 7.5C78.7 6.8 84.4 6.3 89.9 6.0C95.5 5.6 101.2 5.4 106.7 5.3C112.3 5.2 117.8 5.3 123.2 5.4C128.5 5.6 133.8 6.0 138.7 6.4C143.7 6.8 148.5 7.4 153.0 8.0C157.5 8.6 161.8 9.4 165.8 10.2C169.8 11.1 173.5 12.0 176.9 13.0C180.2 14.0 183.3 15.1 186.0 16.3C188.6 17.5 191.0 18.7 192.8 20.0C194.7 21.4 196.1 22.8 197.0 24.2C197.9 25.6 198.3 27.1 198.1 28.6C198.0 30.1 197.3 31.7 196.0 33.2C194.8 34.7 192.9 36.2 190.6 37.7C188.3 39.1 185.5 40.6 182.2 41.9C179.0 43.3 175.2 44.6 171.2 45.8C167.2 47.0 162.8 48.2 158.2 49.2C153.6 50.3 148.7 51.2 143.6 52.0C138.6 52.9 133.3 53.6 128.0 54.3C122.6 54.9 117.1 55.5 111.6 55.9C106.0 56.4 100.4 56.7 94.7 56.9C89.1 57.1 83.4 57.2 77.8 57.2C72.2 57.1 66.6 57.0 61.2 56.7C55.9 56.4 50.5 55.9 45.6 55.3C40.7 54.8 35.9 54.0 31.6 53.2C27.3 52.3 23.4 51.3 19.9 50.3C16.4 49.2 13.4 48.0 10.9 46.7C8.3 45.4 6.3 44.1 4.8 42.7C3.2 41.3 2.2 39.8 1.7 38.3C1.1 36.8 1.1 35.3 1.4 33.8C1.8 32.3 2.6 30.8 3.9 29.2C5.1 27.7 6.8 26.2 8.8 24.7C10.9 23.2 13.4 21.8 16.3 20.3C19.2 18.9 22.5 17.5 26.2 16.2C29.8 14.9 34.0 13.6 38.4 12.4C42.8 11.3 50.4 9.7 52.8 9.2'
+INK_UNDER = 'M4 22C46 15 112 12 196 17M38 27C86 22 132 21 170 24'
+
+
+def ink(words, kind='loop'):
+    """Hand-drawn sepia ink on a few main words (user, 2026-11-16: the drawing should only highlight the
+    main words, not be the focus): a pen loop round them ('loop') or a quick double stroke under them
+    ('under'). It draws itself when the words come into view (data-grow)."""
+    path, vb = (INK_LOOP, '0 0 200 62') if kind == 'loop' else (INK_UNDER, '0 0 200 30')
+    return (f'<span class="ink ink--{kind}" data-grow>{words}<svg class="ink__mark" viewBox="{vb}" preserveAspectRatio="none" aria-hidden="true">'
+            f'<path d="{path}" pathLength="1"/></svg></span>')
+SPIN_ARROW = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+SHUFFLE = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 6h3c4 0 4 8 8 8h3M3 14h3c1.6 0 2.5-1.3 3.3-2.8M17 6h-3c-1.6 0-2.5 1.3-3.3 2.8M14.5 3.5 17 6l-2.5 2.5M14.5 11.5 17 14l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
+def spin_work():
+    """'Give me another' (after the user's reference): one live client at a time in a big line, the client's
+    name circled in ink. The line is the opening of that project's own description on Projects; the button
+    shuffles to another (spin() in main.js) and the loop draws itself round the new name."""
+    items = []
+    for pr in PROJECTS:
+        if not pr.get('url'): continue
+        line = pr['line'].split(':')[0].rstrip('. ')
+        items.append(dict(name=pr['name'], say='we built ' + line[0].lower() + line[1:] + '.', url=pr['url']))
+    first = items[0]
+    data = json.dumps(items).replace('</', '<\\/')
+    return f'''<section class="spin" data-spin aria-labelledby="spin-t">
+      <h3 class="sr" id="spin-t">Some of our work</h3>
+      <p class="spin__say" aria-live="polite">For {ink('<span data-spin-name>' + first['name'] + '</span>')}, <span data-spin-say>{first['say']}</span></p>
+      <div class="spin__acts">
+        <button class="spin__btn spin__btn--dark" type="button" data-spin-next><span class="spin__lbl">Give me another</span><span class="spin__ic">{SHUFFLE}</span></button>
+        <a class="spin__btn" href="{first['url']}" target="_blank" rel="noopener" data-spin-link><span class="spin__lbl">Visit the live site</span><span class="spin__ic">{SPIN_ARROW}</span></a>
+      </div>
+      <script type="application/json" data-spin-data>{data}</script>
+    </section>'''
+
+
 STUDIO_CH = []
-# Studio: cleared (user, 2026-11-10: 'clear the content in it rn') -- to be rebuilt. The page and its menu
-# link stay; an empty paper block keeps the footer clear of the header. Old content is in git (before this commit).
-STUDIO = '<section class="blank" id="top" aria-label="Studio" data-ink></section>'
+# Studio (user, 2026-11-16/17): built as a layout to fill in, now filled; the story is the user's own words.
+# STATIC (user, same day: 'i want the whole page to be static and no need for this' on the workshop
+# opener): one sheet of parchment, no opener painting, no full-screen chapter openers, no pinned
+# paintings, no fade-ins (page() strips data-reveal here) and the ink is simply drawn.
+def st_sec(cid, title, body):
+    return f'''<section class="st__sec" id="{cid}" aria-labelledby="{cid}-t">
+    <h2 class="n1 sub st__t" id="{cid}-t">{swash(title)}</h2>
+    {body}
+  </section>'''
+
+
+# Our story: the user's own words (2026-11-17), split into paragraphs; only 'and It did' was smoothed to ', and it did'.
+ST_STORY = f'''<div class="st-story">
+      <div class="st-story__text"><p>The idea of Summit started when we kept meeting good businesses held back by their websites, clinics with no way to book online, builders whose best projects were buried three clicks deep and engineering firms with decades of work and a homepage that said almost nothing about it. The sites looked fine, but they didn’t bring in a single call.</p><p>Our first project had one job, to bring in real enquiries and bookings, and it did. They told a friend, who told someone else, and the studio grew the way good work usually does, one client at a time.</p><p>Since then we’ve designed and built 30+ websites for clinics, builders, engineers and brands around the world, along with the AI assistants, automations and software that sit behind them.</p><p>We called it Summit because every business deserves to be at the top of its field online, and the rule we started with hasn’t changed. No templates, no account managers, just the people doing the work, treating every site like a piece of craft, made by hand and made to last.</p></div>
+    </div>'''
+# What we hold to: three paper cards, the key word of each underlined in ink (user chose option B of four,
+# 2026-11-17). Each principle is backed by the site already: the process (Testing), Get started (we tell
+# you honestly whether we are the right fit), and every page having a job.
+HOLD = [('Built to do a', 'job', '', "Every page has a purpose, whether it's a call, a booking or a quote. If something doesn't help a visitor take the next step, it doesn't make the cut."),
+        ('Finished means', 'tested', '', 'Before launch, every page is checked on phones, tablets and browsers, with forms and bookings tested end to end.'),
+        ('', 'Honest', 'about fit', "If we're not the right studio for your project, we tell you in our first reply, before anyone spends time or money.")]
+ST_HOW = '<ul class="hold">' + ''.join(
+    f'<li class="hold__card"><h3 class="hold__t">{(pre + " ") if pre else ""}{ink(word, "under")}{(" " + post) if post else ""}</h3><p class="hold__p">{d}</p></li>'
+    for pre, word, post, d in HOLD) + '</ul>'
+def capabilities():
+    """Studio: what we can build, as a ruled ledger (user, 2026-11-16: 'add in a section to highlight ur
+    capabilities'). One row per service: its short name, its one-line promise and what it covers, all
+    taken from SERVICES (and Growth Marketing's home chapter), so nothing new is claimed."""
+    rows = [(SERVICES[0]['short'], SERVICES[0]['tag'], SERVICES[0]['chips']),
+            ('Growth marketing', 'SEO and AI search that put you in front of the people already looking for what you do.',
+             [f[0] for f in GROWTH_FEATURES[:4]])]
+    rows += [(sv['short'], sv['tag'], sv['chips']) for sv in SERVICES[1:]]
+    li = ''.join(f'''<li class="cap"><h3 class="cap__t">{t}</h3><p class="cap__p">{p}</p><ul class="cap__tags">{''.join(f'<li>{c}</li>' for c in chips)}</ul></li>'''
+                 for t, p, chips in rows)
+    return f'<ul class="caps">{li}</ul>'
+
+
+HC_ARROW = '<svg class="hc__arrow" viewBox="0 0 84 46" aria-hidden="true"><path d="M3 9C22 2 48 3 66 20C70 24 73 29 75 35" pathLength="1"/><path d="M75 35 66 30M75 35 77 25" pathLength="1"/></svg>'
+HC_PLUS = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+HC_PREV = '<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M16 10H4M9 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
+def highlights():
+    """Studio, after 'What we can build': what the studio is GOOD AT, as disciplines rather than the
+    services listed above (user, 2026-11-17, from a reference whose cards read Brand, Media, Data,
+    Technology). A row of paper cards, each with the discipline, one line, a painting tilted into the lower
+    corner (assets/img/cap/) and a round + that opens what it means in practice (main.js). The row
+    scrolls sideways; the arrows step it a card at a time. The detail behind each line is already on
+    the site (services, Growth Marketing, the process)."""
+    cards = [
+        ('design', 'Design', 'Make a business look like no one else.',
+         "Layouts, type and imagery designed around your brand and your buyers, on desktop and phone. If it could be anyone's website, it isn't finished.",
+         ['Custom layouts', 'Every screen size', 'Motion and interaction', 'Accessibility'],
+         'A Renaissance craftsman showing a merchant a website on a laptop'),
+        ('search', 'Search', 'Get found where people are looking.',
+         'The right customers find you at the top of Google, in Maps, and in the answers AI assistants give when someone asks who to call.',
+         [f[0] for f in GROWTH_FEATURES[:4]], 'A Renaissance cartographer pinning a gold marker on a town map'),
+        ('ai', 'AI', 'Answer every customer, day or night.',
+         'Assistants that answer calls and chats, book appointments and capture every lead, then hand off to a real person when it matters.',
+         ['24/7 call &amp; chat answering', 'Appointment booking', 'Lead capture', 'Human handoff'],
+         'A Renaissance steward greeting guests with an appointment ledger'),
+        ('automation', 'Automation', 'Take the repetitive work off your desk.',
+         'Reminders, replies, broadcasts and the admin in between, running on their own on WhatsApp and the tools you already use.',
+         ['Appointment reminders', 'Auto-replies &amp; chatbots', 'Workflow automation', 'Integrations'],
+         'A merchant releasing carrier pigeons from a loggia over a canal'),
+        ('data', 'Data', "Know what's working, and why.",
+         'Calls, forms and bookings traced back to where they came from, with everything that matters in one dashboard.',
+         ['Tracking &amp; reporting', 'Dashboards', 'Analytics setup', 'Lead &amp; patient records'],
+         'An astronomer studying charts on a laptop among brass globes'),
+        ('engineering', 'Engineering', 'Build on foundations that hold as you grow.',
+         "Fast, dependable web apps, custom software and secure APIs on a clean foundation. We sweat the architecture so you don't have to think about it later.",
+         ['Web apps &amp; portals', 'Custom CRMs', 'APIs &amp; databases', 'Monitoring &amp; performance'],
+         'A clockmaker repairing brass gears inside a clock tower'),
+    ]
+    li = ''.join(f'''<li class="hc__card">
+        <h3 class="hc__t">{t}</h3>
+        <p class="hc__p">{line}</p>
+        <img class="hc__img" src="assets/img/cap/{cid}.jpg" alt="{alt}" width="760" height="570" loading="lazy" decoding="async">
+        <div class="hc__panel" id="hc-{cid}" hidden><p class="hc__t">{t}</p><p class="hc__more-p">{more}</p><ul class="cap__tags">{''.join(f'<li>{c}</li>' for c in chips)}</ul></div>
+        <button class="hc__btn" type="button" aria-expanded="false" aria-controls="hc-{cid}" aria-label="More about {t}">{HC_PLUS}</button>
+      </li>''' for cid, t, line, more, chips, alt in cards)
+    return f'''<section class="st__sec hc-sec" id="highlights" aria-labelledby="highlights-t" data-hc>
+    <div class="hc__head">
+      <h2 class="hc__label" id="highlights-t">Highlighted<br>capabilities</h2>{HC_ARROW}
+      <div class="hc__nav"><button type="button" class="hc__go" data-hc-go="-1" aria-label="Previous capabilities">{HC_PREV}</button><button type="button" class="hc__go hc__go--next" data-hc-go="1" aria-label="More capabilities">{HC_PREV}</button></div>
+    </div>
+    <ul class="hc" data-hc-row>{li}</ul>
+  </section>'''
+
+
+# The whole Studio sheet has a living background (user, 2026-11-17: 'use it as a background for the first
+# page and not a diff thing', 'in the colours that would match the site', then 'put the moving gradient
+# throughout the page'): a living gradient (after the 21st.dev 'Velaris' WebGL component), held in view behind
+# everything as you scroll, drifts across the paper in light tints of the site's gold,
+# sage and clay, multiplied onto the parchment so its grain shows through, and fading into plain paper at
+# the edges and the foot. main.js draws it; with reduced motion it is one still frame, without WebGL the
+# paper is simply plain.
+STUDIO = f'''<div class="st" id="top" data-ink>
+  <div class="st__bgwrap" aria-hidden="true"><canvas class="st__bg" data-vel data-vel-colors="#E8C27E,#C3CFAB,#E0B192,#F2DDB0"></canvas></div>
+  <header class="st__open">
+    <div class="st__title">
+      <h1 class="h1 st__h">Studio</h1>
+      <p class="n1 st__lead">{swash('A small studio with a ')}<span class="nw">{ink('high bar', 'under')}.</span></p>
+    </div>
+    <div class="st__intro">
+      <p class="st__about">Designers and developers who treat your website as a business asset, not a brochure.</p>
+      <dl class="st__stats"><div><dt>30+</dt><dd>websites shipped</dd></div><div><dt>1 day</dt><dd>to hear back from us</dd></div></dl>
+      {ihb('Start a conversation', 'contact.html', 'ihb--auto')}
+    </div>
+  </header>
+  {st_sec('who', 'Our story', ST_STORY)}
+  <section class="st__sec" id="capabilities" aria-labelledby="capabilities-t">
+    <h2 class="n1 sub st__t" id="capabilities-t">{swash('What we can ')}{ink('build', 'under')}</h2>
+    {capabilities()}
+  </section>
+  {highlights()}
+  {st_sec('work', 'Some of our work', spin_work())}
+  {st_sec('how', 'What we hold to', ST_HOW)}
+</div>'''
 
 
 def service_chapter(s, paint, alt, cid, word, feats, img):
@@ -1015,7 +1173,7 @@ def service_chapter(s, paint, alt, cid, word, feats, img):
     {feat_grid(feats)}''')
 
 
-PRICE_CARDS = [('Website', 'For clinics, trades and professional firms that need a site that brings in work.', ['Custom design, mobile-first', 'Clinic, business or brand site', 'SEO &amp; Google setup', 'Launch support'], ''),
+PRICE_CARDS = [('Website', 'For clinics, trades and professional firms that need a site that brings in work.', ['Custom design for every screen', 'Clinic, business or brand site', 'SEO &amp; Google setup', 'Launch support'], ''),
                ('Website + automation', 'For businesses that lose enquiries after hours or to no-shows.', ['Everything in Website', 'AI receptionist or WhatsApp automation', 'Appointment booking &amp; reminders', 'Care plan'], ' price__card--mid'),
                ('Custom software', 'For firms that have outgrown spreadsheets and off-the-shelf tools.', ['CRM, web app or dashboards', 'Backend, APIs &amp; integrations', 'Role-based access', 'Ongoing support'], '')]
 
@@ -1037,15 +1195,19 @@ ARROW = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><pat
 
 
 def talk_form(p='c'):
-    """The enquiry form: a card of ruled rows with floating uppercase labels, the kind of
-    business, chips for what they need, and a black send bar. Posts to FormSubmit (main.js)."""
+    """The enquiry form, written on an old parchment scroll: two wooden rollers with gilt finials
+    and the sheet between them (ruled rows with floating uppercase labels, the kind of business,
+    chips for what they need, an ink send bar). It unrolls as soon as it is on screen (data-unroll, main.js).
+    Posts to FormSubmit (main.js)."""
     row = lambda fid, name, label, kind='text', extra='': (
         f'<div class="tf__row"><input id="{p}-{fid}" name="{name}" type="{kind}" placeholder=" "{extra}><label for="{p}-{fid}">{label}</label></div>')
     kinds = ''.join(f'<option>{k}</option>' for k in TALK_KINDS)
     chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
-    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/team@summitxstudio.com" method="post" novalidate data-reveal>
+    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/team@summitxstudio.com" method="post" novalidate data-unroll>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
       <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+      <span class="tf__rod" aria-hidden="true"></span>
+      <div class="tf__sheet">
       <div class="tf__a">
       {row('name', 'name', 'Full name', extra=' autocomplete="name" required')}
       {row('business', 'business', 'Business / brand', extra=' autocomplete="organization"')}
@@ -1060,6 +1222,8 @@ def talk_form(p='c'):
       <button class="tf__send" type="submit"><span data-label>Send message</span>{ARROW}</button>
       <div class="form__ok" role="status"><p class="fg__t">Sent</p><p class="fg__p">Thanks. We will reply within one working day. If it is urgent, email <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a>.</p></div>
       <div class="form__err" role="alert"><p class="fg__t">Not sent</p><p class="fg__p">Something went wrong on our side. Please email <a class="mail" href="mailto:team@summitxstudio.com">team@summitxstudio.com</a> and we will reply within one working day.</p></div>
+      </div>
+      <span class="tf__rod tf__rod--end" aria-hidden="true"></span>
     </form>'''
 
 

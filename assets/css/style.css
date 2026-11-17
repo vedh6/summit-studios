@@ -662,14 +662,39 @@ html.has-process .proc__stage { position: sticky; top: 0; }
 .proc__head { position: absolute; top: calc(var(--header-h) + 40px); left: 20px; right: var(--gutter); display: grid; gap: 14px; }
 .proc__eyebrow { color: rgba(247, 247, 238, .75); }
 .proc__h { color: var(--paper); max-width: 18ch; }
-.proc__rail { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 0 36px; }
-/* steps fade out before they slide under the sidebar */
-.proc__track { display: flex; gap: 56px; padding: 0 20px; width: max-content; will-change: transform; }
-.proc__step { width: min(340px, 72vw); display: grid; gap: 10px; align-content: start; }
-.proc__n { font-family: var(--serif); font-size: 64px; line-height: .85; letter-spacing: -.03em; color: rgba(247, 247, 238, .55); }
-.proc__t { font-family: var(--grotesk); font-weight: 700; font-size: 26px; line-height: .95; letter-spacing: -.03em; }
-.proc__p { font-family: var(--serif); font-size: 20px; line-height: 1.05; letter-spacing: -.02em; color: rgba(247, 247, 238, .86); max-width: 30ch; }
-.proc__count { position: absolute; right: 20px; top: -40px; color: rgba(247, 247, 238, .7); font-variant-numeric: tabular-nums; }
+/* The steps as a timeline (user, 2026-11-17, after a 21st.dev GSAP timeline): a gold line runs along the
+   middle of the rail; the steps alternate above and below it, each tied to it by a stem with a dot at its far
+   end, the words beside the dot. As the track slides in, motion.js process() draws the line on, grows each
+   stem out of the line, sets its dot, and lifts the words line by line from behind a mask (.ln). Without
+   the script (or with reduced motion) everything is simply shown and the rail scrolls sideways. */
+.proc__rail { --gold: #D8BC7E; position: absolute; left: 0; right: 0; bottom: 30px; height: min(36svh, 330px); min-height: 280px; }
+.proc__clip { height: 100%; }
+.proc__track { position: relative; height: 100%; width: max-content; padding: 0 20px; will-change: transform; }
+.tl__line { position: absolute; left: 20px; right: 20px; top: 50%; height: 1px; }
+.tl__line i { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; }
+.tl__line::before, .tl__line::after { content: ""; position: absolute; top: -4px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+.tl__line::before { left: -4px; }
+.tl__line::after { right: -4px; }
+.tl__items { list-style: none; margin: 0; padding: 0; display: flex; height: 100%; }
+.proc__step { position: relative; flex: 0 0 clamp(170px, 14vw, 215px); height: 100%; }
+.proc__step:first-child { margin-left: 40px; }
+.proc__step:last-child { flex-basis: clamp(290px, 24vw, 330px); }
+.tl__stem { position: absolute; left: 0; width: 1px; background: var(--gold); }
+.is-top .tl__stem { top: 6px; bottom: 50%; transform-origin: 50% 100%; }
+.is-bot .tl__stem { top: 50%; bottom: 6px; transform-origin: 50% 0; }
+.tl__dot { position: absolute; left: -5px; width: 11px; height: 11px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(216, 188, 126, .18); }
+.is-top .tl__dot { top: 0; }
+.is-bot .tl__dot { bottom: 0; }
+.tl__text { position: absolute; left: 20px; width: min(280px, 64vw); display: grid; gap: 6px; text-shadow: 0 1px 2px rgba(10, 8, 4, .5), 0 2px 20px rgba(10, 8, 4, .45); }
+.is-top .tl__text { top: -4px; }
+.is-bot .tl__text { bottom: -2px; }
+.proc__n { font-family: var(--serif); font-size: 24px; line-height: 1; letter-spacing: -.02em; color: var(--gold); }
+.proc__t { font-family: var(--grotesk); font-weight: 700; font-size: 22px; line-height: .95; letter-spacing: -.03em; }
+.proc__p { font-family: var(--serif); font-size: 17px; line-height: 1.08; letter-spacing: -.02em; color: rgba(247, 247, 238, .88); max-width: 30ch; }
+.proc__count { position: absolute; right: 20px; top: -34px; color: rgba(247, 247, 238, .7); font-variant-numeric: tabular-nums; }
+/* a line of words behind its mask (built by motion.js); the padding keeps descenders inside the mask */
+.ln { display: block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
+.ln__i { display: block; will-change: transform; }
 html:not(.has-process) .proc__rail { overflow-x: auto; }
 /* A plain chapter (no painting): paper with ink type, torn over whatever came before */
 .ch--plain { z-index: 2; background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); background-position: calc(var(--tx, 0px) * -1) calc(var(--ty, 0px) * -1); }
@@ -899,10 +924,12 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* spam trap: people never see or fill it */
 .form [type=submit][disabled] { opacity: .6; cursor: progress; }
 
-/* ---------- Enquiry form (Contact, Get started): a card of ruled rows ---------- */
-.tf { --tf-line: rgba(70, 52, 28, .2); --tf-label: #84775F; gap: 0; width: 100%; max-width: 640px; background: #F0E2C3; box-shadow: 0 1px 0 rgba(70, 52, 28, .06), 0 34px 60px -34px rgba(60, 40, 20, .4); }
-.tf__row { position: relative; border-bottom: 1px solid var(--tf-line); transition: background .25s var(--ease); }
-.tf__row:focus-within { background: rgba(255, 252, 244, .45); }
+/* ---------- Enquiry form (Contact, Get started): ruled rows on an old scroll ---------- */
+.tf { --tf-line: rgba(84, 46, 12, .3); --tf-label: #5F4424; --tf-inset: 14px; gap: 0; width: 100%; max-width: 640px; }
+/* the ruled lines (and the focus wash) stop --tf-inset short of the sheet's torn sides, drawn as backgrounds so the fields keep their full width */
+.tf__row, .tf__chips { background: linear-gradient(var(--tf-line), var(--tf-line)) 50% 100% / calc(100% - 2 * var(--tf-inset)) 1px no-repeat; }
+.tf__row { position: relative; transition: background-size .25s var(--ease); }
+.tf__row:focus-within { background: linear-gradient(var(--tf-line), var(--tf-line)) 50% 100% / calc(100% - 2 * var(--tf-inset)) 1px no-repeat, linear-gradient(rgba(255, 244, 220, .38), rgba(255, 244, 220, .38)) 50% 0 / calc(100% - 2 * var(--tf-inset)) 100% no-repeat; }
 .tf__row input, .tf__row textarea, .tf__row select { display: block; width: 100%; margin: 0; border: 0; border-radius: 0; background: transparent; font: 400 16px/1.35 var(--sans); color: var(--ink); padding: 32px 28px 13px; outline: 0; -webkit-appearance: none; appearance: none; }
 .tf__row textarea { min-height: 150px; resize: vertical; padding-top: 40px; }
 .tf__row label:not(.sr) { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); font: 500 14px/1 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); pointer-events: none; transition: top .25s var(--ease), font-size .25s var(--ease), letter-spacing .25s var(--ease), transform .25s var(--ease); }
@@ -911,22 +938,61 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .tf__row--select select { padding: 25px 56px 23px 28px; cursor: pointer; }
 .tf__row--select select:has(option[value=""]:checked) { font: 500 14px/1.35 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); padding-top: 27px; padding-bottom: 27px; }
 .tf__chev { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); color: var(--ink); pointer-events: none; }
-.tf__chips { margin: 0; padding: 24px 28px 26px; border: 0; border-bottom: 1px solid var(--tf-line); min-width: 0; }
+.tf__chips { margin: 0; padding: 24px 28px 26px; border: 0; min-width: 0; }
 .tf__chips legend { float: left; width: 100%; padding: 0; margin-bottom: 16px; font: 500 14px/1 var(--grotesk); letter-spacing: .03em; text-transform: uppercase; color: var(--tf-label); }
 .tf__chipset { clear: both; display: flex; flex-wrap: wrap; gap: 9px; }
 .tf__chip { position: relative; display: inline-flex; }
 .tf__chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
-.tf__chip span { padding: 8px 13px 9px; border: 1px solid rgba(70, 52, 28, .34); border-radius: 2px; font: 400 15px/1.2 var(--sans); color: var(--ink); transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease); }
-.tf__chip:hover span { background: rgba(255, 252, 244, .55); }
+.tf__chip span { padding: 8px 13px 9px; border: 1px solid rgba(84, 46, 12, .42); border-radius: 2px; font: 400 15px/1.2 var(--sans); color: var(--ink); transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease); }
+.tf__chip:hover span { background: rgba(255, 244, 220, .45); }
 .tf__chip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .tf__chip input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
-.tf__send { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 24px 28px; background: #12120C; color: #F4EFE3; font: 500 14px/1 var(--grotesk); letter-spacing: .08em; text-transform: uppercase; transition: background .3s var(--ease); }
-.tf__send:hover { background: #2A2A1C; }
+.tf__send { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 0; padding: 22px 24px; background: #2A190B; color: #F4E6C8; font: 500 14px/1 var(--grotesk); letter-spacing: .08em; text-transform: uppercase; transition: background .3s var(--ease); }
+.tf__send:hover { background: #452A12; }
 .tf__send svg { transition: transform .3s var(--ease); }
 .tf__send:hover svg { transform: translateX(4px); }
-.tf__send:focus-visible { outline-offset: -5px; outline-color: #F4EFE3; }
+.tf__send:focus-visible { outline-offset: -5px; outline-color: #F4EBD6; }
 .tf .form__ok, .tf .form__err { margin: 0; border-radius: 0; padding: 28px; }
 .tf .form__ok { background: transparent; }
+.tf .form__ok .fg__p, .tf .form__err .fg__p { color: #5F4424; }   /* ink on the parchment */
+
+/* The scroll: rustic parchment between two walnut rollers with tarnished brass ends. Both are photographs
+   generated on Higgsfield (2026-11-16, gpt_image_2_6): assets/img/scroll-rod.png is the whole roller,
+   stretched along its dowel by border-image (the brass ends are the 146px and 142px slices), and
+   assets/img/scroll-paper.jpg is the middle of a stained parchment sheet, laid in with cover. The sheet's
+   long sides are torn and burnt: ::before is the outer, charred outline, ::after the paper inside it, so
+   the dark band between the two outlines is the burn. The rollers lie across the sheet's top and bottom
+   edges, centred on them; --rod is the roller's height (brass ends included), --ext how far its dowel runs
+   past the sheet, --oh how far the whole roller overhangs. As soon as the form is on screen (main.js adds
+   .is-in to [data-unroll]; on Contact that is as the page opens) the lower roller rolls down from under the top one and the sheet opens with it; with reduced
+   motion, or no script, it is simply open. */
+.tf { --rod: 46px; --ext: 8px; --oh: calc(var(--ext) + var(--rod) * 1.106); position: relative; }
+.tf__sheet { position: relative; display: grid; padding: calc(var(--rod) * .5 + 14px) 0 calc(var(--rod) * .5 + 30px);
+  filter: drop-shadow(0 1px 1px rgba(50, 28, 8, .3)) drop-shadow(0 26px 30px rgba(50, 30, 10, .32)); }
+.tf__sheet::before, .tf__sheet::after { content: ""; position: absolute; inset: 0; z-index: -1; }
+.tf__sheet::before { background: #3B200B linear-gradient(90deg, #2A1606, #5A3312 6px, #5A3312 calc(100% - 6px), #2A1606);
+  clip-path: polygon(4.5px 0.0%, 5.6px 1.6%, 5.0px 3.1%, 6.0px 4.7%, 6.3px 6.2%, 6.6px 7.8%, 5.1px 9.4%, 5.1px 10.9%, 5.9px 12.5%, 5.8px 14.1%, 4.4px 15.6%, 4.6px 17.2%, 11.5px 18.8%, 4.5px 20.3%, 3.3px 21.9%, 4.0px 23.4%, 4.0px 25.0%, 3.3px 26.6%, 4.4px 28.1%, 4.0px 29.7%, 3.9px 31.2%, 4.8px 32.8%, 4.7px 34.4%, 4.1px 35.9%, 3.8px 37.5%, 4.2px 39.1%, 3.2px 40.6%, 2.6px 42.2%, 9.8px 43.8%, 2.4px 45.3%, 1.0px 46.9%, 0.2px 48.4%, 1.0px 50.0%, 1.0px 51.6%, 0.0px 53.1%, 0.3px 54.7%, 0.0px 56.2%, 0.1px 57.8%, 0.2px 59.4%, 0.0px 60.9%, 1.3px 62.5%, 7.8px 64.1%, 1.2px 65.6%, 1.5px 67.2%, 3.0px 68.8%, 2.4px 70.3%, 3.7px 71.9%, 4.1px 73.4%, 3.7px 75.0%, 3.0px 76.6%, 3.7px 78.1%, 2.1px 79.7%, 1.9px 81.2%, 12.3px 82.8%, 2.6px 84.4%, 3.1px 85.9%, 3.3px 87.5%, 9.3px 89.1%, 4.2px 90.6%, 3.6px 92.2%, 3.7px 93.8%, 5.5px 95.3%, 6.1px 96.9%, 6.3px 98.4%, 7.2px 100.0%, calc(100% - 0.0px) 100.0%, calc(100% - 0.9px) 98.4%, calc(100% - 1.6px) 96.9%, calc(100% - 0.3px) 95.3%, calc(100% - 1.4px) 93.8%, calc(100% - 2.8px) 92.2%, calc(100% - 2.7px) 90.6%, calc(100% - 4.3px) 89.1%, calc(100% - 4.2px) 87.5%, calc(100% - 4.8px) 85.9%, calc(100% - 5.9px) 84.4%, calc(100% - 6.1px) 82.8%, calc(100% - 5.6px) 81.2%, calc(100% - 5.5px) 79.7%, calc(100% - 12.9px) 78.1%, calc(100% - 6.3px) 76.6%, calc(100% - 14.2px) 75.0%, calc(100% - 5.1px) 73.4%, calc(100% - 5.0px) 71.9%, calc(100% - 5.1px) 70.3%, calc(100% - 3.6px) 68.8%, calc(100% - 4.7px) 67.2%, calc(100% - 3.4px) 65.6%, calc(100% - 4.9px) 64.1%, calc(100% - 3.7px) 62.5%, calc(100% - 4.6px) 60.9%, calc(100% - 4.1px) 59.4%, calc(100% - 12.3px) 57.8%, calc(100% - 5.0px) 56.2%, calc(100% - 4.8px) 54.7%, calc(100% - 5.7px) 53.1%, calc(100% - 4.4px) 51.6%, calc(100% - 5.2px) 50.0%, calc(100% - 5.4px) 48.4%, calc(100% - 4.7px) 46.9%, calc(100% - 4.1px) 45.3%, calc(100% - 2.9px) 43.8%, calc(100% - 2.2px) 42.2%, calc(100% - 3.2px) 40.6%, calc(100% - 1.2px) 39.1%, calc(100% - 2.0px) 37.5%, calc(100% - 0.4px) 35.9%, calc(100% - 0.2px) 34.4%, calc(100% - 6.3px) 32.8%, calc(100% - 7.9px) 31.2%, calc(100% - 0.0px) 29.7%, calc(100% - 0.0px) 28.1%, calc(100% - 1.2px) 26.6%, calc(100% - 1.3px) 25.0%, calc(100% - 1.7px) 23.4%, calc(100% - 1.6px) 21.9%, calc(100% - 1.8px) 20.3%, calc(100% - 2.3px) 18.8%, calc(100% - 2.1px) 17.2%, calc(100% - 2.0px) 15.6%, calc(100% - 2.5px) 14.1%, calc(100% - 2.9px) 12.5%, calc(100% - 2.8px) 10.9%, calc(100% - 2.5px) 9.4%, calc(100% - 2.3px) 7.8%, calc(100% - 2.2px) 6.2%, calc(100% - 2.6px) 4.7%, calc(100% - 2.8px) 3.1%, calc(100% - 3.0px) 1.6%, calc(100% - 1.7px) 0.0%); }
+.tf__sheet::after { background: linear-gradient(transparent calc(var(--rod) * .45), rgba(56, 30, 8, .5) calc(var(--rod) * .45), rgba(56, 30, 8, 0) calc(var(--rod) * .45 + 30px)),
+    linear-gradient(to top, transparent calc(var(--rod) * .45), rgba(56, 30, 8, .5) calc(var(--rod) * .45), rgba(56, 30, 8, 0) calc(var(--rod) * .45 + 30px)),
+    #EBC58A url("../img/scroll-paper.jpg?v=00e18787") 50% 50% / cover no-repeat;
+  box-shadow: inset 0 0 6px 1px rgba(92, 48, 12, .6), inset 0 0 26px rgba(120, 66, 18, .42), inset 0 0 80px rgba(130, 80, 26, .18);
+  clip-path: polygon(9.2px 0.0%, 12.7px 1.6%, 12.5px 3.1%, 11.2px 4.7%, 12.6px 6.2%, 12.2px 7.8%, 11.1px 9.4%, 10.5px 10.9%, 11.9px 12.5%, 12.5px 14.1%, 10.8px 15.6%, 10.3px 17.2%, 18.8px 18.8%, 9.1px 20.3%, 7.8px 21.9%, 7.8px 23.4%, 7.3px 25.0%, 5.9px 26.6%, 8.0px 28.1%, 6.6px 29.7%, 7.0px 31.2%, 7.8px 32.8%, 6.3px 34.4%, 6.4px 35.9%, 6.7px 37.5%, 6.1px 39.1%, 6.3px 40.6%, 5.1px 42.2%, 14.2px 43.8%, 5.6px 45.3%, 4.1px 46.9%, 3.6px 48.4%, 4.4px 50.0%, 5.7px 51.6%, 4.1px 53.1%, 5.8px 54.7%, 5.2px 56.2%, 6.7px 57.8%, 5.9px 59.4%, 6.5px 60.9%, 8.2px 62.5%, 15.8px 64.1%, 6.7px 65.6%, 8.3px 67.2%, 8.8px 68.8%, 8.4px 70.3%, 8.1px 71.9%, 10.1px 73.4%, 8.5px 75.0%, 6.9px 76.6%, 8.0px 78.1%, 5.2px 79.7%, 4.3px 81.2%, 18.9px 82.8%, 4.4px 84.4%, 5.1px 85.9%, 4.9px 87.5%, 14.3px 89.1%, 7.3px 90.6%, 5.3px 92.2%, 6.8px 93.8%, 7.5px 95.3%, 7.7px 96.9%, 9.4px 98.4%, 9.8px 100.0%, calc(100% - 1.6px) 100.0%, calc(100% - 3.4px) 98.4%, calc(100% - 4.2px) 96.9%, calc(100% - 2.1px) 95.3%, calc(100% - 3.0px) 93.8%, calc(100% - 4.8px) 92.2%, calc(100% - 4.3px) 90.6%, calc(100% - 7.4px) 89.1%, calc(100% - 8.2px) 87.5%, calc(100% - 8.0px) 85.9%, calc(100% - 9.7px) 84.4%, calc(100% - 10.3px) 82.8%, calc(100% - 9.3px) 81.2%, calc(100% - 10.7px) 79.7%, calc(100% - 20.0px) 78.1%, calc(100% - 12.0px) 76.6%, calc(100% - 22.9px) 75.0%, calc(100% - 10.0px) 73.4%, calc(100% - 10.5px) 71.9%, calc(100% - 12.0px) 70.3%, calc(100% - 9.7px) 68.8%, calc(100% - 11.9px) 67.2%, calc(100% - 9.5px) 65.6%, calc(100% - 12.3px) 64.1%, calc(100% - 10.7px) 62.5%, calc(100% - 11.4px) 60.9%, calc(100% - 10.0px) 59.4%, calc(100% - 19.9px) 57.8%, calc(100% - 9.9px) 56.2%, calc(100% - 8.8px) 54.7%, calc(100% - 9.1px) 53.1%, calc(100% - 7.2px) 51.6%, calc(100% - 8.1px) 50.0%, calc(100% - 8.7px) 48.4%, calc(100% - 8.0px) 46.9%, calc(100% - 7.0px) 45.3%, calc(100% - 5.8px) 43.8%, calc(100% - 4.5px) 42.2%, calc(100% - 4.8px) 40.6%, calc(100% - 4.4px) 39.1%, calc(100% - 4.4px) 37.5%, calc(100% - 2.0px) 35.9%, calc(100% - 2.9px) 34.4%, calc(100% - 11.8px) 32.8%, calc(100% - 14.5px) 31.2%, calc(100% - 2.8px) 29.7%, calc(100% - 4.2px) 28.1%, calc(100% - 5.4px) 26.6%, calc(100% - 4.9px) 25.0%, calc(100% - 5.7px) 23.4%, calc(100% - 6.4px) 21.9%, calc(100% - 6.2px) 20.3%, calc(100% - 6.9px) 18.8%, calc(100% - 8.9px) 17.2%, calc(100% - 7.5px) 15.6%, calc(100% - 8.2px) 14.1%, calc(100% - 9.4px) 12.5%, calc(100% - 9.9px) 10.9%, calc(100% - 8.6px) 9.4%, calc(100% - 9.7px) 7.8%, calc(100% - 8.0px) 6.2%, calc(100% - 8.0px) 4.7%, calc(100% - 8.9px) 3.1%, calc(100% - 8.4px) 1.6%, calc(100% - 7.6px) 0.0%); }
+.tf__rod { position: absolute; z-index: 2; top: 0; left: calc(-1 * (var(--ext) + var(--rod) * 1.106)); right: calc(-1 * (var(--ext) + var(--rod) * 1.076)); height: var(--rod); transform: translateY(-50%);
+  border: solid transparent; border-width: 0 calc(var(--rod) * 1.076) 0 calc(var(--rod) * 1.106); border-image: url("../img/scroll-rod.png?v=6a0d3567") 0 142 0 146 fill stretch;
+  filter: drop-shadow(0 5px 4px rgba(30, 16, 4, .42)); }
+.tf__rod--end { top: 100%; }
+.ch .tf { margin-left: var(--oh); }   /* Get started: the scroll sits in the text column, its left roller in the margin */
+.tf.is-sent > .tf__rod { display: block; }
+.tf.is-sent > .tf__sheet { display: grid; }
+.tf.is-sent .tf__sheet > :not(.form__ok) { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .tf[data-unroll]:not(.is-in) .tf__sheet { clip-path: inset(0 -80px calc(100% - var(--rod) * .5) -80px); }
+  html.js .tf[data-unroll]:not(.is-in) .tf__rod--end { top: calc(var(--rod) * .92); }
+  .tf.is-in .tf__sheet { animation: tf-open 2.8s cubic-bezier(.33, .1, .25, 1) .15s both; }
+  .tf.is-in .tf__rod--end { animation: tf-roll 2.8s cubic-bezier(.33, .1, .25, 1) .15s both; }
+}
+@keyframes tf-open { from { clip-path: inset(0 -80px calc(100% - var(--rod) * .5) -80px); } to { clip-path: inset(0 -80px -80px -80px); } }
+@keyframes tf-roll { from { top: calc(var(--rod) * .92); } to { top: 100%; } }
 
 /* ---------- Contact: a palace painting on a white wall. A real gilt frame (assets/img/frame-gilt.png, cut
    from a generated photograph by tools/frameproc.swift in the project's Claude folder: corners as
@@ -949,8 +1015,8 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   position: relative; z-index: 1; display: grid; justify-items: center; padding: calc(var(--ft) + var(--gilt) + clamp(28px, 4vw, 64px)) 16px 0; }
 .talk__h { font-family: var(--serif); font-weight: 400; font-size: var(--hs); line-height: .8; letter-spacing: -.012em; text-transform: uppercase; text-align: center; color: #FBF6EA;
   text-shadow: 0 2px 30px rgba(28, 16, 4, .6), 0 1px 3px rgba(28, 16, 4, .45); }
-.talk .tf { position: relative; z-index: 1; margin-top: calc(var(--hs) * -.36); }
-@media (max-width: 899px) { .talk .tf { margin-top: 18px; } }   /* phones: the headline is three lines; let all of it show */
+.talk .tf { position: relative; z-index: 1; margin-top: calc(var(--rod) * .5 + clamp(14px, 2vw, 30px)); }
+@media (max-width: 899px) { .talk .tf { margin-top: calc(var(--rod) * .5 + 14px); } }
 /* after the form, on the wall */
 .talk__alt { display: grid; justify-items: center; gap: 14px; padding: clamp(48px, 6vw, 80px) 4px clamp(64px, 8vw, 110px); text-align: center; }
 .talk__or { font-family: var(--serif); font-size: clamp(26px, 1.2rem + 1vw, 34px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
@@ -960,11 +1026,151 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .tf__row label:not(.sr) { left: 20px; }
   .tf__row--select select { padding-right: 48px; }
   .tf__chips, .tf__send { padding-left: 20px; padding-right: 20px; }
+  .tf { --rod: 27px; --ext: 3px; --tf-inset: 10px; width: calc(100% - 2 * var(--oh) + 12px); justify-self: center; }   /* room for the rollers inside the page's gutter */
+  .talk .tf { width: calc(100% - 2 * var(--oh) + 20px); }
+  .tf__send { margin-left: 16px; margin-right: 16px; }
+  .ch .tf { margin-left: auto; margin-right: auto; }
   .tf__chev { right: 18px; }
   .tf__chip span { font-size: 14px; }
+  .tf__row label:not(.sr) { right: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tf__row :placeholder-shown:not(:focus) + label { font-size: 13px; }   /* the longest label fits a 360px phone */
 }
 .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--mid); }
 .filters > span { margin-right: 6px; }
+
+/* ---------- Studio: Our story, the heading beside the manuscript page ---------- */
+.st #who { grid-template-columns: minmax(0, .42fr) minmax(0, 1fr); align-items: start; column-gap: clamp(28px, 5vw, 90px); max-width: 1240px; }
+.st-story { display: grid; justify-items: start; }
+/* Our story, written on an old manuscript page: the Contact scroll's aged parchment (scroll-paper.jpg) with the
+   same burnt, torn sides (::before the charred outline, ::after the paper), dark-brown ink and a rubricated
+   initial, like the first letter of an old handwritten book. */
+.st-story__text { position: relative; isolation: isolate; display: grid; gap: 1em; max-width: 40em; padding: clamp(30px, 3.4vw, 50px) clamp(28px, 3.6vw, 56px) clamp(32px, 3.6vw, 52px);
+  font-family: 'IM Fell English', var(--serif); font-size: clamp(20px, 1rem + .45vw, 25px); line-height: 1.36; letter-spacing: 0; color: #2A1A0B;   /* a 17th-century book face, revived */
+  filter: drop-shadow(0 1px 1px rgba(50, 28, 8, .25)) drop-shadow(0 22px 26px rgba(50, 30, 10, .3)); }
+.st-story__text::before, .st-story__text::after { content: ""; position: absolute; inset: 0; z-index: -1; }
+.st-story__text::before { background: #3B200B linear-gradient(90deg, #2A1606, #5A3312 6px, #5A3312 calc(100% - 6px), #2A1606); clip-path: polygon(4.5px 0.0%, 5.6px 1.6%, 5.0px 3.1%, 6.0px 4.7%, 6.3px 6.2%, 6.6px 7.8%, 5.1px 9.4%, 5.1px 10.9%, 5.9px 12.5%, 5.8px 14.1%, 4.4px 15.6%, 4.6px 17.2%, 11.5px 18.8%, 4.5px 20.3%, 3.3px 21.9%, 4.0px 23.4%, 4.0px 25.0%, 3.3px 26.6%, 4.4px 28.1%, 4.0px 29.7%, 3.9px 31.2%, 4.8px 32.8%, 4.7px 34.4%, 4.1px 35.9%, 3.8px 37.5%, 4.2px 39.1%, 3.2px 40.6%, 2.6px 42.2%, 9.8px 43.8%, 2.4px 45.3%, 1.0px 46.9%, 0.2px 48.4%, 1.0px 50.0%, 1.0px 51.6%, 0.0px 53.1%, 0.3px 54.7%, 0.0px 56.2%, 0.1px 57.8%, 0.2px 59.4%, 0.0px 60.9%, 1.3px 62.5%, 7.8px 64.1%, 1.2px 65.6%, 1.5px 67.2%, 3.0px 68.8%, 2.4px 70.3%, 3.7px 71.9%, 4.1px 73.4%, 3.7px 75.0%, 3.0px 76.6%, 3.7px 78.1%, 2.1px 79.7%, 1.9px 81.2%, 12.3px 82.8%, 2.6px 84.4%, 3.1px 85.9%, 3.3px 87.5%, 9.3px 89.1%, 4.2px 90.6%, 3.6px 92.2%, 3.7px 93.8%, 5.5px 95.3%, 6.1px 96.9%, 6.3px 98.4%, 7.2px 100.0%, calc(100% - 0.0px) 100.0%, calc(100% - 0.9px) 98.4%, calc(100% - 1.6px) 96.9%, calc(100% - 0.3px) 95.3%, calc(100% - 1.4px) 93.8%, calc(100% - 2.8px) 92.2%, calc(100% - 2.7px) 90.6%, calc(100% - 4.3px) 89.1%, calc(100% - 4.2px) 87.5%, calc(100% - 4.8px) 85.9%, calc(100% - 5.9px) 84.4%, calc(100% - 6.1px) 82.8%, calc(100% - 5.6px) 81.2%, calc(100% - 5.5px) 79.7%, calc(100% - 12.9px) 78.1%, calc(100% - 6.3px) 76.6%, calc(100% - 14.2px) 75.0%, calc(100% - 5.1px) 73.4%, calc(100% - 5.0px) 71.9%, calc(100% - 5.1px) 70.3%, calc(100% - 3.6px) 68.8%, calc(100% - 4.7px) 67.2%, calc(100% - 3.4px) 65.6%, calc(100% - 4.9px) 64.1%, calc(100% - 3.7px) 62.5%, calc(100% - 4.6px) 60.9%, calc(100% - 4.1px) 59.4%, calc(100% - 12.3px) 57.8%, calc(100% - 5.0px) 56.2%, calc(100% - 4.8px) 54.7%, calc(100% - 5.7px) 53.1%, calc(100% - 4.4px) 51.6%, calc(100% - 5.2px) 50.0%, calc(100% - 5.4px) 48.4%, calc(100% - 4.7px) 46.9%, calc(100% - 4.1px) 45.3%, calc(100% - 2.9px) 43.8%, calc(100% - 2.2px) 42.2%, calc(100% - 3.2px) 40.6%, calc(100% - 1.2px) 39.1%, calc(100% - 2.0px) 37.5%, calc(100% - 0.4px) 35.9%, calc(100% - 0.2px) 34.4%, calc(100% - 6.3px) 32.8%, calc(100% - 7.9px) 31.2%, calc(100% - 0.0px) 29.7%, calc(100% - 0.0px) 28.1%, calc(100% - 1.2px) 26.6%, calc(100% - 1.3px) 25.0%, calc(100% - 1.7px) 23.4%, calc(100% - 1.6px) 21.9%, calc(100% - 1.8px) 20.3%, calc(100% - 2.3px) 18.8%, calc(100% - 2.1px) 17.2%, calc(100% - 2.0px) 15.6%, calc(100% - 2.5px) 14.1%, calc(100% - 2.9px) 12.5%, calc(100% - 2.8px) 10.9%, calc(100% - 2.5px) 9.4%, calc(100% - 2.3px) 7.8%, calc(100% - 2.2px) 6.2%, calc(100% - 2.6px) 4.7%, calc(100% - 2.8px) 3.1%, calc(100% - 3.0px) 1.6%, calc(100% - 1.7px) 0.0%); }
+.st-story__text::after { background: #EBC58A url("../img/scroll-paper.jpg?v=00e18787") 50% 50% / cover no-repeat;
+  box-shadow: inset 0 0 6px 1px rgba(92, 48, 12, .55), inset 0 0 30px rgba(120, 66, 18, .4), inset 0 0 90px rgba(130, 80, 26, .18); clip-path: polygon(9.2px 0.0%, 12.7px 1.6%, 12.5px 3.1%, 11.2px 4.7%, 12.6px 6.2%, 12.2px 7.8%, 11.1px 9.4%, 10.5px 10.9%, 11.9px 12.5%, 12.5px 14.1%, 10.8px 15.6%, 10.3px 17.2%, 18.8px 18.8%, 9.1px 20.3%, 7.8px 21.9%, 7.8px 23.4%, 7.3px 25.0%, 5.9px 26.6%, 8.0px 28.1%, 6.6px 29.7%, 7.0px 31.2%, 7.8px 32.8%, 6.3px 34.4%, 6.4px 35.9%, 6.7px 37.5%, 6.1px 39.1%, 6.3px 40.6%, 5.1px 42.2%, 14.2px 43.8%, 5.6px 45.3%, 4.1px 46.9%, 3.6px 48.4%, 4.4px 50.0%, 5.7px 51.6%, 4.1px 53.1%, 5.8px 54.7%, 5.2px 56.2%, 6.7px 57.8%, 5.9px 59.4%, 6.5px 60.9%, 8.2px 62.5%, 15.8px 64.1%, 6.7px 65.6%, 8.3px 67.2%, 8.8px 68.8%, 8.4px 70.3%, 8.1px 71.9%, 10.1px 73.4%, 8.5px 75.0%, 6.9px 76.6%, 8.0px 78.1%, 5.2px 79.7%, 4.3px 81.2%, 18.9px 82.8%, 4.4px 84.4%, 5.1px 85.9%, 4.9px 87.5%, 14.3px 89.1%, 7.3px 90.6%, 5.3px 92.2%, 6.8px 93.8%, 7.5px 95.3%, 7.7px 96.9%, 9.4px 98.4%, 9.8px 100.0%, calc(100% - 1.6px) 100.0%, calc(100% - 3.4px) 98.4%, calc(100% - 4.2px) 96.9%, calc(100% - 2.1px) 95.3%, calc(100% - 3.0px) 93.8%, calc(100% - 4.8px) 92.2%, calc(100% - 4.3px) 90.6%, calc(100% - 7.4px) 89.1%, calc(100% - 8.2px) 87.5%, calc(100% - 8.0px) 85.9%, calc(100% - 9.7px) 84.4%, calc(100% - 10.3px) 82.8%, calc(100% - 9.3px) 81.2%, calc(100% - 10.7px) 79.7%, calc(100% - 20.0px) 78.1%, calc(100% - 12.0px) 76.6%, calc(100% - 22.9px) 75.0%, calc(100% - 10.0px) 73.4%, calc(100% - 10.5px) 71.9%, calc(100% - 12.0px) 70.3%, calc(100% - 9.7px) 68.8%, calc(100% - 11.9px) 67.2%, calc(100% - 9.5px) 65.6%, calc(100% - 12.3px) 64.1%, calc(100% - 10.7px) 62.5%, calc(100% - 11.4px) 60.9%, calc(100% - 10.0px) 59.4%, calc(100% - 19.9px) 57.8%, calc(100% - 9.9px) 56.2%, calc(100% - 8.8px) 54.7%, calc(100% - 9.1px) 53.1%, calc(100% - 7.2px) 51.6%, calc(100% - 8.1px) 50.0%, calc(100% - 8.7px) 48.4%, calc(100% - 8.0px) 46.9%, calc(100% - 7.0px) 45.3%, calc(100% - 5.8px) 43.8%, calc(100% - 4.5px) 42.2%, calc(100% - 4.8px) 40.6%, calc(100% - 4.4px) 39.1%, calc(100% - 4.4px) 37.5%, calc(100% - 2.0px) 35.9%, calc(100% - 2.9px) 34.4%, calc(100% - 11.8px) 32.8%, calc(100% - 14.5px) 31.2%, calc(100% - 2.8px) 29.7%, calc(100% - 4.2px) 28.1%, calc(100% - 5.4px) 26.6%, calc(100% - 4.9px) 25.0%, calc(100% - 5.7px) 23.4%, calc(100% - 6.4px) 21.9%, calc(100% - 6.2px) 20.3%, calc(100% - 6.9px) 18.8%, calc(100% - 8.9px) 17.2%, calc(100% - 7.5px) 15.6%, calc(100% - 8.2px) 14.1%, calc(100% - 9.4px) 12.5%, calc(100% - 9.9px) 10.9%, calc(100% - 8.6px) 9.4%, calc(100% - 9.7px) 7.8%, calc(100% - 8.0px) 6.2%, calc(100% - 8.0px) 4.7%, calc(100% - 8.9px) 3.1%, calc(100% - 8.4px) 1.6%, calc(100% - 7.6px) 0.0%); }
+.st-story__text p:first-child::first-letter { float: left; margin: .06em .08em -.1em 0; font-family: var(--script); font-size: 3.6em; line-height: .8; color: #7A2A12; }
+@media (max-width: 899px) {
+  .st #who { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- What we hold to (Studio): three paper cards, the key word of each underlined in ink ---------- */
+.hold { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: clamp(18px, 2vw, 26px); max-width: 1180px; }
+.hold__card { display: grid; gap: 14px; align-content: start; padding: 30px 26px 34px; border-radius: 4px; background: #FBF7EC;
+  box-shadow: 0 1px 0 rgba(90, 60, 30, .08), 0 24px 40px -26px rgba(60, 40, 20, .5); }
+.hold__t { font: 700 clamp(21px, 1rem + .45vw, 24px)/1.15 var(--grotesk); letter-spacing: -.015em; color: var(--ink); }
+.hold__p { font-family: var(--serif); font-size: clamp(18px, 1rem + .15vw, 20px); line-height: 1.22; color: var(--ink); }
+
+/* ---------- Highlighted capabilities (Studio): a row of paper cards, a painting tilted into each one's lower
+   corner, a round + that opens the rest. A small hand-written label with an ink arrow points into the row. ---------- */
+.hc-sec { gap: 22px; }
+.hc__head { display: flex; align-items: flex-end; gap: 10px; }
+.hc__label { font: 500 17px/1.2 var(--grotesk); letter-spacing: -.005em; color: var(--ink); }
+.hc__arrow { width: 66px; height: 36px; margin-bottom: -12px; overflow: visible; }
+.hc__arrow path { fill: none; stroke: #5A3314; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.hc__nav { display: flex; gap: 8px; margin-left: auto; margin-right: var(--gutter); }
+.hc__go { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(42, 26, 12, .55); color: var(--ink); transition: background .25s var(--ease), color .25s var(--ease); }
+.hc__go:hover { background: #2A1A0C; color: #F4E6C8; }
+.hc__go--next svg { transform: scaleX(-1); }
+.hc__go:disabled { opacity: .3; pointer-events: none; }
+.hc { list-style: none; margin: 0 calc(-1 * var(--gutter)) 0 0; padding: 6px var(--gutter) 30px 0; display: grid; grid-auto-flow: column; grid-auto-columns: clamp(250px, 21vw, 300px); gap: clamp(18px, 2vw, 28px);
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+.hc::-webkit-scrollbar { display: none; }
+.hc__card { position: relative; scroll-snap-align: start; aspect-ratio: 30 / 47; overflow: hidden; display: grid; align-content: start; gap: 12px; padding: 26px 24px;
+  background: #FBF7EC; border-radius: 4px; box-shadow: 0 1px 0 rgba(90, 60, 30, .08), 0 24px 40px -26px rgba(60, 40, 20, .5); }
+.hc__t { font: 700 20px/1.1 var(--grotesk); letter-spacing: -.015em; color: var(--ink); }
+.hc__p { font-family: var(--serif); font-size: clamp(22px, 1rem + .55vw, 26px); line-height: 1.08; letter-spacing: -.012em; color: var(--ink); max-width: 13em; }
+.hc__img { position: absolute; left: 13%; top: 54%; width: 112%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transform: rotate(-8deg); transform-origin: 0 0; border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(40, 26, 10, .25), 0 14px 26px -10px rgba(40, 26, 10, .45); }
+.hc__btn { position: absolute; right: 20px; bottom: 20px; z-index: 2; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #2A1A0C; color: #F4E6C8;
+  box-shadow: 0 6px 14px -6px rgba(20, 12, 4, .6); transition: transform .35s var(--ease), background .25s var(--ease); }
+.hc__btn:hover { background: #452A12; }
+.hc__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.hc__card.is-open .hc__btn { transform: rotate(45deg); }
+.hc__panel { position: absolute; inset: 0; z-index: 1; display: grid; align-content: start; gap: 14px; padding: 26px 24px 92px; background: #FBF7EC; overflow-y: auto; animation: hc-in .3s var(--ease); }
+.hc__panel[hidden] { display: none; }
+.hc__more-p { font-family: var(--serif); font-size: 19px; line-height: 1.2; color: var(--ink); }
+@keyframes hc-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .hc__panel { animation: none; } .hc__btn { transition: none; } }
+@media (max-width: 899px) {
+  .hc { grid-auto-columns: 76vw; }
+  .hc__nav { display: none; }
+  .hc__p { font-size: 22px; }
+}
+
+/* ---------- Ink on the main words: a hand-drawn sepia loop round them (.ink--loop) or a quick double
+   stroke under them (.ink--under), stretched to the words and drawn when they come into view. ---------- */
+.ink { position: relative; display: inline-block; white-space: nowrap; }
+.ink__mark { position: absolute; max-width: none; overflow: visible; pointer-events: none; }   /* the base svg max-width: 100% would pull the loop in onto the letters */
+.ink--loop .ink__mark { left: -.42em; top: -.3em; width: calc(100% + .84em); height: calc(100% + .6em); }
+.ink--under .ink__mark { left: -.06em; top: 88%; width: calc(100% + .12em); height: .32em; }
+.ink__mark path { fill: none; stroke: #5A3314; stroke-width: 2.2px; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .ink:not(.is-in) .ink__mark path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .ink.is-in .ink__mark path { stroke-dasharray: 1; animation: ink-draw 1s cubic-bezier(.45, .05, .3, 1) .45s both; }
+}
+@keyframes ink-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* ---------- 'Give me another' (Studio): one live client at a time, its name circled in ink ---------- */
+.spin { display: grid; gap: 34px; justify-items: start; max-width: 1100px; }
+.spin__say { font-family: var(--grotesk); font-weight: 600; font-size: clamp(26px, .8rem + 1.9vw, 50px); line-height: 1.12; letter-spacing: -.022em; color: var(--ink); max-width: 26em; min-height: calc(3 * 1.12em); transition: opacity .3s ease; }
+.spin__say .ink { white-space: normal; max-width: 100%; margin-left: .1em; }
+.spin.is-swap .spin__say { opacity: 0; }
+.spin__acts { display: flex; flex-wrap: wrap; gap: 14px 22px; }
+.spin__btn { display: inline-flex; align-items: center; gap: 3px; color: var(--ink); text-decoration: none; cursor: pointer; }
+.spin__lbl { padding: 15px 22px 16px; border-radius: 999px; border: 1.5px solid currentColor; font: 500 16px/1 var(--grotesk); white-space: nowrap; }
+.spin__ic { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; border: 1.5px solid currentColor; transition: transform .45s var(--ease); }
+.spin__btn--dark .spin__lbl, .spin__btn--dark .spin__ic { background: #1E150C; border-color: #1E150C; color: #F4E6C8; }
+.spin__btn--dark:hover .spin__ic { transform: rotate(180deg); }
+.spin__btn:not(.spin__btn--dark):hover .spin__ic { transform: translateX(4px); }
+.spin__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 999px; }
+@media (max-width: 899px) {
+  .spin { gap: 26px; }
+  .spin__say { min-height: 0; }
+  .spin__lbl { padding: 13px 18px 14px; font-size: 15px; }
+  .spin__ic { width: 44px; height: 44px; }
+}
+
+/* ---------- Studio is a static page: one sheet of parchment, a plain opening (giant word, serif line), then
+   the sections one after another; nothing pinned, nothing fading in, the ink already drawn. ---------- */
+.st { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(64px, 7vw, 110px); padding: clamp(40px, 5vw, 80px) var(--gutter) clamp(100px, 10vw, 160px) var(--col);
+  background-color: var(--parchment); background-image: var(--paper-tex); background-size: var(--paper-size); }
+/* the opening screen and the whole sheet below it sit over a living gradient (canvas, main.js) multiplied
+   onto the parchment; the canvas is one screen tall and sticky, so it stays behind the page all the way down */
+.st__bgwrap { position: absolute; inset: 0; pointer-events: none; }
+.st__bg { position: sticky; top: 0; width: 100%; height: 100vh; display: block; mix-blend-mode: multiply; }   /* one screen of canvas, held in view the whole way down the sheet */
+.st > :not(.st__bgwrap) { position: relative; }
+.st__open { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 72px); align-items: end; max-width: 1240px; padding-top: calc(var(--header-h) + clamp(48px, 8vw, 130px)); }
+.st__title { display: grid; gap: clamp(18px, 2vw, 28px); }
+.st__intro { display: grid; gap: 26px; justify-items: start; padding-bottom: .4em; }
+.st__about { font-family: var(--grotesk); font-weight: 600; font-size: clamp(21px, .9rem + .8vw, 30px); line-height: 1.12; letter-spacing: -.02em; color: var(--ink); max-width: 22ch; }
+.st__stats { display: flex; gap: clamp(28px, 3vw, 48px); margin: 0; }
+.st__stats div { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid rgba(42, 26, 12, .35); min-width: 120px; }
+.st__stats dt { font-family: var(--serif); font-size: clamp(34px, 1.2rem + 1.4vw, 48px); line-height: .9; letter-spacing: -.02em; color: var(--ink); }
+.st__stats dd { margin: 0; font: 500 13px/1.25 var(--grotesk); color: var(--mid); max-width: 14ch; }
+@media (max-width: 899px) { .st__open { grid-template-columns: minmax(0, 1fr); align-items: start; } }
+.st__h { color: var(--ink); }
+.st__lead { color: var(--ink); max-width: 28ch; }
+.st__lead .nw { white-space: nowrap; }
+.st__sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 3.5vw, 52px); }
+.st__lead .nw { white-space: nowrap; }
+/* Capabilities: a ruled ledger, one row per service (name, its promise, what it covers) */
+.caps { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); max-width: 1180px; }
+.cap { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr) minmax(0, 1.25fr); gap: 18px clamp(20px, 3vw, 48px); align-items: baseline; padding: clamp(22px, 2.4vw, 34px) 0; border-bottom: 1px solid var(--line); }
+.cap__t { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 1rem + 1.6vw, 44px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
+.cap__p { font-family: var(--grotesk); font-weight: 700; font-size: clamp(16px, .85rem + .25vw, 18px); line-height: 1.2; color: #6A5536; }   /* warm ink: readable over the drifting tints */
+.cap__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cap__tags li { padding: 6px 11px 7px; border: 1px solid rgba(70, 52, 28, .3); border-radius: 2px; font: 400 14px/1.2 var(--sans); color: var(--ink); }
+@media (max-width: 899px) {
+  .cap { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .cap__tags { margin-top: 6px; }
+}
+.st__t { max-width: 24ch; }
+.st .ink__mark path { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; animation: none !important; }
+.st .spin__say { transition: none; }
+.st .spin.is-swap .spin__say { opacity: 1; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
@@ -1041,11 +1247,15 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
   .steps--list .step__n { font-size: 72px; }
   .ch--plain > .tear { height: 120px; }
   .proc__head { left: 12px; top: calc(var(--header-h) + 20px); }
-  .proc__track { gap: 32px; padding: 0 12px; }
-  .proc__n { font-size: 48px; }
-  .proc__t { font-size: 22px; }
-  .proc__p { font-size: 18px; }
-  .proc__rail { padding-bottom: 24px; }
+  .proc__track { padding: 0 12px; }
+  .proc__step { flex-basis: 42vw; }
+  .proc__step:first-child { margin-left: 22px; }
+  .proc__step:last-child { flex-basis: 70vw; }
+  .tl__text { left: 16px; width: 62vw; }
+  .proc__n { font-size: 20px; }
+  .proc__t { font-size: 19px; }
+  .proc__p { font-size: 15.5px; }
+  .proc__rail { bottom: 20px; height: 44svh; min-height: 300px; }
   .proc__count { top: -32px; right: 12px; }
   .ch--paper .ch__body { margin-top: 14vh; padding-top: 10vh; }
   .ch--paper .ch__body > .tear { height: 120px; }

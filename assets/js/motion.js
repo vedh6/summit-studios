@@ -736,13 +736,17 @@ void main(){
     root.classList.add('has-process');
     const track = sec.querySelector('[data-process-track]');
     const now = sec.querySelector('[data-process-now]');
-    const steps = [...track.children];
+    const steps = [...track.querySelectorAll('.proc__step')];
     const travel = () => Math.max(0, track.scrollWidth - innerWidth);
     // a paper chapter straight after tears up over the pinned clip, so leave one extra screen for it
     const tail = sec.nextElementSibling && sec.nextElementSibling.classList.contains('ch--plain') ? 1 : 0;
     if (tail) root.classList.add('proc-tail');
     const glide = () => innerHeight * .36;
-    const fit = () => { sec.style.height = `calc(${100 + tail * 100}svh + ${Math.round(travel() * 1.6 + glide())}px)`; };
+    // the drawing needs a little scroll even when the timeline nearly fits the screen
+    const span = () => Math.max(travel() * 1.6, innerHeight * .9);
+    // and once it is all drawn, it holds for a moment before the next page's torn edge starts to rise
+    const hold = () => (tail ? innerHeight * .55 : 0);
+    const fit = () => { sec.style.height = `calc(${100 + tail * 100}svh + ${Math.round(span() + glide() + hold())}px)`; };
     fit();
     // A soft landing: when the stage locks, its heading and steps don't stop dead. They arrive
     // half a glide low and ease up into place over the next third of a screen (their speed at
@@ -751,17 +755,54 @@ void main(){
     gsap.fromTo([sec.querySelector('.proc__head'), sec.querySelector('.proc__rail')].filter(Boolean),
       { y: () => glide() / 2 }, { y: 0, ease: 'power2.out', scrollTrigger: settle });
     if (video) gsap.fromTo(video, { scale: 1.08 }, { scale: 1, ease: 'power2.out', scrollTrigger: { ...settle } });
-    let shown = 1;
+
+    /* The timeline draws on as you scroll. A reveal edge runs evenly along the track from the moment the
+       stage locks to the end of the travel; the gold line reaches as far as the edge, and each step's stem
+       grows out of the line, its dot sets, and its words lift line by line, by how far the step is
+       past the edge. All of it follows the track's smoothed position, so scrolling back undraws it. */
+    const line = track.querySelector('.tl__line i');
+    const clamp = gsap.utils.clamp(0, 1), out = t => 1 - Math.pow(1 - t, 3);
+    const splitLines = el => {   // wrap each rendered line of text in a mask; returns the moving parts
+      if (el.dataset.text == null) el.dataset.text = el.textContent;
+      el.textContent = '';
+      const words = el.dataset.text.trim().split(/\s+/).map((w, i) => { const sp = d.createElement('span'); sp.textContent = w; if (i) el.append(' '); el.append(sp); return sp; });
+      const rows = []; let top = null;
+      words.forEach(w => { if (w.offsetTop !== top) { rows.push([]); top = w.offsetTop; } rows[rows.length - 1].push(w.textContent); });
+      el.textContent = '';
+      return rows.map(r => { const m = d.createElement('span'), i = d.createElement('span'); m.className = 'ln'; i.className = 'ln__i'; i.textContent = r.join(' '); m.append(i); el.append(m); return i; });
+    };
+    let parts = [], shown = 1;
+    const st = { p: 0 };   // how far the drawing has got, 0..1, smoothed
+    const draw = () => {
+      const vw = innerWidth, last = parts[parts.length - 1];
+      // the edge, in the track's own coordinates, runs evenly from its start to just past the last step
+      const edge = st.p * ((last ? last.el.offsetLeft : vw) + vw * .3 + 40);
+      if (line) { const L = line.parentElement; line.style.transform = `scaleX(${clamp((edge - L.offsetLeft) / L.offsetWidth)})`; }
+      let k = 0;
+      parts.forEach((pt, i) => {
+        const p = clamp((edge - pt.el.offsetLeft) / (vw * .3));
+        if (p > .5) k = i;
+        pt.stem.style.transform = `scaleY(${out(clamp(p / .45))})`;
+        pt.dot.style.transform = `scale(${out(clamp((p - .3) / .25))})`;
+        pt.lines.forEach((ln, j) => { ln.style.transform = `translateY(${((1 - out(clamp((p - .3 - j * .06) / .45))) * 110).toFixed(1)}%)`; });
+      });
+      if (now && k + 1 !== shown) { shown = k + 1; now.textContent = shown; }
+    };
+    const split = () => {
+      parts = steps.map(el => ({ el, stem: el.querySelector('.tl__stem'), dot: el.querySelector('.tl__dot'),
+        lines: [...el.querySelectorAll('.proc__n, .proc__t, .proc__p')].flatMap(splitLines) }));
+      draw();
+    };
+    split();
+    if (d.fonts && d.fonts.ready) d.fonts.ready.then(split);
+    let rs = 0; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(split, 200); });
+    gsap.to(st, { p: 1, ease: 'none', onUpdate: draw,
+      scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + Math.round(glide() + span() * .8), scrub: .8, invalidateOnRefresh: true } });   // done a little before the next page tears up over it
     gsap.to(track, {
       x: () => -travel(), ease: 'none',
-      onUpdate: () => {   // runs with the smoothed motion, so the count matches what is on screen
-        if (!now) return;
-        const col = steps[0].offsetLeft, x = gsap.getProperty(track, 'x');
-        let k = 0; steps.forEach((el, i) => { if (el.offsetLeft - col + x < el.offsetWidth * .5) k = i; });
-        if (k + 1 !== shown) { shown = k + 1; now.textContent = shown; }
-      },
+      onUpdate: draw,   // runs with the smoothed motion, so the drawing and the count match what is on screen
       // the steps start sliding once the soft landing has settled
-      scrollTrigger: { trigger: sec, start: () => 'top top-=' + Math.round(glide()), end: () => '+=' + Math.round(travel() * 1.6), scrub: 1.2, invalidateOnRefresh: true, onRefreshInit: fit },
+      scrollTrigger: { trigger: sec, start: () => 'top top-=' + Math.round(glide()), end: () => '+=' + Math.round(span()), scrub: 1.2, invalidateOnRefresh: true, onRefreshInit: fit },
     });
   }
 
