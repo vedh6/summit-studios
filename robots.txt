@@ -1,4 +1,26 @@
+# Summit Studios: search engines and AI assistants are welcome to read and cite this site.
 User-agent: *
 Allow: /
+Disallow: /404
+
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Google-Extended
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: DuckAssistBot
+User-agent: meta-externalagent
+User-agent: MistralAI-User
+User-agent: CCBot
+Allow: /
+Disallow: /404
 
 Sitemap: https://www.summitxstudio.com/sitemap.xml

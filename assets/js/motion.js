@@ -46,6 +46,16 @@
      Seeking is instant and smooth, and it works on hosts without Range support. */
   function loadClip(video, onReady) {
     if (!video || !video.dataset.src) return;
+    // The clip is big (the 4K fly-through is ~25MB), so it no longer downloads with the page: it starts once
+    // the page has loaded and settled for a moment, or as soon as its chapter is within four screens.
+    let go = false;
+    const start = () => { if (go) return; go = true; io.disconnect(); fetchClip(video, onReady); };
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) start(); }, { rootMargin: '400% 0px' });
+    io.observe(video.closest('section') || video);
+    const later = () => setTimeout(start, 2500);
+    if (d.readyState === 'complete') later(); else addEventListener('load', later, { once: true });
+  }
+  function fetchClip(video, onReady) {
     video.preload = 'auto';
     video.addEventListener('loadedmetadata', () => { video.dataset.ready = '1'; onReady && onReady(); }, { once: true });
     fetch(video.dataset.src)
@@ -742,8 +752,9 @@ void main(){
     const tail = sec.nextElementSibling && sec.nextElementSibling.classList.contains('ch--plain') ? 1 : 0;
     if (tail) root.classList.add('proc-tail');
     const glide = () => innerHeight * .36;
-    // the drawing needs a little scroll even when the timeline nearly fits the screen
-    const span = () => Math.max(travel() * 1.6, innerHeight * .9);
+    // the drawing needs room even when the timeline nearly fits the screen; slowed (user, 2026-11-18)
+    // from one screen of scroll for all seven steps to about two and a half
+    const span = () => Math.max(travel() * 2, innerHeight * 2.4);
     // and once it is all drawn, it holds for a moment before the next page's torn edge starts to rise
     const hold = () => (tail ? innerHeight * .55 : 0);
     const fit = () => { sec.style.height = `calc(${100 + tail * 100}svh + ${Math.round(span() + glide() + hold())}px)`; };
@@ -776,11 +787,12 @@ void main(){
     const draw = () => {
       const vw = innerWidth, last = parts[parts.length - 1];
       // the edge, in the track's own coordinates, runs evenly from its start to just past the last step
-      const edge = st.p * ((last ? last.el.offsetLeft : vw) + vw * .3 + 40);
+      const win = vw * .34;   // how far past a step the edge goes before that step is fully drawn
+      const edge = st.p * ((last ? last.el.offsetLeft : vw) + win + 40);
       if (line) { const L = line.parentElement; line.style.transform = `scaleX(${clamp((edge - L.offsetLeft) / L.offsetWidth)})`; }
       let k = 0;
       parts.forEach((pt, i) => {
-        const p = clamp((edge - pt.el.offsetLeft) / (vw * .3));
+        const p = clamp((edge - pt.el.offsetLeft) / win);
         if (p > .5) k = i;
         pt.stem.style.transform = `scaleY(${out(clamp(p / .45))})`;
         pt.dot.style.transform = `scale(${out(clamp((p - .3) / .25))})`;
@@ -797,12 +809,12 @@ void main(){
     if (d.fonts && d.fonts.ready) d.fonts.ready.then(split);
     let rs = 0; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(split, 200); });
     gsap.to(st, { p: 1, ease: 'none', onUpdate: draw,
-      scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + Math.round(glide() + span() * .8), scrub: .8, invalidateOnRefresh: true } });   // done a little before the next page tears up over it
+      scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + Math.round(glide() + span() * .8), scrub: 1.4, invalidateOnRefresh: true } });   // done a little before the next page tears up over it
     gsap.to(track, {
       x: () => -travel(), ease: 'none',
       onUpdate: draw,   // runs with the smoothed motion, so the drawing and the count match what is on screen
       // the steps start sliding once the soft landing has settled
-      scrollTrigger: { trigger: sec, start: () => 'top top-=' + Math.round(glide()), end: () => '+=' + Math.round(span()), scrub: 1.2, invalidateOnRefresh: true, onRefreshInit: fit },
+      scrollTrigger: { trigger: sec, start: () => 'top top-=' + Math.round(glide()), end: () => '+=' + Math.round(span()), scrub: 1.8, invalidateOnRefresh: true, onRefreshInit: fit },
     });
   }
 

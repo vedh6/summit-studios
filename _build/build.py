@@ -17,6 +17,8 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from content import PROJECTS, SERVICES, INDUSTRIES, WHY, FAQ_ALL, VOICES   # noqa: E402
 from dive import scene as why_scene                                # noqa: E402
+import geo                                                         # noqa: E402
+import datetime                                                    # noqa: E402
 
 OUT = pathlib.Path(__file__).resolve().parent.parent
 SITE = 'https://www.summitxstudio.com/'
@@ -126,7 +128,7 @@ def sidebar(chapters, mark, sub):
     items = ''.join(f'<li><a href="#{cid}" data-ch-link="{cid}"><span class="sb__name">{name}</span><span class="sb__lead"></span><span class="sb__num">{ROMAN[i]}</span></a></li>'
                     for i, (cid, name) in enumerate(chapters))
     return f'''<aside class="sb" id="chapters-index" data-sb>
-  <nav class="sb__box" data-sb-box aria-label="Chapters">
+  <nav class="sb__box" data-sb-box aria-label="Chapter list">
     {DAVINCI}
     <a class="sb__mark h4" href="#top">{mark}</a>
     <p class="sb__sub n3">{sub}</p>
@@ -146,7 +148,7 @@ def sidebar(chapters, mark, sub):
 
 FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&family=IM+Fell+English:ital@0;1&display=swap'
 
-JSONLD = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Summit Studios","url":"https://www.summitxstudio.com/","email":"team@summitxstudio.com","description":"Premium web design, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide.","areaServed":"Worldwide"}</script>'''
+# Structured data now comes from geo.py (page_jsonld), one @graph per page.
 
 # shared SVG filter: ragged painted edges (bar chart, the AI search tile)
 def paper_defs():
@@ -199,6 +201,21 @@ SCRIPTS = '''<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsa
 <script src="assets/js/motion.js" defer></script>'''
 
 
+LASTMOD_FILE = pathlib.Path(__file__).resolve().parent / 'lastmod.json'
+LASTMOD_SEEN = json.loads(LASTMOD_FILE.read_text()) if LASTMOD_FILE.exists() else {}
+LASTMOD = {}
+
+
+def stamp(key, html):
+    """The date a page's content last changed: kept while its hash is the same, today's date when it moves."""
+    h = hashlib.sha1(html.encode()).hexdigest()[:12]
+    old = LASTMOD_SEEN.get(key)
+    if old and old[0] == h:
+        return old[1]
+    LASTMOD_SEEN[key] = [h, datetime.date.today().isoformat()]
+    return LASTMOD_SEEN[key][1]
+
+
 def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
     canon = '' if file == 'index.html' else file[:-5]
     # The chapter index (drafting box over the hero, docked sidebar, arrow) is a home-page
@@ -216,12 +233,21 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 {GA_HEAD}
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<link rel="canonical" href="{SITE}{canon}">
+{'<meta name="robots" content="noindex">' if file == '404.html' else f'<link rel="canonical" href="{SITE}{canon}">'}
+<meta property="og:site_name" content="Summit Studios">
+<meta property="og:locale" content="en_GB">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{SITE}{canon}">
 <meta property="og:image" content="{SITE}assets/img/paint/hero.jpg">
+<meta property="og:image:width" content="1344">
+<meta property="og:image:height" content="752">
+<meta property="og:image:alt" content="A Renaissance painting of a figure at work, the Summit Studios cover">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{desc}">
+<meta name="twitter:image" content="{SITE}assets/img/paint/hero.jpg">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,7 +255,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/motion.css">
 <script>try{{if('scrollRestoration' in history)history.scrollRestoration='manual';}}catch(e){{}}</script>
-{JSONLD if jsonld else ''}
+{geo.page_jsonld(file, title, desc)}
 </head>
 <body{'' if chapters else ' class="no-index"'}>
 {header(file)}
@@ -247,6 +273,7 @@ def page(file, title, desc, body, chapters, mark, sub, jsonld=False):
     if file == '404.html':   # served at any missing path, so its assets must be root-relative
         html = re.sub(r'(src|href)="assets/', r'\1="/assets/', html)
     (OUT / file).write_text(html)
+    LASTMOD[canon or 'index'] = stamp(canon or 'index', html)
     print('wrote', file)
 
 
@@ -257,7 +284,7 @@ def hero(painting, alt, kicker):
     (rendered by the sidebar and positioned over the hero by motion.js)."""
     return f'''<section class="hero" id="top" aria-label="Introduction" data-hero>
   <div class="hero__bg"><img class="paint" src="assets/img/paint/{painting}.jpg" alt="{alt}" width="1344" height="752" fetchpriority="high"></div>
-  <p class="hero__kicker label" data-reveal>{kicker}</p>
+  <h1 class="hero__kicker label" data-reveal>{kicker}</h1>
 </section>'''
 
 
@@ -724,7 +751,7 @@ def chapter_industry(d):
     {work_cards(work)}
     {sub_head('What we build')}
     {feat_grid([(x, '') for x in d['build']], 'fg--tags')}
-    <p data-reveal>{ihb('Start a conversation', 'contact.html', 'ihb--auto')}</p>'''
+    <p data-reveal>{ihb('Start a conversation', 'contact.html', 'ihb--glass ihb--auto')}</p>'''
     return chapter_box('ind-' + d['id'], d['word'], d['paint'][0], d['paint'][1], d['pitch'], body)
 
 
@@ -759,7 +786,7 @@ def visit_button(url, name, host):
 def work_row(i, p):
     if not p.get('url'):
         return f'''<article class="row row--soon" data-sector="{p['slug']}" data-reveal>
-      <div class="row__info"><p class="row__n">{i:02d}</p><h4 class="h4 row__name">{p['name']}</h4><p class="label row__meta">{p['sector']} &middot; {p['type']}</p><p class="n3 row__line">{p['line']}</p></div>
+      <div class="row__info"><p class="row__n">{i:02d}</p><h3 class="h4 row__name">{p['name']}</h3><p class="label row__meta">{p['sector']} &middot; {p['type']}</p><p class="n3 row__line">{p['line']}</p></div>
       <div class="row__strip row__strip--soon"><span class="label">Coming soon</span></div>
     </article>'''
     host = p['url'].split('//', 1)[-1].strip('/').removeprefix('www.')
@@ -768,7 +795,7 @@ def work_row(i, p):
       <a class="row__art" href="{p['url']}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="assets/img/work/{p['key']}-wide.jpg" alt="" width="1440" height="900" loading="lazy" decoding="async"></a>
       <div class="row__info">
         <p class="row__n">{i:02d}</p>
-        <h4 class="h4 row__name">{p['name']}</h4>
+        <h3 class="h4 row__name">{p['name']}</h3>
         <p class="label row__meta">{p['sector']} &middot; {p['type']}</p>
         <p class="n3 row__line">{p['line']}</p>
         {visit_button(p['url'], p['name'], host)}
@@ -820,7 +847,7 @@ def screen_quad():
           <p class="screen__p">{p}</p>
         </article>''' for i, (t, s, p) in enumerate(WHY))
     end = f'''<article class="screen__panel screen__panel--end" data-panel>
-          <div class="screen__cta">{ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--screen')}</div>
+          <div class="screen__cta">{ihb('Start a conversation', 'contact.html', 'ihb--glass ihb--auto ihb--screen')}</div>
         </article>'''
     return f'<div class="screen__quad" data-screen-quad><div class="screen__face">{panels}{end}</div></div>'
 
@@ -866,7 +893,7 @@ def chapter_start():
     {sub_head('No pitch, no pressure')}
     {feat_grid(STEPS)}
     <div class="cta" data-reveal>
-      {ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--big')}
+      {ihb('Start a conversation', 'contact.html', 'ihb--glass ihb--auto ihb--big')}
       {chip('Get a free website review', 'get-started.html#review')}
       {chip('Email us', 'mailto:team@summitxstudio.com')}
     </div>
@@ -934,7 +961,7 @@ def footer(above='bg'):
   <div class="ftr__tear" aria-hidden="true">{torn_edge('ftr', seed=3)}</div>
   <div class="ftr__cta">
     <h2 class="ftr__h">{swash('Let&rsquo;s build something worth finding.')}</h2>
-    <div class="ftr__btns">{ihb('Start a conversation', 'contact.html', 'ihb--auto ihb--big')}{chip('Get a free website review', 'get-started.html#review')}</div>
+    <div class="ftr__btns">{ihb('Start a conversation', 'contact.html', 'ihb--glass ihb--auto ihb--big')}</div>
   </div>
   <nav class="ftr__cols" aria-label="Footer">
     <div><p class="ftr__t">Services</p><a href="index.html#websites">Websites</a><a href="index.html#growth">Growth Marketing</a><a href="index.html#receptionists">AI Concierge</a><a href="index.html#more">WhatsApp Automation</a><a href="index.html#more">Custom Software</a></div>
@@ -1033,15 +1060,14 @@ def spin_work():
         items.append(dict(name=pr['name'], say='we built ' + line[0].lower() + line[1:] + '.', url=pr['url']))
     first = items[0]
     data = json.dumps(items).replace('</', '<\\/')
-    return f'''<section class="spin" data-spin aria-labelledby="spin-t">
-      <h3 class="sr" id="spin-t">Some of our work</h3>
+    return f'''<div class="spin" data-spin>
       <p class="spin__say" aria-live="polite">For {ink('<span data-spin-name>' + first['name'] + '</span>')}, <span data-spin-say>{first['say']}</span></p>
       <div class="spin__acts">
         <button class="spin__btn spin__btn--dark" type="button" data-spin-next><span class="spin__lbl">Give me another</span><span class="spin__ic">{SHUFFLE}</span></button>
         <a class="spin__btn" href="{first['url']}" target="_blank" rel="noopener" data-spin-link><span class="spin__lbl">Visit the live site</span><span class="spin__ic">{SPIN_ARROW}</span></a>
       </div>
       <script type="application/json" data-spin-data>{data}</script>
-    </section>'''
+    </div>'''
 
 
 STUDIO_CH = []
@@ -1152,7 +1178,7 @@ STUDIO = f'''<div class="st" id="top" data-ink>
     <div class="st__intro">
       <p class="st__about">Designers and developers who treat your website as a business asset, not a brochure.</p>
       <dl class="st__stats"><div><dt>30+</dt><dd>websites shipped</dd></div><div><dt>1 day</dt><dd>to hear back from us</dd></div></dl>
-      {ihb('Start a conversation', 'contact.html', 'ihb--auto')}
+      {ihb('Start a conversation', 'contact.html', 'ihb--glass ihb--auto')}
     </div>
   </header>
   {st_sec('who', 'Our story', ST_STORY)}
@@ -1281,11 +1307,11 @@ PAGES = {
     'index.html': ('Summit Studios | Premium web design for engineering firms, clinics and trades',
                    'Summit Studios designs and builds premium websites, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide. 30+ sites shipped.',
                    HOME, HOME_CHAPTERS, True),
-    'projects.html': ('Projects | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
-    'studio.html': ('Studio | Summit Studios', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
-    'industries.html': ('Industries | Summit Studios', 'Websites for healthcare, industrial and engineering, technology, construction and real estate, interiors, food and e-commerce, and hospitality.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
-    'contact.html': ('Contact | Summit Studios', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
-    'get-started.html': ('Get started | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
+    'projects.html': ('Website projects for clinics, engineering firms and brands | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
+    'studio.html': ('About Summit Studios | A small web design studio with a high bar', 'A small studio with a high bar. Designers and developers building premium websites for businesses worldwide.', STUDIO, STUDIO_CH, False),
+    'industries.html': ('Websites by industry, from clinics to engineering firms | Summit Studios', 'Websites for healthcare, industrial and engineering, technology, construction and real estate, interiors, food and e-commerce, and hospitality.', INDUSTRIES_PAGE, INDUSTRIES_CH, False),
+    'contact.html': ('Contact Summit Studios | A reply within one working day', 'Start a conversation with Summit Studios. Send a message or reach us by email, and we reply within one working day.', CONTACT, CONTACT_CH, False),
+    'get-started.html': ('Get a website quote or a free website review | Summit Studios', 'Tell Summit Studios what you need. We look at your current site and reply within one working day with a straight answer on fit and rough cost.', GET_STARTED, GET_STARTED_CH, False),
     '404.html': ('Page not found | Summit Studios', 'This page could not be found.', NOT_FOUND, NOT_FOUND_CH, False),
 }
 
@@ -1309,3 +1335,9 @@ if __name__ == '__main__':
     stamp_css()
     for f, (t, d, body, chapters, ld) in PAGES.items():
         page(f, t, d, body, chapters, MARK, SUB, ld)
+    # the machine-readable layer (geo.py): what AI assistants and search engines read first
+    (OUT / 'llms.txt').write_text(geo.llms_txt(PROCESS))
+    (OUT / 'robots.txt').write_text(geo.robots_txt())
+    (OUT / 'sitemap.xml').write_text(geo.sitemap_xml(LASTMOD))
+    LASTMOD_FILE.write_text(json.dumps(LASTMOD_SEEN, indent=1, sort_keys=True) + '\n')
+    print('wrote llms.txt, robots.txt, sitemap.xml')

@@ -178,6 +178,10 @@ FAQ_ALL = [
      "Yes. We either set you up to edit content yourself, or handle updates for you under a care plan. Either way, you're never stuck waiting on a developer to change a line of text."),
     ('Do you only build websites?',
      "No. Websites are where most clients start, but the biggest gains often come after: an AI receptionist that stops missed calls, WhatsApp reminders that cut no-shows, or a CRM built around how you actually work."),
+    ('Do you build websites for clinics and doctors?',
+     "Yes. Healthcare is where we have built the most, from dental clinics and orthodontists to specialist doctors' portfolios. We can add online booking, WhatsApp reminders and an AI receptionist that takes calls after hours."),
+    ('Can you help us show up on Google and in AI answers like ChatGPT?',
+     "Yes. Growth marketing covers the SEO foundations, your Google Business profile and Maps listing, and AI search visibility, with clear answers that ChatGPT, Gemini, Perplexity and Google's AI Overviews can find and quote. Every month you get a plain report on calls, bookings and rankings."),
     ('Can you work with us remotely?',
      "Yes. We work with clients worldwide and run every project remotely: calls at a time that suits you, clear written updates, and reviews at every stage."),
 ]

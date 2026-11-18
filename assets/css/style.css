@@ -637,11 +637,11 @@ html.has-corner .corner__stage { position: sticky; top: 0; height: 100svh; overf
 .call { background: var(--paper); border-radius: 6px; padding: 22px 24px 20px; display: grid; gap: 18px; box-shadow: 0 40px 80px -40px rgba(41, 41, 25, .45), 0 1px 0 rgba(41, 41, 25, .06); }
 .call__head { display: flex; align-items: center; gap: 8px; color: var(--mid); font-size: 13px; }
 .call__dot { width: 8px; height: 8px; border-radius: 50%; background: #3E6B48; box-shadow: 0 0 0 4px rgba(62, 107, 72, .16); }
-.call__tag { margin-left: auto; color: var(--muted); font-size: 12px; }
+.call__tag { margin-left: auto; color: #6B6B5E; font-size: 12px; }   /* darker than --muted: 5:1 on paper (was 3:1) */
 .call__lines { display: grid; gap: 14px; }
 .call__l { display: grid; gap: 5px; max-width: 88%; }
 .call__l--in { justify-self: end; text-align: right; }
-.call__who { font-size: 12px; color: var(--muted); }
+.call__who { font-size: 12px; color: #6B6B5E; }
 .call__say { font-family: var(--serif); font-size: 21px; line-height: 1.08; letter-spacing: -.02em; color: var(--ink); }
 .call__l--in .call__say { color: var(--mid); }
 .call__done { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid rgba(41, 41, 25, .1); color: var(--mid); font-size: 13px; line-height: 1.3; }
@@ -1038,19 +1038,23 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--mid); }
 .filters > span { margin-right: 6px; }
 
-/* ---------- Studio: Our story, the heading beside the manuscript page ---------- */
-.st #who { grid-template-columns: minmax(0, .42fr) minmax(0, 1fr); align-items: start; column-gap: clamp(28px, 5vw, 90px); max-width: 1240px; }
-.st-story { display: grid; justify-items: start; }
-/* Our story, written on an old manuscript page: the Contact scroll's aged parchment (scroll-paper.jpg) with the
-   same burnt, torn sides (::before the charred outline, ::after the paper), dark-brown ink and a rubricated
-   initial, like the first letter of an old handwritten book. */
-.st-story__text { position: relative; isolation: isolate; display: grid; gap: 1em; max-width: 40em; padding: clamp(30px, 3.4vw, 50px) clamp(28px, 3.6vw, 56px) clamp(32px, 3.6vw, 52px);
+/* ---------- Studio: Our story, a full-width printed sheet under its heading ---------- */
+.st #who { max-width: none; }
+.st-story { display: block; }
+/* Our story, printed on a Renaissance information sheet (assets/img/story-sheet.jpg, generated on Higgsfield
+   2026-11-17): a blank broadsheet on aged laid paper inside a woodcut border of acanthus scrolls. It is a
+   9-slice border-image, so the corners stay true at any size; the top and bottom bands stretch, the side bands
+   repeat (as a printer's border would) and the blank middle fills the box. Slices are in the image's pixels
+   (1700 x 1260); --k scales the border to the screen. Dark-brown ink, a rubricated initial. */
+.st-story__text { --k: .42; position: relative; display: block; columns: 2; column-gap: clamp(36px, 4.4vw, 72px); column-rule: 1px solid rgba(42, 26, 11, .28);
+  border-style: solid; border-color: transparent; border-width: calc(195px * var(--k)) calc(145px * var(--k)) calc(149px * var(--k)) calc(143px * var(--k));
+  border-image: url("../img/story-sheet.jpg?v=a17b3913") 195 145 149 143 fill / calc(195px * var(--k)) calc(145px * var(--k)) calc(149px * var(--k)) calc(143px * var(--k)) round round;   /* across a wide sheet the bands repeat, as a printer's border does */
+  padding: clamp(20px, 2.6vw, 40px) clamp(18px, 2.8vw, 44px) clamp(20px, 2.6vw, 40px);
   font-family: 'IM Fell English', var(--serif); font-size: clamp(20px, 1rem + .45vw, 25px); line-height: 1.36; letter-spacing: 0; color: #2A1A0B;   /* a 17th-century book face, revived */
-  filter: drop-shadow(0 1px 1px rgba(50, 28, 8, .25)) drop-shadow(0 22px 26px rgba(50, 30, 10, .3)); }
-.st-story__text::before, .st-story__text::after { content: ""; position: absolute; inset: 0; z-index: -1; }
-.st-story__text::before { background: #3B200B linear-gradient(90deg, #2A1606, #5A3312 6px, #5A3312 calc(100% - 6px), #2A1606); clip-path: polygon(4.5px 0.0%, 5.6px 1.6%, 5.0px 3.1%, 6.0px 4.7%, 6.3px 6.2%, 6.6px 7.8%, 5.1px 9.4%, 5.1px 10.9%, 5.9px 12.5%, 5.8px 14.1%, 4.4px 15.6%, 4.6px 17.2%, 11.5px 18.8%, 4.5px 20.3%, 3.3px 21.9%, 4.0px 23.4%, 4.0px 25.0%, 3.3px 26.6%, 4.4px 28.1%, 4.0px 29.7%, 3.9px 31.2%, 4.8px 32.8%, 4.7px 34.4%, 4.1px 35.9%, 3.8px 37.5%, 4.2px 39.1%, 3.2px 40.6%, 2.6px 42.2%, 9.8px 43.8%, 2.4px 45.3%, 1.0px 46.9%, 0.2px 48.4%, 1.0px 50.0%, 1.0px 51.6%, 0.0px 53.1%, 0.3px 54.7%, 0.0px 56.2%, 0.1px 57.8%, 0.2px 59.4%, 0.0px 60.9%, 1.3px 62.5%, 7.8px 64.1%, 1.2px 65.6%, 1.5px 67.2%, 3.0px 68.8%, 2.4px 70.3%, 3.7px 71.9%, 4.1px 73.4%, 3.7px 75.0%, 3.0px 76.6%, 3.7px 78.1%, 2.1px 79.7%, 1.9px 81.2%, 12.3px 82.8%, 2.6px 84.4%, 3.1px 85.9%, 3.3px 87.5%, 9.3px 89.1%, 4.2px 90.6%, 3.6px 92.2%, 3.7px 93.8%, 5.5px 95.3%, 6.1px 96.9%, 6.3px 98.4%, 7.2px 100.0%, calc(100% - 0.0px) 100.0%, calc(100% - 0.9px) 98.4%, calc(100% - 1.6px) 96.9%, calc(100% - 0.3px) 95.3%, calc(100% - 1.4px) 93.8%, calc(100% - 2.8px) 92.2%, calc(100% - 2.7px) 90.6%, calc(100% - 4.3px) 89.1%, calc(100% - 4.2px) 87.5%, calc(100% - 4.8px) 85.9%, calc(100% - 5.9px) 84.4%, calc(100% - 6.1px) 82.8%, calc(100% - 5.6px) 81.2%, calc(100% - 5.5px) 79.7%, calc(100% - 12.9px) 78.1%, calc(100% - 6.3px) 76.6%, calc(100% - 14.2px) 75.0%, calc(100% - 5.1px) 73.4%, calc(100% - 5.0px) 71.9%, calc(100% - 5.1px) 70.3%, calc(100% - 3.6px) 68.8%, calc(100% - 4.7px) 67.2%, calc(100% - 3.4px) 65.6%, calc(100% - 4.9px) 64.1%, calc(100% - 3.7px) 62.5%, calc(100% - 4.6px) 60.9%, calc(100% - 4.1px) 59.4%, calc(100% - 12.3px) 57.8%, calc(100% - 5.0px) 56.2%, calc(100% - 4.8px) 54.7%, calc(100% - 5.7px) 53.1%, calc(100% - 4.4px) 51.6%, calc(100% - 5.2px) 50.0%, calc(100% - 5.4px) 48.4%, calc(100% - 4.7px) 46.9%, calc(100% - 4.1px) 45.3%, calc(100% - 2.9px) 43.8%, calc(100% - 2.2px) 42.2%, calc(100% - 3.2px) 40.6%, calc(100% - 1.2px) 39.1%, calc(100% - 2.0px) 37.5%, calc(100% - 0.4px) 35.9%, calc(100% - 0.2px) 34.4%, calc(100% - 6.3px) 32.8%, calc(100% - 7.9px) 31.2%, calc(100% - 0.0px) 29.7%, calc(100% - 0.0px) 28.1%, calc(100% - 1.2px) 26.6%, calc(100% - 1.3px) 25.0%, calc(100% - 1.7px) 23.4%, calc(100% - 1.6px) 21.9%, calc(100% - 1.8px) 20.3%, calc(100% - 2.3px) 18.8%, calc(100% - 2.1px) 17.2%, calc(100% - 2.0px) 15.6%, calc(100% - 2.5px) 14.1%, calc(100% - 2.9px) 12.5%, calc(100% - 2.8px) 10.9%, calc(100% - 2.5px) 9.4%, calc(100% - 2.3px) 7.8%, calc(100% - 2.2px) 6.2%, calc(100% - 2.6px) 4.7%, calc(100% - 2.8px) 3.1%, calc(100% - 3.0px) 1.6%, calc(100% - 1.7px) 0.0%); }
-.st-story__text::after { background: #EBC58A url("../img/scroll-paper.jpg?v=00e18787") 50% 50% / cover no-repeat;
-  box-shadow: inset 0 0 6px 1px rgba(92, 48, 12, .55), inset 0 0 30px rgba(120, 66, 18, .4), inset 0 0 90px rgba(130, 80, 26, .18); clip-path: polygon(9.2px 0.0%, 12.7px 1.6%, 12.5px 3.1%, 11.2px 4.7%, 12.6px 6.2%, 12.2px 7.8%, 11.1px 9.4%, 10.5px 10.9%, 11.9px 12.5%, 12.5px 14.1%, 10.8px 15.6%, 10.3px 17.2%, 18.8px 18.8%, 9.1px 20.3%, 7.8px 21.9%, 7.8px 23.4%, 7.3px 25.0%, 5.9px 26.6%, 8.0px 28.1%, 6.6px 29.7%, 7.0px 31.2%, 7.8px 32.8%, 6.3px 34.4%, 6.4px 35.9%, 6.7px 37.5%, 6.1px 39.1%, 6.3px 40.6%, 5.1px 42.2%, 14.2px 43.8%, 5.6px 45.3%, 4.1px 46.9%, 3.6px 48.4%, 4.4px 50.0%, 5.7px 51.6%, 4.1px 53.1%, 5.8px 54.7%, 5.2px 56.2%, 6.7px 57.8%, 5.9px 59.4%, 6.5px 60.9%, 8.2px 62.5%, 15.8px 64.1%, 6.7px 65.6%, 8.3px 67.2%, 8.8px 68.8%, 8.4px 70.3%, 8.1px 71.9%, 10.1px 73.4%, 8.5px 75.0%, 6.9px 76.6%, 8.0px 78.1%, 5.2px 79.7%, 4.3px 81.2%, 18.9px 82.8%, 4.4px 84.4%, 5.1px 85.9%, 4.9px 87.5%, 14.3px 89.1%, 7.3px 90.6%, 5.3px 92.2%, 6.8px 93.8%, 7.5px 95.3%, 7.7px 96.9%, 9.4px 98.4%, 9.8px 100.0%, calc(100% - 1.6px) 100.0%, calc(100% - 3.4px) 98.4%, calc(100% - 4.2px) 96.9%, calc(100% - 2.1px) 95.3%, calc(100% - 3.0px) 93.8%, calc(100% - 4.8px) 92.2%, calc(100% - 4.3px) 90.6%, calc(100% - 7.4px) 89.1%, calc(100% - 8.2px) 87.5%, calc(100% - 8.0px) 85.9%, calc(100% - 9.7px) 84.4%, calc(100% - 10.3px) 82.8%, calc(100% - 9.3px) 81.2%, calc(100% - 10.7px) 79.7%, calc(100% - 20.0px) 78.1%, calc(100% - 12.0px) 76.6%, calc(100% - 22.9px) 75.0%, calc(100% - 10.0px) 73.4%, calc(100% - 10.5px) 71.9%, calc(100% - 12.0px) 70.3%, calc(100% - 9.7px) 68.8%, calc(100% - 11.9px) 67.2%, calc(100% - 9.5px) 65.6%, calc(100% - 12.3px) 64.1%, calc(100% - 10.7px) 62.5%, calc(100% - 11.4px) 60.9%, calc(100% - 10.0px) 59.4%, calc(100% - 19.9px) 57.8%, calc(100% - 9.9px) 56.2%, calc(100% - 8.8px) 54.7%, calc(100% - 9.1px) 53.1%, calc(100% - 7.2px) 51.6%, calc(100% - 8.1px) 50.0%, calc(100% - 8.7px) 48.4%, calc(100% - 8.0px) 46.9%, calc(100% - 7.0px) 45.3%, calc(100% - 5.8px) 43.8%, calc(100% - 4.5px) 42.2%, calc(100% - 4.8px) 40.6%, calc(100% - 4.4px) 39.1%, calc(100% - 4.4px) 37.5%, calc(100% - 2.0px) 35.9%, calc(100% - 2.9px) 34.4%, calc(100% - 11.8px) 32.8%, calc(100% - 14.5px) 31.2%, calc(100% - 2.8px) 29.7%, calc(100% - 4.2px) 28.1%, calc(100% - 5.4px) 26.6%, calc(100% - 4.9px) 25.0%, calc(100% - 5.7px) 23.4%, calc(100% - 6.4px) 21.9%, calc(100% - 6.2px) 20.3%, calc(100% - 6.9px) 18.8%, calc(100% - 8.9px) 17.2%, calc(100% - 7.5px) 15.6%, calc(100% - 8.2px) 14.1%, calc(100% - 9.4px) 12.5%, calc(100% - 9.9px) 10.9%, calc(100% - 8.6px) 9.4%, calc(100% - 9.7px) 7.8%, calc(100% - 8.0px) 6.2%, calc(100% - 8.0px) 4.7%, calc(100% - 8.9px) 3.1%, calc(100% - 8.4px) 1.6%, calc(100% - 7.6px) 0.0%); }
+  filter: drop-shadow(0 1px 1px rgba(50, 28, 8, .22)) drop-shadow(0 22px 26px rgba(50, 30, 10, .28)); }
+.st-story__text p { margin: 0 0 1em; orphans: 3; widows: 3; }
+.st-story__text p:last-child { margin-bottom: 0; }
+@media (max-width: 899px) { .st-story__text { --k: .26; columns: 1; padding: 14px 10px 16px; } }
 .st-story__text p:first-child::first-letter { float: left; margin: .06em .08em -.1em 0; font-family: var(--script); font-size: 3.6em; line-height: .8; color: #7A2A12; }
 @media (max-width: 899px) {
   .st #who { grid-template-columns: minmax(0, 1fr); }
@@ -1163,6 +1167,13 @@ html:not(.js) .fan__card:hover { transform: rotate(var(--r)) translateY(-10px); 
 .cap__p { font-family: var(--grotesk); font-weight: 700; font-size: clamp(16px, .85rem + .25vw, 18px); line-height: 1.2; color: #6A5536; }   /* warm ink: readable over the drifting tints */
 .cap__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap__tags li { padding: 6px 11px 7px; border: 1px solid rgba(70, 52, 28, .3); border-radius: 2px; font: 400 14px/1.2 var(--sans); color: var(--ink); }
+/* in the ledger, what each service covers is set like a printer's list: italic book type, each entry led by a
+   rubricated hedera (the leaf ornament Renaissance printers used), two to a line */
+.caps .cap__tags { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 8px clamp(22px, 2.4vw, 40px); }
+.caps .cap__tags li { display: flex; align-items: baseline; gap: .45em; padding: 0; border: 0; border-radius: 0;
+  font: italic 400 clamp(18px, 1rem + .25vw, 21px)/1.25 'IM Fell English', var(--serif); color: #2A1A0B; }
+.caps .cap__tags li::before { content: "\2767"; font-style: normal; font-size: 1.05em; line-height: 1; color: #7A2A12; transform: translateY(.04em); }
+@media (max-width: 899px) { .caps .cap__tags { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 899px) {
   .cap { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .cap__tags { margin-top: 6px; }
@@ -1352,6 +1363,16 @@ html.has-tunnel .tun__prompt { display: block; }
 .ihb--screen .ihb__dot { left: 1em; top: calc(50% - .22em); width: .44em; height: .44em; }
 .ihb--screen .ihb__in svg { width: 1em; height: 1em; }
 @media (prefers-reduced-motion: reduce) { .ihb__t, .ihb__in, .ihb__dot { transition: none; } }
+/* Start a conversation: a frosted rectangle instead of the paper pill (user, 2026-11-18). The page
+   shows through; on hover the ink still floods it. In the green footer it turns to frosted light. */
+.ihb--glass { border-radius: 4px; border-color: rgba(41, 41, 25, .32); background: rgba(247, 247, 238, .34);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45); }
+.ihb--glass .ihb__dot { border-radius: 1px; }
+.ftr .ihb--glass { color: var(--paper); border-color: rgba(247, 247, 238, .4); background: rgba(247, 247, 238, .1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12); }
+.ftr .ihb--glass .ihb__dot { background: var(--paper); }
+.ftr .ihb--glass .ihb__in { color: var(--ink); }
+.ftr .ihb--glass:focus-visible { outline-color: var(--paper); }
 .row__art img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 1.4s var(--ease); }
 .row:hover .row__art img { transform: scale(1.025); }
 .row__line { max-width: 34ch; }

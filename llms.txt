@@ -1,0 +1,96 @@
+# Summit Studios
+
+> Summit Studios is a small web design and development studio. We design and build custom websites for clinics and doctors, engineering and industrial firms, construction and property, technology, interiors, food and hospitality businesses worldwide, and add the AI receptionists, WhatsApp automation and custom software that sit behind them. 30+ websites shipped. Every enquiry gets a reply within one working day.
+
+Summit Studios works with established businesses worldwide and runs every project remotely, with calls at a time that suits the client, clear written updates and reviews at every stage. Contact team@summitxstudio.com.
+
+## Services
+
+- [Websites](https://www.summitxstudio.com/#websites): Custom-designed, hand-built websites that turn visitors into calls, bookings and enquiries: clinic and practice sites, business and brand sites, e-commerce stores, with SEO and Google setup.
+- [Growth marketing](https://www.summitxstudio.com/#growth): SEO foundations, local search and Google Maps, AI search visibility, content that ranks, reviews and monthly reporting on calls, bookings and rankings.
+- [AI Concierge (AI receptionist)](https://www.summitxstudio.com/#receptionists): An AI receptionist that answers calls and chats 24/7, books appointments, answers common questions, captures every lead and hands off to a person when it matters.
+- [WhatsApp automation](https://www.summitxstudio.com/#more): Appointment reminders that cut no-shows, instant replies to enquiries, broadcasts, order and payment flows, and chatbots that qualify leads.
+- [Custom software](https://www.summitxstudio.com/#more): Custom CRMs, web apps and dashboards, backend APIs and integrations, with ongoing maintenance and support.
+
+## Industries
+
+- [Healthcare & clinics](https://www.summitxstudio.com/industries#ind-healthcare): Patients choose a doctor online before they ever call. Your website is the first consultation. We build clinic & practice sites, doctor portfolios, online booking, AI receptionists, WhatsApp reminders, local SEO & reviews.
+- [Industrial, engineering & supply](https://www.summitxstudio.com/industries#ind-industrial): Procurement teams inspect your website before they inspect your work. We build corporate websites, capability & case-study pages, product & brand catalogues, quote request flows, SEO for contractor & supplier searches, CRM for enquiries & tenders.
+- [Technology & software](https://www.summitxstudio.com/industries#ind-technology): If you sell technology, your own website is the first demo. We build corporate & product websites, product & industry pages, demo & trial flows, case studies, web apps & dashboards, custom CRMs.
+- [Construction & real estate](https://www.summitxstudio.com/industries#ind-property): Buyers walk through your project online long before the site visit. We build developer websites, project & unit pages, brochures & floor plans, lead capture & WhatsApp follow-up, CRM for site-visit bookings.
+- [Interiors & architecture](https://www.summitxstudio.com/industries#ind-interiors): You sell taste. A tired website quietly argues the opposite. We build studio & portfolio websites, project case studies, image-led galleries, project enquiry forms, local SEO.
+- [Food & e-commerce](https://www.summitxstudio.com/industries#ind-food): Your product deserves a shop that sells it as well as the counter does. We build online stores, product & category pages, recipes & brand content, payments & delivery setup, WhatsApp order updates.
+- [Hospitality & travel](https://www.summitxstudio.com/industries#ind-hospitality): Guests book the place that feels right on their phone. Your website is the welcome. We build hospitality & travel sites, experience & package pages, direct booking & enquiries, WhatsApp concierge, reviews & Google Maps.
+
+## Selected work
+
+- [Eagle Electricals](https://eagle-electricals.vercel.app/) (Industrial & engineering, corporate website): A corporate site for a high-voltage contractor that has powered coastal and southern Karnataka since 1970: five engineering disciplines, predictive thermal inspection and the utilities that trust them, in one scroll.
+- [Semnox](https://semnoxrevamp.vercel.app/) (Technology, corporate website): A corporate site for the entertainment-technology company behind 2,800+ venues in 60+ countries: three product suites, one platform, and a demo a click away.
+- [Prasanna Technologies](https://www.prasannatechnologies.com/index.html) (Technology, corporate website): A corporate site for an enterprise software company serving utilities worldwide: services, products, clients and careers laid out clearly, with a light and dark mode and a chat assistant on hand.
+- [Studio Dental](https://www.drvivekamin.com/) (Healthcare, dental clinic website): A site for an orthodontic and dental speciality clinic, two decades in practice: the clinic room by room, a full treatment index, and booking on every screen.
+- [Prime Dental & Aesthetic Clinic](https://www.primedentalaesthetic.com/) (Healthcare, dental clinic website): A site for a dental and aesthetic clinic led by a gold-medallist prosthodontist: smile makeovers, digital implants and single-day ceramics explained, an assistant that answers questions instantly, and an appointment on every screen.
+- [Pranava Builders](https://www.pranavabuilders.in/) (Construction & real estate, developer website): A developer site for nine residential and commercial projects, each with its own page carrying the full brochure, floor plans and saleable areas.
+- [Creative Concepts](https://1414mishal.github.io/creative-concepts/index.html) (Interior & exterior design, studio website): A studio site for an interior and exterior design firm with fifteen years of homes and workplaces behind it: services, featured projects and a portfolio that does the talking.
+- [Niks Masala](https://niksmasala.com/) (Food & e-commerce, online store): An online store for a family masala brand: stone-ground blends by category, bestsellers with prices, recipe videos and delivery across India.
+- [Shetty’s Hospitality](https://shettys-hospitality.vercel.app/) (Hospitality & travel, service website): A site for a hospitality firm that runs homestays, home celebrations, rides and temple journeys, with one person arranging the whole trip.
+- [Deepa Traders](https://www.deepatradersmlr.com/) (Automotive & industrial supply, business website): A site for a parts, lubricants, tyres and battery distributor with sixty-five years in the trade: thirty-plus authorised brand lines, how an order reaches your gate, and an enquiry one tap away.
+- [Dr. Mahesh Santhraya G](https://www.drmaheshent.in/) (Healthcare, doctor portfolio): A portfolio for an ENT surgeon: 20+ years of credentials, every condition he treats explained in plain language, and a way to book on every screen.
+- [Dr. Swathi Rao](https://www.drswathirao.com/) (Healthcare, doctor portfolio): A portfolio for a pediatrician and pediatric intensivist: what her clinic looks after, her intensive-care expertise and research, and WhatsApp booking for evening consults.
+- [Dr. Mariam Anjum Ifthikar](https://www.drmariamanjumifthikar.com/) (Healthcare, doctor portfolio): A portfolio for a gynaecologic oncologist and robotic surgeon: her specialties explained in plain language, two decades of training and service, and press, videos and publications in one place.
+
+## How a website project runs
+
+1. The brief. You fill in a short document about your business: what you do, who you serve, the pages you need and the sites you admire.
+2. The moodboard. We set the visual direction together: colour, type, imagery and references, agreed before a single screen is drawn.
+3. UI & UX. Sitemap, user journeys and wireframes, so every page has a job and a clear path to a call or a booking.
+4. Visual design. Finished designs for desktop and phone, refined with you until they feel exactly right.
+5. Development. Hand-built and fast on every screen, with motion, accessibility and search baked in from the start.
+6. Testing. Every page checked on phones, tablets and browsers, with speed, forms and bookings tested end to end.
+7. Launch & care. We go live, connect Google and analytics, and stay on for updates and new pages.
+
+## Questions people ask
+
+### What does Summit Studios do?
+
+We design and build premium websites, then make them work harder: AI receptionists that answer calls and chats, WhatsApp automation for reminders and enquiries, and custom CRMs, web apps and dashboards. One team, end to end.
+
+### Who do you work with?
+
+Established businesses worldwide: industrial and engineering firms, healthcare clinics, and trades, property and professional services.
+
+### How much does a website cost?
+
+It depends on what the site has to do. Pricing guidance is on the way for each type of project. In the meantime, send us a message and we'll give you a straight answer and a clear quote.
+
+### How long does it take?
+
+Faster than most agencies, because we design and build in-house with no hand-offs. You'll get a delivery date in the proposal, and we keep to it.
+
+### Can I update the site myself after launch?
+
+Yes. We either set you up to edit content yourself, or handle updates for you under a care plan. Either way, you're never stuck waiting on a developer to change a line of text.
+
+### Do you only build websites?
+
+No. Websites are where most clients start, but the biggest gains often come after: an AI receptionist that stops missed calls, WhatsApp reminders that cut no-shows, or a CRM built around how you actually work.
+
+### Do you build websites for clinics and doctors?
+
+Yes. Healthcare is where we have built the most, from dental clinics and orthodontists to specialist doctors' portfolios. We can add online booking, WhatsApp reminders and an AI receptionist that takes calls after hours.
+
+### Can you help us show up on Google and in AI answers like ChatGPT?
+
+Yes. Growth marketing covers the SEO foundations, your Google Business profile and Maps listing, and AI search visibility, with clear answers that ChatGPT, Gemini, Perplexity and Google's AI Overviews can find and quote. Every month you get a plain report on calls, bookings and rankings.
+
+### Can you work with us remotely?
+
+Yes. We work with clients worldwide and run every project remotely: calls at a time that suits you, clear written updates, and reviews at every stage.
+
+## Pages
+
+- [Home](https://www.summitxstudio.com/): services, how we build, client voices and FAQ
+- [Industries](https://www.summitxstudio.com/industries): what we build for each industry, with our work there
+- [Projects](https://www.summitxstudio.com/projects): live client websites we designed and built
+- [Studio](https://www.summitxstudio.com/studio): who we are, our story and what we hold to
+- [Get started](https://www.summitxstudio.com/get-started): tell us what you need, or ask for a free website review
+- [Contact](https://www.summitxstudio.com/contact): write to us, reply within one working day
