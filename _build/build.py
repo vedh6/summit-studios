@@ -1304,7 +1304,7 @@ NOT_FOUND = simple_page('summit', 'A Renaissance figure on a mountain summit abo
     </div>'''))
 
 PAGES = {
-    'index.html': ('Summit Studios | Premium web design for engineering firms, clinics and trades',
+    'index.html': ('Summit Studios | A Renaissance for your website',
                    'Summit Studios designs and builds premium websites, AI receptionists, WhatsApp automation and custom software for engineering firms, clinics and trades worldwide. 30+ sites shipped.',
                    HOME, HOME_CHAPTERS, True),
     'projects.html': ('Website projects for clinics, engineering firms and brands | Summit Studios', 'Selected work from 30+ websites: engineering and industrial firms, clinics and doctors, technology, property, interiors, food and hospitality.', PROJECTS_PAGE, PROJECTS_CH, False),
