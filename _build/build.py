@@ -1229,9 +1229,9 @@ def talk_form(p='c'):
         f'<div class="tf__row"><input id="{p}-{fid}" name="{name}" type="{kind}" placeholder=" "{extra}><label for="{p}-{fid}">{label}</label></div>')
     kinds = ''.join(f'<option>{k}</option>' for k in TALK_KINDS)
     chips = ''.join(f'<label class="tf__chip"><input type="checkbox" name="help" value="{h}"><span>{h}</span></label>' for h in TALK_HELP)
-    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/team@summitxstudio.com" method="post" novalidate data-unroll>
+    return f'''<form class="form tf" data-send data-subject="New enquiry from summitxstudio.com" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-unroll>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
-      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="New enquiry from summitxstudio.com"><input type="hidden" name="_cc" value="mishal@summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <span class="tf__rod" aria-hidden="true"></span>
       <div class="tf__sheet">
       <div class="tf__a">
@@ -1283,9 +1283,9 @@ GET_STARTED = simple_page('summit', 'A Renaissance figure on a mountain summit p
     <div id="review"></div>
     {sub_head('Not ready yet?')}
     {spot('Get a free review of your current website', 'Send us the link. We will reply with a short video or written note on what we would change and why. No pitch, no obligation.')}
-    <form class="form form--inline" data-send data-subject="Free website review request" action="https://formsubmit.co/team@summitxstudio.com" method="post" novalidate data-reveal>
+    <form class="form form--inline" data-send data-subject="Free website review request" action="https://formsubmit.co/vedh.shetty@summitxstudio.com" method="post" novalidate data-reveal>
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form__trap">
-      <input type="hidden" name="_subject" value="Free website review request"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="Free website review request"><input type="hidden" name="_cc" value="mishal@summitxstudio.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
       <div class="field"><label class="label" for="rv-url">Your website</label><input id="rv-url" name="url" type="url" placeholder="https://" required inputmode="url"></div>
       <div class="field"><label class="label" for="rv-email">Where to send it</label><input id="rv-email" name="email" type="email" placeholder="you@company.com" required></div>
       <div class="form__actions"><button class="pill pill--dark" type="submit">Send me the review</button><span class="form__hint">Usually within two working days.</span></div>
